@@ -1,0 +1,18 @@
+{
+  "name": "figma-steroids",
+  "owner": {
+    "name": "kennedy122112"
+  },
+  "description": "Skills y agentes de Claude Code para trabajar en Figma Desktop con figma-cli.",
+  "plugins": [
+    {
+      "name": "figma-steroids",
+      "source": "./",
+      "description": "Skills y agentes para diseñar en Figma Desktop con Claude Code a través de figma-cli (modo plugin/Safe, sin API key ni MCP).",
+      "version": "0.1.0",
+      "category": "design",
+      "license": "MIT",
+      "keywords": ["figma", "figma-cli", "design-system", "accessibility"]
+    }
+  ]
+}
