@@ -18,6 +18,11 @@ cualquier proyecto, y cualquiera puede proponer mejoras con un pull request.
 | `figma-design-system` | Importa y exporta tokens; contrato y detección de cambios |
 | `figma-a11y-review` | Auditoría de contraste, zonas táctiles, texto y daltonismo |
 | `figma-handoff` | Exporta imágenes, tokens, JSX y especificaciones para desarrollo |
+| `figma-to-code` | Implementa un frame en tu stack (Angular, React, Lit o cualquier otro) con tus componentes y tokens, y lo compara con el diseño |
+
+`figma-to-code` detecta el stack del proyecto y carga su adaptador de
+`skills/figma-to-code/stacks/`. Hoy incluye **Angular + Tailwind**, **React + TypeScript**,
+**Lit (TS/JS)** y uno **genérico** para el resto. Añadir un stack nuevo es añadir un archivo.
 
 **Agentes** (subagentes que Claude delega):
 

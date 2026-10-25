@@ -27,6 +27,15 @@ scripts/validate.mjs       validador (también corre en CI)
 3. Limita `tools` a lo que necesita. Un revisor no necesita `Write`.
 4. Define con claridad qué devuelve, porque su respuesta la lee otro agente, no una persona.
 
+## Añadir un stack a `figma-to-code`
+1. Crea `skills/figma-to-code/stacks/<stack>.md` (por ejemplo `vue.md`, `svelte.md`, `flutter.md`).
+   Usa `angular.md` o `lit.md` como modelo.
+2. Debe empezar con `# Adaptador: <stack>` y tener una sección `## Detección`
+   que diga cómo reconocer el stack en un proyecto.
+3. Añade una fila a la tabla de detección en `skills/figma-to-code/SKILL.md`, enlazando `stacks/<stack>.md`.
+4. Prioriza las convenciones del proyecto del usuario sobre las tuyas: el adaptador
+   explica el stack, pero el proyecto manda.
+
 ## Probar en local
 Desde la raíz de la repo:
 ```bash

@@ -40,6 +40,18 @@ for (const dir of readdirSync(skillsDir)) {
   const file = join(path, 'SKILL.md');
   if (!existsSync(file)) errors.push(`${path}: falta SKILL.md`);
   else checkEntry(file, dir, 'nombre de la carpeta');
+
+  // Adaptadores de stack: cada uno debe estar enlazado desde su SKILL.md y tener las secciones básicas.
+  const stacksDir = join(path, 'stacks');
+  if (!existsSync(stacksDir)) continue;
+  const skillText = existsSync(file) ? readFileSync(file, 'utf8') : '';
+  for (const f of readdirSync(stacksDir).filter((f) => f.endsWith('.md'))) {
+    const stackFile = join(stacksDir, f);
+    const text = readFileSync(stackFile, 'utf8');
+    if (!/^# Adaptador: /m.test(text)) errors.push(`${stackFile}: debe empezar con "# Adaptador: <stack>"`);
+    if (!/^## Detección/m.test(text)) errors.push(`${stackFile}: falta la sección "## Detección"`);
+    if (!skillText.includes(`stacks/${f}`)) errors.push(`${stackFile}: no está enlazado en la tabla de ${dir}/SKILL.md`);
+  }
 }
 
 const agentsDir = join(root, 'agents');
