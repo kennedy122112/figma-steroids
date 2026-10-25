@@ -1,6 +1,6 @@
 ---
 name: nombre-de-la-skill
-description: Qué hace en una frase. Úsala cuando el usuario diga "frase 1", "frase 2" o "trigger in English". Sé concreto, porque Claude decide si cargarla leyendo solo esta línea.
+description: Qué hace en una frase. Úsala cuando el usuario diga "frase 1", "frase 2" o "trigger in English". Sé concreto, porque el agente decide si cargarla leyendo solo esta línea.
 ---
 
 # Título de la skill
@@ -17,4 +17,4 @@ Requisito: conexión activa (skill `figma-connect`).
 - Qué necesita confirmación del usuario.
 
 ## Entrega
-Qué le cuenta Claude al usuario al terminar.
+Qué le cuenta el agente al usuario al terminar.

@@ -82,6 +82,21 @@ if (plugin && market) {
   }
 }
 
+// platforms.json: cada plataforma debe tener rutas de skills y un formato de agentes conocido.
+const platformsFile = readJson('platforms.json');
+if (platformsFile) {
+  const { AGENT_FORMATS } = await import('../lib/installer.mjs');
+  for (const [id, p] of Object.entries(platformsFile.platforms || {})) {
+    if (!KEBAB.test(id)) errors.push(`platforms.json: el id "${id}" debe ir en kebab-case`);
+    if (!p.label) errors.push(`platforms.json/${id}: falta "label"`);
+    if (!Array.isArray(p.docs) || !p.docs.length) errors.push(`platforms.json/${id}: añade en "docs" la documentación donde verificaste las rutas`);
+    if (!p.skills?.project || !p.skills?.global) errors.push(`platforms.json/${id}: "skills" necesita "project" y "global"`);
+    if (p.agents && !AGENT_FORMATS[p.agents.format]) {
+      errors.push(`platforms.json/${id}: formato de agentes desconocido "${p.agents.format}" (disponibles: ${Object.keys(AGENT_FORMATS).join(', ')})`);
+    }
+  }
+}
+
 if (errors.length) {
   console.error(`✗ ${errors.length} problema(s):\n` + errors.map((e) => `  - ${e}`).join('\n'));
   process.exit(1);

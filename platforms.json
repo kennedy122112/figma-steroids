@@ -1,0 +1,54 @@
+{
+  "$comment": "Dónde instala figma-steroids en cada herramienta. Rutas verificadas en la documentación oficial (ver 'docs'). '~' es la carpeta del usuario. null = la herramienta no lo soporta.",
+  "platforms": {
+    "claude": {
+      "label": "Claude Code",
+      "docs": [
+        "https://code.claude.com/docs/en/skills",
+        "https://code.claude.com/docs/en/sub-agents"
+      ],
+      "skills": { "project": ".claude/skills", "global": "~/.claude/skills" },
+      "agents": { "project": ".claude/agents", "global": "~/.claude/agents", "format": "claude-md" },
+      "instructions": null
+    },
+    "codex": {
+      "label": "Codex",
+      "docs": [
+        "https://learn.chatgpt.com/docs/build-skills",
+        "https://learn.chatgpt.com/docs/agent-configuration/subagents"
+      ],
+      "skills": { "project": ".agents/skills", "global": "~/.agents/skills" },
+      "agents": { "project": ".codex/agents", "global": "~/.codex/agents", "format": "codex-toml" },
+      "instructions": { "project": "AGENTS.md", "global": "~/.codex/AGENTS.md" }
+    },
+    "opencode": {
+      "label": "OpenCode",
+      "docs": [
+        "https://opencode.ai/docs/skills/",
+        "https://opencode.ai/docs/agents/",
+        "https://opencode.ai/docs/rules/"
+      ],
+      "skills": { "project": ".opencode/skills", "global": "~/.config/opencode/skills" },
+      "agents": { "project": ".opencode/agents", "global": "~/.config/opencode/agents", "format": "opencode-md" },
+      "instructions": { "project": "AGENTS.md", "global": "~/.config/opencode/AGENTS.md" }
+    },
+    "cursor": {
+      "label": "Cursor",
+      "docs": [
+        "https://cursor.com/docs/skills",
+        "https://cursor.com/docs/subagents",
+        "https://cursor.com/docs/rules"
+      ],
+      "skills": { "project": ".cursor/skills", "global": "~/.cursor/skills" },
+      "agents": { "project": ".cursor/agents", "global": "~/.cursor/agents", "format": "cursor-md" },
+      "instructions": { "project": "AGENTS.md", "global": null }
+    },
+    "universal": {
+      "label": "Universal (estándar Agent Skills: .agents/skills)",
+      "docs": ["https://agentskills.io"],
+      "skills": { "project": ".agents/skills", "global": "~/.agents/skills" },
+      "agents": null,
+      "instructions": { "project": "AGENTS.md", "global": null }
+    }
+  }
+}

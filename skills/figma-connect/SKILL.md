@@ -1,6 +1,6 @@
 ---
 name: figma-connect
-description: Conecta Claude Code con Figma Desktop usando figma-cli en modo plugin (Safe), sin API key ni MCP. Úsala cuando el usuario diga "conecta con Figma", "connect to Figma", cuando un comando figma-cli falle por falta de conexión, o antes de cualquier tarea de diseño si no hay conexión activa.
+description: Conecta el agente con Figma Desktop usando figma-cli en modo plugin (Safe), sin API key ni MCP. Úsala cuando el usuario diga "conecta con Figma", "connect to Figma", cuando un comando figma-cli falle por falta de conexión, o antes de cualquier tarea de diseño si no hay conexión activa.
 ---
 
 # Conectar con Figma (modo plugin)
@@ -11,8 +11,9 @@ No modifica la app de Figma y no envía nada a la nube.
 
 ## 1. Encontrar el comando
 - Si existe `figma-cli` en el PATH, úsalo.
-- Si no, dentro de esta repo usa `npx figma-cli` (viene como dependencia npm `figma-ds-cli`).
-- Si tampoco existe, ejecuta `npm install` en la raíz de la repo y vuelve a intentar.
+- Si no, usa `npx -p figma-ds-cli figma-cli` (el paquete npm se llama `figma-ds-cli`;
+  `npx figma-cli` a secas buscaría otro paquete distinto).
+- Para dejarlo instalado: `npm install -g figma-ds-cli`.
 
 En el resto de las skills, `figma-cli` significa el comando que encontraste aquí.
 
@@ -25,8 +26,8 @@ Comprueba con `figma-cli daemon status` (debe decir que corre en el puerto 3456)
 Esto solo lo puede hacer el usuario, en Figma Desktop:
 
 - **Una sola vez:** Plugins → Development → *Import plugin from manifest…* y elegir
-  `plugin/manifest.json` dentro del paquete figma-cli
-  (`node_modules/figma-ds-cli/plugin/manifest.json` en esta repo).
+  `plugin/manifest.json` dentro del paquete figma-cli: en una instalación global está en
+  `<npm root -g>/figma-ds-cli/plugin/manifest.json`; en una local, en `node_modules/figma-ds-cli/plugin/`.
 - **Cada sesión:** Plugins → Development → **FigCli**, y dejarlo abierto.
 
 ## 4. Verificar

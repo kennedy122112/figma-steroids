@@ -1,6 +1,6 @@
 {
   "name": "figma-steroids",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Skills y agentes para diseñar en Figma Desktop con Claude Code a través de figma-cli (modo plugin/Safe, sin API key ni MCP): conexión, construcción de UI con tu design system, paso de Figma a código en cualquier stack (Angular, React, Lit…), revisión de accesibilidad y handoff.",
   "author": {
     "name": "kennedy122112"
@@ -19,6 +19,9 @@
     "design-to-code",
     "angular",
     "react",
-    "lit"
+    "lit",
+    "codex",
+    "opencode",
+    "cursor"
   ]
 }

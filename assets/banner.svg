@@ -33,7 +33,7 @@
 
   <text x="72" y="150" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="76" font-weight="800" fill="#ffffff">figma-steroids</text>
   <text x="76" y="205" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="28" fill="#c7d2fe">De la idea a Figma, y de Figma a tu código.</text>
-  <text x="76" y="250" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="22" fill="#a5b4fc">Skills y agentes de Claude Code · sin API key · sin MCP · sin límites</text>
+  <text x="76" y="250" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="22" fill="#a5b4fc">Claude Code · Codex · OpenCode · Cursor · sin API key · sin MCP · sin límites</text>
 
   <g font-family="Consolas, Menlo, monospace" font-size="18" fill="#e0e7ff">
     <rect x="76" y="280" width="128" height="34" rx="17" fill="#ffffff" fill-opacity="0.1"/>
