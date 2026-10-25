@@ -24,9 +24,18 @@ Requisito: conexión activa (skill `figma-connect`).
    de la Plugin API que no tengan subcomando.
 2. "N tarjetas" = N nodos de primer nivel: `render-batch '[ "<Frame…>", … ]'`.
 3. **Nunca borres nodos que ya existían.** Para deshacer lo tuyo: `figma-cli undo`.
-4. Colores con `var:nombre`, no con hex, cuando haya variables.
+4. Colores con `var:nombre`, no con hex, cuando haya variables. `var:` solo sirve en
+   `bg`, `color` y `stroke`: `rounded` acepta **un número** (`rounded="var:radius"` hace
+   fallar el render). Consulta el valor del token con `figma-cli var list` y úsalo, por ejemplo `rounded={12}`.
 5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
 6. Verifica siempre: `figma-cli verify "<id>" --measure` y corrige si el tamaño no cuadra.
+   La captura se guarda en `/tmp` por defecto; en Windows indica la ruta con `--save "<ruta>.png"`.
+7. Si las variables están cargadas, comprueba que todos los colores quedaron vinculados:
+   ```
+   figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); const r=[]; const w=(x)=>{ if((x.fills||[]).length) r.push(!!(x.boundVariables&&x.boundVariables.fills)); (x.children||[]).forEach(w) }; w(n); ({total:r.length, sinVincular:r.filter(b=>!b).length})'
+   ```
+   En `eval` usa siempre las variantes **async** de la API (`getNodeByIdAsync`): el plugin
+   trabaja con `documentAccess: dynamic-page` y las síncronas fallan.
 
 ## JSX mínimo
 ```jsx

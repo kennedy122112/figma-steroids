@@ -1,7 +1,7 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.4.0-blue?style=for-the-badge" alt="Versión 0.4.0">
+  <img src="https://img.shields.io/badge/versión-0.4.1-blue?style=for-the-badge" alt="Versión 0.4.1">
   <img src="https://img.shields.io/badge/skills-6-green?style=for-the-badge" alt="6 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">

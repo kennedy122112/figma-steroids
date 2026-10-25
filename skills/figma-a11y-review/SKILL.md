@@ -9,11 +9,14 @@ Requisito: conexión activa (skill `figma-connect`).
 
 ## Pasos
 1. Pídele al usuario que seleccione el frame o la pantalla, o localízalo con `figma-cli find "<nombre>"`.
-2. Ejecuta `figma-cli a11y audit` para la revisión completa. Para profundizar:
+2. Ejecuta `figma-cli a11y audit "<id>"` para la revisión completa (contraste, zonas táctiles,
+   texto y orden de foco; `--level AAA` para el nivel más estricto, `--json` para procesarlo).
+   Sin ID revisa toda la página. Para profundizar:
    - `figma-cli a11y contrast`: contraste de texto y fondo (AA: 4.5:1 en texto normal, 3:1 en texto grande).
    - `figma-cli a11y touch`: zonas táctiles (mínimo 44×44 en iOS, 48×48 en Android).
    - `figma-cli a11y text`: tamaños de texto demasiado pequeños.
    - `figma-cli a11y vision`: simulación de daltonismo.
+   - `figma-cli a11y focus`: orden de lectura y de foco de los elementos interactivos.
 3. Entrega un informe ordenado por gravedad:
 
 | Gravedad | Elemento | Problema | Corrección propuesta |
