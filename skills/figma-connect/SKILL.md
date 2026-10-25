@@ -42,6 +42,9 @@ Si hay varios archivos abiertos, fija el destino con
 ## Problemas frecuentes
 - **"Plugin not detected"**: el plugin FigCli no está abierto o se cerró. Pídele al usuario que lo vuelva a abrir.
 - **El daemon no corre**: `figma-cli daemon restart`.
+- **Errores que mencionan el token (`.daemon-token`)**: quedó un daemon de otra sesión u otra
+  herramienta con el token desincronizado. `figma-cli daemon restart` lo arregla y el plugin
+  FigCli se reconecta solo.
 - **Comandos que van al archivo equivocado**: usa `FIGMA_FILE`.
 
 No le muestres comandos de terminal al usuario. Ejecútalos tú e informa el resultado en lenguaje sencillo.
