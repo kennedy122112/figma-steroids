@@ -51,6 +51,9 @@ El plugin **figma-steroids** hace lo mismo y además te enseña qué pasa:
 | **Archivo conectado** | En qué archivo y página está trabajando la IA |
 | **Selección con ID** | Lo que seleccionas, con su ID y un botón para copiarlo ("revisa el 2:2") |
 | **Registro de actividad** | Cada comando de la IA: **lectura** (gris), **+creados ~modificados −borrados** (azul) o **error** (rojo, con el código que falló) |
+| **Ver en el lienzo** | Un botón **Ver** en cada entrada que cambió algo: selecciona y enfoca lo que hizo la IA, aunque esté en otra página |
+| **Registro guardado** | Se conserva por archivo al cerrar el plugin ("De sesiones anteriores"), hasta 100 entradas, solo en tu equipo |
+| **Copiar registro** | Todo el registro como texto, para pegárselo a la IA o adjuntarlo a un reporte |
 | **Pausa** | Un botón que bloquea al instante los comandos de la IA, que recibe un mensaje claro de que la detuviste |
 
 ```bash
@@ -62,7 +65,12 @@ Ese comando copia el plugin a `~/.figma-steroids/figma-plugin` y te da la ruta d
 manifest…**). Úsalo **en lugar de** FigCli, no junto a él.
 
 Probado en Figma Desktop: conexión, selección, registro con lecturas, creaciones,
-modificaciones, borrados y errores, y pausa.
+modificaciones, borrados y errores, Ver en el lienzo, registro guardado al reabrir, copiar
+y pausa.
+
+Figma no distingue tus ediciones de las de la IA, así que el registro solo cuenta los
+cambios que llegan en los 3 segundos siguientes a cada comando: si en ese momento editas
+algo a mano, puede sumarse a la entrada de la IA.
 
 ## ✨ Novedades en v0.6
 

@@ -55,7 +55,8 @@ async function executeCode(code, timeoutMs = 25000) {
 // en el comando siguiente.
 const LAG_MS = 100;
 const WINDOW_MS = 3000;
-const runs = []; // { id, start, end, changes }
+const MAX_IDS = 300;
+const runs = []; // { id, start, end, changes, nodeIds }
 let watchedPage = null;
 
 function onNodeChange(event) {
@@ -70,8 +71,10 @@ function onNodeChange(event) {
     if (c.type === 'CREATE') run.changes.created++;
     else if (c.type === 'DELETE') run.changes.deleted++;
     else run.changes.modified++;
+    // Los borrados no se pueden mostrar; el resto sirve para "Ver en el lienzo".
+    if (c.type !== 'DELETE' && c.node && run.nodeIds.size < MAX_IDS) run.nodeIds.add(c.node.id);
   }
-  figma.ui.postMessage({ type: 'changes', id: run.id, changes: { ...run.changes } });
+  figma.ui.postMessage({ type: 'changes', id: run.id, changes: { ...run.changes }, nodeIds: [...run.nodeIds] });
 }
 
 function watchCurrentPage() {
@@ -81,7 +84,7 @@ function watchCurrentPage() {
 }
 
 function startRun(id) {
-  const run = { id, start: Date.now(), end: undefined, changes: { created: 0, deleted: 0, modified: 0 } };
+  const run = { id, start: Date.now(), end: undefined, changes: { created: 0, deleted: 0, modified: 0 }, nodeIds: new Set() };
   runs.push(run);
   if (runs.length > 20) runs.shift();
   return run;
@@ -93,6 +96,46 @@ async function runCode(code) {
   } catch (error) {
     return { error: error.message };
   }
+}
+
+// ---- "Ver en el lienzo" ----
+// Selecciona lo que tocó un comando: solo los nodos que siguen existiendo y, de cada rama,
+// el de más arriba (un frame creado ya incluye su texto). Si están en otra página, cambia a ella.
+async function showNodes(ids) {
+  const nodes = [];
+  for (const id of ids) {
+    const n = await figma.getNodeByIdAsync(id);
+    if (n && !n.removed && n.type !== 'PAGE' && n.type !== 'DOCUMENT') nodes.push(n);
+  }
+  const set = new Set(nodes.map((n) => n.id));
+  const top = nodes.filter((n) => {
+    for (let p = n.parent; p; p = p.parent) if (set.has(p.id)) return false;
+    return true;
+  });
+  if (!top.length) {
+    figma.notify('Lo que hizo ese comando ya no está en el archivo.', { timeout: 2000 });
+    return;
+  }
+  let page = top[0].parent;
+  while (page && page.type !== 'PAGE') page = page.parent;
+  if (page && page.id !== figma.currentPage.id) await figma.setCurrentPageAsync(page);
+  const visible = top.filter((n) => {
+    let p = n.parent;
+    while (p && p.type !== 'PAGE') p = p.parent;
+    return p && p.id === figma.currentPage.id;
+  });
+  figma.currentPage.selection = visible;
+  figma.viewport.scrollAndZoomIntoView(visible);
+}
+
+// ---- Registro guardado por archivo (clientStorage es local a este usuario y equipo) ----
+const logKey = () => 'log:' + figma.root.name;
+
+async function restoreLog() {
+  try {
+    const entries = await figma.clientStorage.getAsync(logKey());
+    if (Array.isArray(entries) && entries.length) figma.ui.postMessage({ type: 'restore-log', entries });
+  } catch (e) {}
 }
 
 // ---- Estado que ve el usuario ----
@@ -108,6 +151,7 @@ function sendSelection() {
 watchCurrentPage();
 sendFileInfo();
 sendSelection();
+restoreLog();
 
 figma.on('selectionchange', sendSelection);
 figma.on('currentpagechange', () => {
@@ -165,12 +209,13 @@ figma.ui.onmessage = async (msg) => {
     figma.ui.resize(SIZES[msg.size].width, SIZES[msg.size].height);
   }
 
-  if (msg.type === 'select-node') {
-    const node = await figma.getNodeByIdAsync(msg.id);
-    if (node && 'parent' in node) {
-      figma.currentPage.selection = [node];
-      figma.viewport.scrollAndZoomIntoView([node]);
-    }
+  if (msg.type === 'show-nodes') await showNodes(msg.ids);
+
+  if (msg.type === 'save-log') {
+    try { await figma.clientStorage.setAsync(logKey(), msg.entries); } catch (e) {}
+  }
+  if (msg.type === 'clear-log') {
+    try { await figma.clientStorage.deleteAsync(logKey()); } catch (e) {}
   }
 
   if (msg.type === 'notify') figma.notify(msg.text, { timeout: 1500 });

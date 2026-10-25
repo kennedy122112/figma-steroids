@@ -44,21 +44,25 @@
   .small { padding: 1px 6px; font-weight: 500; }
   #log-wrap { display: none; border-top: 1px solid var(--border); }
   body.expanded #log-wrap { display: block; }
-  .log-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; color: var(--muted); }
+  .log-head { display: flex; align-items: center; gap: 6px; padding: 6px 10px; color: var(--muted); }
+  .log-head span { flex: 1; }
   #log { list-style: none; margin: 0; padding: 0 6px 8px; height: 276px; overflow-y: auto; }
   #log li { padding: 4px; border-radius: 4px; cursor: pointer; }
   #log li:hover { background: var(--bg-2); }
-  .entry { display: flex; gap: 6px; align-items: baseline; }
+  #log li.restored .time { font-style: italic; }
+  .entry { display: flex; gap: 6px; align-items: center; }
   .time { color: var(--muted); flex: none; font-variant-numeric: tabular-nums; }
   .what { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tag { flex: none; font-size: 10px; padding: 0 5px; border-radius: 8px; background: var(--bg-2); color: var(--muted); }
   .tag.write { background: var(--brand); color: var(--on-brand); }
   .tag.error { background: var(--danger); color: #fff; }
+  .show { flex: none; padding: 0 5px; font-size: 10px; font-weight: 500; line-height: 14px; }
   .detail { display: none; margin: 4px 0 0; padding: 6px; border-radius: 4px; background: var(--bg-2);
     font-family: ui-monospace, Consolas, monospace; font-size: 10px; line-height: 14px; white-space: pre-wrap; word-break: break-all; }
   #log li.open .detail { display: block; }
   .err { color: var(--danger); }
-  .empty { color: var(--muted); padding: 8px 4px; }
+  .empty, .divider { color: var(--muted); padding: 8px 4px; cursor: default; }
+  .divider { padding: 6px 4px 2px; border-top: 1px dashed var(--border); margin-top: 4px; }
   .hint { color: var(--muted); padding: 0 10px 8px; }
 </style>
 </head>
@@ -83,9 +87,10 @@
   <section id="log-wrap" aria-label="Actividad">
     <div class="log-head">
       <span>Actividad de la IA</span>
-      <button id="clear" class="small">Limpiar</button>
+      <button id="copy-log" class="small" title="Copiar todo el registro como texto">Copiar</button>
+      <button id="clear" class="small" title="Borrar el registro de este archivo">Limpiar</button>
     </div>
-    <ul id="log"><li class="empty">Todavía no hay actividad.</li></ul>
+    <ul id="log"></ul>
   </section>
 
 <script>
@@ -128,7 +133,7 @@
           ws.onerror = handleClose;
           setStatus(paused ? 'En pausa' : 'Conectado', 'connected');
           post({ type: 'connected' });
-          ws.send(JSON.stringify({ type: 'hello', mode: 'plugin', version: 'figma-steroids-1.0.0' }));
+          ws.send(JSON.stringify({ type: 'hello', mode: 'plugin', version: 'figma-steroids-1.1.0' }));
           startKeepalive();
         };
         socket.onclose = () => {};
@@ -216,36 +221,92 @@
     return 'Ejecutar código';
   }
 
-  // Figma informa de los cambios con ~1 s de retraso: la entrada nace como "…" y se
-  // actualiza con cada aviso; si no llega ninguno en FINAL_MS, se marca como lectura.
+  // ---- Registro ----
+  // Cada entrada es un dato { id, at, summary, ms, code, error, paused, changes, nodeIds, final,
+  // restored } y su <li>. Figma informa de los cambios con ~1 s de retraso: la entrada nace como
+  // "…" y se actualiza con cada aviso; si no llega ninguno en FINAL_MS, queda como lectura.
+  // Se guarda por archivo (clientStorage) para revisarlo al volver a abrir el plugin.
   const FINAL_MS = 3600;
-  const entries = new Map(); // id -> { tagEl, changes, paused, error, final }
+  const MAX_ENTRIES = 100;
+  let log = []; // más reciente primero
+  const items = new Map(); // id -> { data, li }
   const earlyChanges = new Map(); // cambios que llegan antes que el resultado
+  let saveTimer = null;
 
-  function hasChanges(c) { return c && (c.created || c.deleted || c.modified); }
+  const hasChanges = (c) => !!(c && (c.created || c.deleted || c.modified));
 
-  function renderTag(e) {
-    let text, cls;
-    if (e.paused) { text = 'pausado'; cls = 'error'; }
-    else if (e.error && !hasChanges(e.changes)) { text = 'error'; cls = 'error'; }
-    else if (hasChanges(e.changes)) {
+  function tagOf(e) {
+    if (e.paused) return { text: 'pausado', cls: 'error' };
+    if (e.error && !hasChanges(e.changes)) return { text: 'error', cls: 'error' };
+    if (hasChanges(e.changes)) {
       const c = e.changes;
       const parts = [];
       if (c.created) parts.push(`+${c.created}`);
       if (c.modified) parts.push(`~${c.modified}`);
       if (c.deleted) parts.push(`−${c.deleted}`);
-      text = (e.error ? 'error ' : '') + parts.join(' ');
-      cls = e.error ? 'error' : 'write';
+      return { text: (e.error ? 'error ' : '') + parts.join(' '), cls: e.error ? 'error' : 'write' };
     }
-    else if (!e.final) { text = '…'; cls = ''; }
-    else { text = 'lectura'; cls = ''; }
-    e.tagEl.textContent = text;
-    e.tagEl.className = 'tag ' + cls;
-    const c = e.changes;
-    e.tagEl.title = c ? `creados ${c.created} · modificados ${c.modified} · borrados ${c.deleted}` : '';
+    return e.final ? { text: 'lectura', cls: '' } : { text: '…', cls: '' };
   }
 
-  function addLog(id, log, error) {
+  function timeLabel(e) {
+    const d = new Date(e.at);
+    const today = new Date().toDateString() === d.toDateString();
+    const hm = d.toTimeString().slice(0, 8);
+    return today ? hm : `${d.getDate()}/${d.getMonth() + 1} ${hm.slice(0, 5)}`;
+  }
+
+  function renderEntry(item) {
+    const e = item.data;
+    const tag = tagOf(e);
+    const tagEl = item.li.querySelector('.tag');
+    tagEl.textContent = tag.text;
+    tagEl.className = 'tag ' + tag.cls;
+    const c = e.changes;
+    tagEl.title = c ? `creados ${c.created} · modificados ${c.modified} · borrados ${c.deleted}` : '';
+    item.li.querySelector('.show').hidden = !(e.nodeIds && e.nodeIds.length);
+  }
+
+  function buildLi(e) {
+    const li = document.createElement('li');
+    if (e.restored) li.classList.add('restored');
+    li.innerHTML =
+      `<div class="entry"><span class="time"></span><span class="what"></span>` +
+      `<button class="show small" title="Seleccionar en el lienzo lo que hizo este comando" hidden>Ver</button>` +
+      `<span class="tag"></span></div><div class="detail"></div>`;
+    li.querySelector('.time').textContent = timeLabel(e);
+    li.querySelector('.time').title = new Date(e.at).toLocaleString();
+    li.querySelector('.what').textContent = e.summary + (e.ms ? ` · ${e.ms} ms` : '');
+    const detail = li.querySelector('.detail');
+    if (e.error) {
+      const err = document.createElement('div');
+      err.className = 'err';
+      err.textContent = e.error;
+      detail.appendChild(err);
+    }
+    detail.appendChild(document.createTextNode(e.code));
+    li.querySelector('.show').addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      post({ type: 'show-nodes', ids: e.nodeIds });
+    });
+    li.addEventListener('click', () => li.classList.toggle('open'));
+    return li;
+  }
+
+  function showEmptyIfNeeded() {
+    const list = $('log');
+    if (!list.children.length) list.innerHTML = '<li class="empty">Todavía no hay actividad.</li>';
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      const entries = log.slice(0, MAX_ENTRIES).map((e) => ({ ...e, final: true, restored: true }));
+      post({ type: 'save-log', entries });
+    }, 800);
+  }
+
+  function addLog(id, info, error) {
     const p = pending.get(id);
     pending.delete(id);
     if (!p) return;
@@ -253,34 +314,68 @@
     const empty = list.querySelector('.empty');
     if (empty) empty.remove();
 
-    const li = document.createElement('li');
-    const time = p.at.toTimeString().slice(0, 8);
-    li.innerHTML =
-      `<div class="entry"><span class="time">${time}</span><span class="what"></span>` +
-      `<span class="tag"></span></div><div class="detail"></div>`;
-    const entry = {
-      tagEl: li.querySelector('.tag'),
-      changes: earlyChanges.get(id) || (log && log.changes) || null,
-      paused: !!(log && log.paused),
-      error: !!error,
-      final: !!(log && log.paused),
-    };
+    const early = earlyChanges.get(id);
     earlyChanges.delete(id);
-    entries.set(id, entry);
-    renderTag(entry);
-    setTimeout(() => { entry.final = true; renderTag(entry); entries.delete(id); }, FINAL_MS);
-    li.querySelector('.what').textContent = p.summary + (log && log.ms ? ` · ${log.ms} ms` : '');
-    const detail = li.querySelector('.detail');
-    if (error) {
-      const e = document.createElement('div');
-      e.className = 'err';
-      e.textContent = error;
-      detail.appendChild(e);
+    const e = {
+      id,
+      at: p.at.getTime(),
+      summary: p.summary,
+      ms: info && info.ms,
+      code: p.code.length > 600 ? p.code.slice(0, 600) + '…' : p.code,
+      error: error || null,
+      paused: !!(info && info.paused),
+      changes: (early && early.changes) || (info && info.changes) || null,
+      nodeIds: (early && early.nodeIds) || [],
+      final: !!(info && info.paused),
+    };
+    const item = { data: e, li: buildLi(e) };
+    items.set(id, item);
+    log.unshift(e);
+    list.prepend(item.li);
+    while (log.length > MAX_ENTRIES) {
+      log.pop();
+      const last = [...list.children].reverse().find((li) => !li.classList.contains('divider'));
+      if (last) last.remove();
     }
-    detail.appendChild(document.createTextNode((p.code.length > 600 ? p.code.slice(0, 600) + '…' : p.code)));
-    li.addEventListener('click', () => li.classList.toggle('open'));
-    list.prepend(li);
-    while (list.children.length > 100) list.lastElementChild.remove();
+    renderEntry(item);
+    scheduleSave();
+    setTimeout(() => { e.final = true; renderEntry(item); items.delete(id); scheduleSave(); }, FINAL_MS);
+  }
+
+  function restoreLog(entries) {
+    if (log.length) return; // ya hay actividad nueva: no mezclar
+    const list = $('log');
+    list.innerHTML = '';
+    const divider = document.createElement('li');
+    divider.className = 'divider';
+    divider.textContent = 'De sesiones anteriores';
+    list.appendChild(divider);
+    for (const e of entries) {
+      log.push(e);
+      const item = { data: e, li: buildLi(e) };
+      list.appendChild(item.li);
+      renderEntry(item);
+    }
+  }
+
+  function logAsText() {
+    return log.slice().reverse().map((e) => {
+      const tag = tagOf({ ...e, final: true }).text;
+      const when = new Date(e.at).toLocaleString();
+      return `${when}  ${e.summary}${e.ms ? ` (${e.ms} ms)` : ''}  [${tag}]` + (e.error ? `\n  error: ${e.error}` : '');
+    }).join('\n');
+  }
+
+  // En el iframe del plugin el portapapeles moderno puede estar bloqueado: se usa execCommand.
+  function copyText(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    area.remove();
+    return ok;
   }
 
   // ---- Mensajes del hilo principal del plugin ----
@@ -293,16 +388,23 @@
       send({ type: 'result', id: msg.id, result: msg.result, error: msg.error });
       addLog(msg.id, msg.log, msg.error);
     }
-    if (msg.type === 'changes') {
-      const entry = entries.get(msg.id);
-      if (entry) { entry.changes = msg.changes; renderTag(entry); }
-      else earlyChanges.set(msg.id, msg.changes);
-    }
     if (msg.type === 'batch-result') {
       send({ type: 'batch-result', id: msg.id, results: msg.results });
       const failed = msg.results.filter((r) => !r.success);
       addLog(msg.id, msg.log, failed.length ? `${failed.length} de ${msg.results.length} fallaron: ${failed[0].error}` : null);
     }
+    if (msg.type === 'changes') {
+      const item = items.get(msg.id);
+      if (item) {
+        item.data.changes = msg.changes;
+        item.data.nodeIds = msg.nodeIds || [];
+        renderEntry(item);
+        scheduleSave();
+      } else {
+        earlyChanges.set(msg.id, { changes: msg.changes, nodeIds: msg.nodeIds || [] });
+      }
+    }
+    if (msg.type === 'restore-log') restoreLog(msg.entries);
     if (msg.type === 'file') {
       $('file').textContent = `${msg.file} · ${msg.page}`;
       $('file').title = `${msg.file} · página ${msg.page}`;
@@ -348,22 +450,26 @@
   });
 
   $('clear').addEventListener('click', () => {
-    $('log').innerHTML = '<li class="empty">Todavía no hay actividad.</li>';
+    log = [];
+    items.clear();
+    $('log').innerHTML = '';
+    showEmptyIfNeeded();
+    post({ type: 'clear-log' });
   });
 
-  // En el iframe del plugin el portapapeles moderno puede estar bloqueado: se usa execCommand.
+  $('copy-log').addEventListener('click', () => {
+    if (!log.length) { post({ type: 'notify', text: 'El registro está vacío.' }); return; }
+    const ok = copyText(logAsText());
+    post({ type: 'notify', text: ok ? `Registro copiado (${log.length} entradas)` : 'No se pudo copiar el registro' });
+  });
+
   $('copy').addEventListener('click', () => {
     const text = selection.map((s) => s.id).join(', ');
-    const area = document.createElement('textarea');
-    area.value = text;
-    document.body.appendChild(area);
-    area.select();
-    let ok = false;
-    try { ok = document.execCommand('copy'); } catch (e) {}
-    area.remove();
+    const ok = copyText(text);
     post({ type: 'notify', text: ok ? `Copiado: ${text}` : `ID: ${text}` });
   });
 
+  showEmptyIfNeeded();
   connectParallel();
 </script>
 </body>
