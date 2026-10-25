@@ -30,7 +30,11 @@ Requisito: conexión activa (skill `figma-connect`).
    ```
    figma-cli eval 'const out={}; for (const v of await figma.variables.getLocalVariablesAsync()) { const val=Object.values(v.valuesByMode)[0]; out[v.name]= v.resolvedType==="COLOR" ? "#"+[val.r,val.g,val.b].map(c=>Math.round(c*255).toString(16).padStart(2,"0")).join("") : val; }; ({...out})'
    ```
-   y usa el número, por ejemplo `rounded={12}`.
+   y usa el número, por ejemplo `rounded={12}`. Después del render, **vincula el radio a la
+   variable** para que no quede como valor suelto (en cada nodo con radio):
+   ```
+   figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); const v=(await figma.variables.getLocalVariablesAsync("FLOAT")).find(x=>x.name==="radius"); for (const k of ["topLeftRadius","topRightRadius","bottomLeftRadius","bottomRightRadius"]) n.setBoundVariable(k, v); Object.keys(n.boundVariables)'
+   ```
 5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
 6. Verifica siempre: `figma-cli verify "<id>" --measure` y corrige si el tamaño no cuadra.
    La captura se guarda en `/tmp` por defecto; en Windows indica la ruta con `--save "<ruta>.png"`.
