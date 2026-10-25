@@ -16,6 +16,9 @@ Requisito: conexión activa (skill `figma-connect`).
    Si no hay componente pero sí **copias sueltas** del mismo elemento en otros diseños (botones
    dibujados a mano, por ejemplo), **copia sus medidas** (alto, radio, tamaño de texto,
    padding) para no crear una variante más, y propón convertirlo en componente.
+   Si existen **estilos de texto** (`Text/Body`…) o variables de **espaciado** (`spacing/4`…),
+   úsalos: `<Text textStyle="Text/Body">` y `bind gap` / `bind padding` tras el render.
+   Si no existen, la skill `figma-design-system` sabe crearlos.
 3. Lee la intención del usuario:
    - "con mis variables / con el design system / themed" → `render` con `var:`.
    - Solo "crea 3 botones", sin design system cargado → puedes usar `figma-cli shadcn add button --count 3`.

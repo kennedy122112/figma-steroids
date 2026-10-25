@@ -1,7 +1,7 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.5.2-blue?style=for-the-badge" alt="Versión 0.5.2">
+  <img src="https://img.shields.io/badge/versión-0.6.0-blue?style=for-the-badge" alt="Versión 0.6.0">
   <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
@@ -38,6 +38,20 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.6
+
+### Un design system completo, no solo colores
+
+`figma-design-system` ahora completa el sistema a partir de lo que tu archivo ya usa:
+
+- **Escala de espaciado** (`spacing/1` = 4 px … ) y gaps y paddings vinculados a ella.
+- **Escala tipográfica** como estilos de texto (`Text/Title`, `Text/Body`, `Text/Caption`…).
+- **Componente `Button`** con variantes, tamaños y estados (`hover`, `focus`, `disabled`),
+  listo para usar con `<Instance component="Button" …>`.
+
+`figma-build-ui` los usa automáticamente cuando existen, así cada pantalla nueva deja de
+inventar tamaños y botones.
 
 ## ✨ Novedades en v0.4
 
@@ -146,7 +160,7 @@ Ejemplo del resumen que entrega al terminar (ilustrativo):
 | `figma-setup` | Primer arranque: comprueba Node.js, figma-cli, Figma y el plugin, e instala lo que falte (con tu permiso) |
 | `figma-connect` | Conecta con Figma Desktop por el plugin FigCli (modo Safe) |
 | `figma-build-ui` | Construye pantallas y componentes con tus variables, reutilizando tus componentes |
-| `figma-design-system` | Importa y exporta tokens (Tailwind, CSS, DTCG, DESIGN.md) y detecta cambios con snapshot/check |
+| `figma-design-system` | Importa y exporta tokens (Tailwind, CSS, DTCG, DESIGN.md); crea escala de espaciado, estilos de texto y un `Button` con variantes y estados; detecta cambios con snapshot/check |
 | `figma-a11y-review` | Auditoría de contraste WCAG, zonas táctiles, tamaño de texto y daltonismo |
 | `figma-handoff` | Exporta PNG/SVG/PDF, tokens, JSX, historias de Storybook y especificaciones |
 | `figma-to-code` | Implementa un frame en tu stack y lo compara con el diseño |
@@ -204,6 +218,24 @@ la IA, y la skill `figma-setup` instala lo que falte con tu permiso.
 
 **Regla rápida:** si la app trabaja en una carpeta de tu computadora y puede ejecutar comandos,
 funciona. Si es un chat o corre en la nube, no.
+
+## Probado en
+
+Pruebas reales contra Figma Desktop (Windows 11, figma-cli 2.2.5, plugin FigCli en modo Safe),
+octubre de 2026. Cada prueba encontró detalles que ya están corregidos en las skills.
+
+| Herramienta | Instalación | Qué se probó | Resultado |
+|---|---|---|---|
+| **Claude Code** (Claude Desktop, pestaña Code) | Instalador `--ai claude --global` | Activación automática de las skills, `figma-setup`, construir una tarjeta con variables, subagente revisor, `figma-to-code` en Angular | ✅ |
+| **OpenCode** (Desktop) | Instalador `--ai opencode --global` | Lo mismo, más una edición acotada de un diseño existente | ✅ |
+| **Codex** (CLI 0.164) | `codex plugin marketplace add` + `codex plugin add` | Instalación del plugin desde GitHub con sus 7 skills | ✅ instalación · ⏳ sin probar en sesión |
+| **Cursor** | — | Manifiesto `.cursor-plugin/` preparado | ⏳ sin probar |
+
+**`figma-to-code`** se probó en un proyecto Angular 22 + Tailwind 4 + TypeScript: compila, pasan
+los tests y el resultado coincide con Figma con una diferencia de 1 px o menos.
+Los adaptadores de React y Lit todavía no se han probado en un proyecto real.
+
+¿Lo probaste en otra herramienta o stack? Abre un issue o un pull request con lo que viste.
 
 ## Requisitos
 
