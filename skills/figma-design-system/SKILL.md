@@ -1,6 +1,6 @@
 ---
 name: figma-design-system
-description: Gestiona el design system en Figma con figma-cli. Importa tokens desde DESIGN.md, Tailwind, CSS o tokens.json como variables reales; completa el sistema con escala de espaciado, escala tipográfica (estilos de texto) y un componente Button con variantes y estados; exporta a DESIGN.md o DTCG, y lo congela con snapshot / rules / check. Úsala cuando el usuario diga "importa mis colores", "carga el design system", "crea la escala de espaciado", "crea estilos de texto", "haz un componente de botón", "exporta los tokens", "¿cambió algo?", o quiera validar el sistema en CI.
+description: Gestiona el design system en Figma con figma-cli. Importa tokens desde DESIGN.md, Tailwind, CSS o tokens.json como variables reales; completa el sistema con escala de espaciado, escala tipográfica (estilos de texto), un componente Button con variantes y estados, y modo claro / oscuro; exporta a DESIGN.md o DTCG, y lo congela con snapshot / rules / check. Úsala cuando el usuario diga "importa mis colores", "carga el design system", "crea la escala de espaciado", "crea estilos de texto", "haz un componente de botón", "añade modo oscuro", "dark mode", "tema oscuro", "exporta los tokens", "¿cambió algo?", o quiera validar el sistema en CI.
 ---
 
 # Design system en Figma
@@ -57,6 +57,42 @@ Después, los diseños usan `<Text textStyle="Text/Body">` en `render`, en vez d
    `<Instance component="Button" variant="variant=primary, size=md, state=default" text="Guardar" />`.
 
 Si una llamada se corta a medias, borra solo lo que creaste en esa llamada antes de repetirla.
+
+### 4. Modo claro / oscuro (temas)
+figma-cli no tiene comando para modos, y `figma-cli import` **ignora** los bloques `.dark` del
+CSS: el tema oscuro se crea con `eval`. Antes, propón la paleta oscura al usuario (fondos
+oscuros, textos claros y un `primary` más luminoso que siga teniendo contraste).
+
+**Elige la vía según el plan de Figma.** Intenta añadir un modo a la colección
+(`col.addMode("Dark")`); si falla con `Limited to 1 modes only`, el plan del usuario (el
+gratuito) solo permite un modo por colección: usa una **colección paralela**.
+
+- **Con modos (planes de pago):** renombra el modo actual a `Light`, añade `Dark` y da a cada
+  variable su valor oscuro con `setValueForMode`. Lo que no tenga valor oscuro copia el claro;
+  lístalo en la entrega.
+- **Colección paralela (cualquier plan):** crea `<colección> · Dark` con **los mismos nombres**
+  de variable y los valores oscuros (este `eval` es idempotente y copia los que falten):
+  ```
+  figma-cli eval 'const dark={"background":"#0b1120","foreground":"#f1f5f9","card":"#111827","card-foreground":"#f1f5f9","primary":"#2dd4bf","primary-foreground":"#042f2e","muted":"#1e293b","muted-foreground":"#94a3b8","border":"#334155"}; const cols=await figma.variables.getLocalVariableCollectionsAsync(); const src=cols.find(c=>c.name==="<colección>"); const name=src.name+" · Dark"; let dst=cols.find(c=>c.name===name); if(!dst) dst=figma.variables.createVariableCollection(name); const existing={}; for (const id of dst.variableIds){ const v=await figma.variables.getVariableByIdAsync(id); existing[v.name]=v } const hex=(h)=>({r:parseInt(h.slice(1,3),16)/255,g:parseInt(h.slice(3,5),16)/255,b:parseInt(h.slice(5,7),16)/255,a:1}); const mode=dst.modes[0].modeId; const set=[], copied=[]; for (const id of src.variableIds){ const s=await figma.variables.getVariableByIdAsync(id); const v=existing[s.name]||figma.variables.createVariable(s.name, dst, s.resolvedType); if(dark[s.name]){ v.setValueForMode(mode, hex(dark[s.name])); set.push(s.name) } else { v.setValueForMode(mode, Object.values(s.valuesByMode)[0]); copied.push(s.name) } }; ({collection:name, set, copiedFromLight:copied})'
+  ```
+
+**Previsualizar sin tocar el original:** duplica el frame a su derecha
+(`const c=n.clone(); c.x=<borde derecho>+80`) y cambia la copia de tema:
+- con modos: `c.setExplicitVariableModeForCollection(col, darkModeId)`;
+- con colección paralela: `figma-cli use "<colección> · Dark" -n "<id de la copia>"`
+  (prueba antes con `--dry-run`: dice cuántas vinculaciones va a cambiar).
+
+Verifica el tema oscuro con `figma-cli a11y contrast "<id de la copia>"`: un color que
+funciona sobre blanco puede fallar sobre fondo oscuro.
+
+**Exportar los temas al código:** `export css` y `export dtcg` **mezclan las colecciones**
+(el CSS repite cada variable en el mismo `:root` y el oscuro pisa al claro; el DTCG pierde el
+oscuro). Genera los bloques con este `eval` de solo lectura (ajusta `PREFIX`: `--color-` para
+el `@theme` de Tailwind v4, `--` para variables CSS simples):
+```
+figma-cli eval 'const LIGHT="<colección>", DARK="<colección> · Dark", PREFIX="--color-"; const cols=await figma.variables.getLocalVariableCollectionsAsync(); const read=async(name)=>{ const c=cols.find(x=>x.name===name); const out={}; for (const id of c.variableIds){ const v=await figma.variables.getVariableByIdAsync(id); if(v.resolvedType!=="COLOR") continue; const val=Object.values(v.valuesByMode)[0]; out[v.name]="#"+[val.r,val.g,val.b].map(x=>Math.round(x*255).toString(16).padStart(2,"0")).join("") } return out }; const l=await read(LIGHT), d=await read(DARK); const block=(sel,o)=>sel+" {\n"+Object.entries(o).map(([k,v])=>"  "+PREFIX+k+": "+v+";").join("\n")+"\n}"; block(":root",l)+"\n\n"+block(".dark",d)'
+```
+Con modos, lee `valuesByMode[lightId]` y `valuesByMode[darkId]` de la misma colección.
 
 ## Exportar (Figma → código)
 - Todo el sistema: `figma-cli extract` (genera `DESIGN.md`).

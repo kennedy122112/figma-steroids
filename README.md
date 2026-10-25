@@ -1,7 +1,7 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.7.0-blue?style=for-the-badge" alt="Versión 0.7.0">
+  <img src="https://img.shields.io/badge/versión-0.8.0-blue?style=for-the-badge" alt="Versión 0.8.0">
   <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
@@ -38,6 +38,22 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.8
+
+### Modo claro / oscuro, de Figma al código
+
+Pide *"añade modo oscuro"* y `figma-design-system`:
+
+1. **Crea el tema oscuro** con los mismos nombres de variable. Si tu plan de Figma admite
+   modos, como modo `Dark`; en el plan gratuito, que solo permite un modo por colección, como
+   una colección paralela `… · Dark`.
+2. **Lo previsualiza** en una copia de tu diseño, al lado del original, sin tocarlo.
+3. **Revisa el contraste** del tema oscuro.
+4. **Lo lleva al código** como bloques `:root` / `.dark`, listos para Tailwind v4 o CSS.
+
+Probado en Figma (plan gratuito) y en un proyecto Angular 22 + Tailwind 4: la app entera
+cambia de tema con la clase `dark`, sin tocar los componentes.
 
 ## ✨ Novedades en v0.7
 
@@ -193,7 +209,7 @@ Ejemplo del resumen que entrega al terminar (ilustrativo):
 | `figma-setup` | Primer arranque: comprueba Node.js, figma-cli, Figma y el plugin, e instala lo que falte (con tu permiso) |
 | `figma-connect` | Conecta con Figma Desktop por el plugin FigCli (modo Safe) |
 | `figma-build-ui` | Construye pantallas y componentes con tus variables, reutilizando tus componentes |
-| `figma-design-system` | Importa y exporta tokens (Tailwind, CSS, DTCG, DESIGN.md); crea escala de espaciado, estilos de texto y un `Button` con variantes y estados; detecta cambios con snapshot/check |
+| `figma-design-system` | Importa y exporta tokens (Tailwind, CSS, DTCG, DESIGN.md); crea escala de espaciado, estilos de texto, un `Button` con variantes y estados, y modo claro / oscuro; detecta cambios con snapshot/check |
 | `figma-a11y-review` | Auditoría de contraste WCAG, zonas táctiles, tamaño de texto y daltonismo |
 | `figma-handoff` | Exporta PNG/SVG/PDF, tokens, JSX, historias de Storybook y especificaciones |
 | `figma-to-code` | Implementa un frame en tu stack y lo compara con el diseño |

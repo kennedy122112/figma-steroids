@@ -49,6 +49,13 @@ React úsalo solo como referencia de estructura, nunca como código final.
    Propón definirla como token (`--font-sans` en Tailwind v4) y cargarla con **todos los
    pesos que usa el diseño** (por ejemplo 400, 500, 600 y 700): si falta uno, el navegador lo
    simula y el texto no cuadrará.
+5. **Tema oscuro:** si el archivo tiene modos `Light`/`Dark` o una colección `… · Dark`, genera
+   los bloques `:root` y `.dark` con el `eval` de la skill `figma-design-system` (no con
+   `export css`, que mezcla los temas). En Tailwind v4 los tokens del `@theme` son variables
+   CSS: basta con redefinirlos en `.dark { --color-…: … }` y declarar
+   `@custom-variant dark (&:where(.dark, .dark *));`. Si el componente usa solo tokens, cambia de
+   tema sin tocar su código; un color fijo en una clase (`bg-white`, `text-[#…]`) no cambiará,
+   así que búscalos al verificar con la clase `dark` puesta.
 
 ## 4. Reutilizar antes de crear
 Busca en el proyecto componentes equivalentes (botones, inputs, cards…) y úsalos.
