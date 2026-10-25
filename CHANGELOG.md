@@ -7,6 +7,24 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.9.0] - 2026-10-25
+
+### Añadido
+- Adaptador **HTML + CSS + JavaScript** sin framework para `figma-to-code` (`stacks/html.md`):
+  HTML semántico, tokens como variables CSS, modificadores de clase, modo oscuro y Web
+  Components nativos si el proyecto ya los usa.
+
+### Probado
+- `figma-to-code` en **React 19 + Vite 8 + Tailwind 4**, **Lit 3 + TypeScript** y **HTML/CSS/JS**,
+  además de Angular: la misma tarjeta coincide con Figma con menos de 1 px y el modo oscuro
+  funciona en los cuatro.
+
+### Cambiado
+- QA visual: medir dentro del `shadowRoot` en Web Components y terminar las transiciones antes
+  de leer colores tras cambiar de tema.
+- Adaptador de Lit: propiedades `Array` desde JSON, modo oscuro a través del Shadow DOM, bordes
+  que no ocupan espacio y decoradores según la configuración de TypeScript.
+
 ## [0.8.0] - 2026-10-25
 
 ### Añadido
@@ -99,6 +117,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.9.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.5.2...v0.6.0

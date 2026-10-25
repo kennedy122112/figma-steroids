@@ -25,10 +25,18 @@ Shadow DOM o light DOM, cómo comparten estilos (un `sharedStyles` importado) y 
 - Eventos: `this.dispatchEvent(new CustomEvent('ui-click', { bubbles: true, composed: true }))`.
 - Registra el tipo del tag en `HTMLElementTagNameMap` (TypeScript).
 
+- Datos estructurados (listas de estadísticas, elementos) → `@property({ type: Array })`; desde
+  HTML se pasan como JSON en el atributo (`stats='[{"label":"…","value":"…"}]'`).
+
 ## Estilos
 - ``static styles = css`...` `` con **variables CSS** para los tokens (`var(--color-primary)`). Las variables atraviesan el Shadow DOM; las clases de Tailwind no.
 - Si el proyecto usa Tailwind dentro de Lit (light DOM, o estilos de Tailwind inyectados en `static styles`), sigue ese mismo patrón y no lo mezcles con otro.
 - Expón puntos de personalización con `::part()` y variables CSS, documentados en el JSDoc del componente.
+- **Modo oscuro:** redefine las variables en `.dark` sobre `<html>`; los componentes las heredan a
+  través del Shadow DOM sin cambiar su código.
+- El trazo de Figma no ocupa espacio: borde con `box-shadow: inset 0 0 0 1px var(--color-border)`.
+- Fíjate en la configuración de TypeScript: con `experimentalDecorators` (la plantilla de Vite)
+  se usa `@property()` sobre campos normales; con decoradores estándar, `@property() accessor`.
 - Estados: `:host(:hover)`, `:focus-visible`, `:host([disabled])`.
 
 ## Accesibilidad

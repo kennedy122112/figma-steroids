@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.8.0-blue?style=for-the-badge" alt="Version 0.8.0">
+  <img src="https://img.shields.io/badge/version-0.9.0-blue?style=for-the-badge" alt="Version 0.9.0">
   <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agents-3-purple?style=for-the-badge" alt="3 agents">
-  <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
+  <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
 
@@ -34,8 +34,8 @@
 
 **figma-steroids** supercharges [figma-cli](https://github.com/silships/figma-cli) with a set of
 **skills** and **agents** that know how to build in Figma Desktop, take care of your design
-system, review accessibility, and turn designs into code in **Angular, React, Lit or any other
-stack**.
+system, review accessibility, and turn designs into code in **Angular, React, Lit, plain HTML/CSS/JS or any
+other stack**.
 
 It works with **Claude Code** (as a plugin) and with **Codex, OpenCode, Cursor** or any tool
 that supports the Agent Skills standard (through the `figma-steroids init` installer).
@@ -89,10 +89,14 @@ In tools without subagents they're installed as roles inside `AGENTS.md`.
 
 | Stack | Adapter | Status |
 |---|---|---|
-| **Angular + TypeScript + Tailwind** | [`stacks/angular.md`](skills/figma-to-code/stacks/angular.md) | ✅ Tested in a real project |
-| **React + TypeScript** (Vite, Next.js…) | [`stacks/react.md`](skills/figma-to-code/stacks/react.md) | ✅ Included · ⏳ not tested yet |
-| **Lit** (TypeScript or JavaScript) | [`stacks/lit.md`](skills/figma-to-code/stacks/lit.md) | ✅ Included · ⏳ not tested yet |
+| **Angular + TypeScript + Tailwind** | [`stacks/angular.md`](skills/figma-to-code/stacks/angular.md) | ✅ Tested (Angular 22 + Tailwind 4) |
+| **React + TypeScript** (Vite, Next.js…) | [`stacks/react.md`](skills/figma-to-code/stacks/react.md) | ✅ Tested (React 19 + Vite 8 + Tailwind 4) |
+| **Lit** (TypeScript or JavaScript) | [`stacks/lit.md`](skills/figma-to-code/stacks/lit.md) | ✅ Tested (Lit 3 + TypeScript) |
+| **HTML + CSS + JavaScript** (no framework) | [`stacks/html.md`](skills/figma-to-code/stacks/html.md) | ✅ Tested (BEM CSS with variables) |
 | **Anything else** (Vue, Svelte, Flutter, SwiftUI…) | [`stacks/generic.md`](skills/figma-to-code/stacks/generic.md) | ✅ Generic · 🙌 [add yours](#-architecture--contributing) |
+
+All four were tested against the same Figma card: the result matches within 1 px, and dark
+mode works by switching tokens only (in Lit, tokens cross the Shadow DOM).
 
 **Your project's conventions win**: before writing code, the agent reads your existing
 components and follows their style. It reuses your components, maps every Figma variable to an

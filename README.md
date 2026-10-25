@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.8.0-blue?style=for-the-badge" alt="Versión 0.8.0">
+  <img src="https://img.shields.io/badge/versión-0.9.0-blue?style=for-the-badge" alt="Versión 0.9.0">
   <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
-  <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
+  <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
 
@@ -35,7 +35,7 @@
 **figma-steroids** le da superpoderes a [figma-cli](https://github.com/silships/figma-cli): un
 conjunto de **skills** y **agentes** que saben construir en Figma Desktop, cuidar tu design
 system, revisar la accesibilidad y llevar el diseño a código en **Angular, React, Lit o
-cualquier otro stack**.
+cualquier otro stack** (también HTML, CSS y JavaScript sin framework).
 
 Funciona con **Claude Code** (como plugin) y con **Codex, OpenCode, Cursor** o cualquier
 herramienta compatible con el estándar Agent Skills (con el instalador `figma-steroids init`).
@@ -232,9 +232,10 @@ En herramientas sin subagentes se instalan como roles dentro de `AGENTS.md`.
 
 | Stack | Adaptador | Estado |
 |---|---|---|
-| **Angular + TypeScript + Tailwind** | [`stacks/angular.md`](skills/figma-to-code/stacks/angular.md) | ✅ Incluido |
-| **React + TypeScript** (Vite, Next.js…) | [`stacks/react.md`](skills/figma-to-code/stacks/react.md) | ✅ Incluido |
-| **Lit** (TypeScript o JavaScript) | [`stacks/lit.md`](skills/figma-to-code/stacks/lit.md) | ✅ Incluido |
+| **Angular + TypeScript + Tailwind** | [`stacks/angular.md`](skills/figma-to-code/stacks/angular.md) | ✅ Probado (Angular 22 + Tailwind 4) |
+| **React + TypeScript** (Vite, Next.js…) | [`stacks/react.md`](skills/figma-to-code/stacks/react.md) | ✅ Probado (React 19 + Vite 8 + Tailwind 4) |
+| **Lit** (TypeScript o JavaScript) | [`stacks/lit.md`](skills/figma-to-code/stacks/lit.md) | ✅ Probado (Lit 3 + TypeScript) |
+| **HTML + CSS + JavaScript** (sin framework) | [`stacks/html.md`](skills/figma-to-code/stacks/html.md) | ✅ Probado (CSS con BEM y variables) |
 | **Cualquier otro** (Vue, Svelte, Flutter, SwiftUI…) | [`stacks/generic.md`](skills/figma-to-code/stacks/generic.md) | ✅ Genérico · 🙌 [aporta el tuyo](#-arquitectura-y-contribución) |
 
 En todos los casos **las convenciones de tu proyecto mandan**: antes de escribir, el agente
@@ -284,9 +285,10 @@ octubre de 2026. Cada prueba encontró detalles que ya están corregidos en las 
 | **Codex** (CLI 0.164) | `codex plugin marketplace add` + `codex plugin add` | Instalación del plugin desde GitHub con sus 7 skills | ✅ instalación · ⏳ sin probar en sesión |
 | **Cursor** | — | Manifiesto `.cursor-plugin/` preparado | ⏳ sin probar |
 
-**`figma-to-code`** se probó en un proyecto Angular 22 + Tailwind 4 + TypeScript: compila, pasan
-los tests y el resultado coincide con Figma con una diferencia de 1 px o menos.
-Los adaptadores de React y Lit todavía no se han probado en un proyecto real.
+**`figma-to-code`** se probó en cuatro stacks: Angular 22 + Tailwind 4, React 19 + Vite 8 +
+Tailwind 4, Lit 3 + TypeScript y HTML + CSS + JavaScript sin framework. En todos compila (o
+no lo necesita), el resultado coincide con Figma con menos de 1 px de diferencia y el modo
+oscuro funciona cambiando solo los tokens. En Lit, los tokens atraviesan el Shadow DOM.
 
 ¿Lo probaste en otra herramienta o stack? Abre un issue o un pull request con lo que viste.
 

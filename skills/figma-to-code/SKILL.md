@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Implementa un frame o componente de Figma como código en el stack del proyecto (Angular, React, Lit u otro), reutilizando sus componentes y tokens, y comprueba que el resultado coincide con el diseño. Úsala cuando el usuario diga "implementa este diseño", "pásalo a código", "convierte este frame en un componente", "maqueta esta pantalla", "design to code", "build this Figma frame".
+description: Implementa un frame o componente de Figma como código en el stack del proyecto (Angular, React, Lit, HTML/CSS/JS u otro), reutilizando sus componentes y tokens, y comprueba que el resultado coincide con el diseño. Úsala cuando el usuario diga "implementa este diseño", "pásalo a código", "convierte este frame en un componente", "maqueta esta pantalla", "design to code", "build this Figma frame".
 ---
 
 # Figma → código, en cualquier stack
@@ -16,6 +16,7 @@ Mira la raíz del proyecto y carga **solo** el adaptador que corresponda, de `st
 | `angular.json` o `@angular/core` en `package.json` | `stacks/angular.md` |
 | `react` en `package.json` (Vite, Next, CRA…) | `stacks/react.md` |
 | `lit` en `package.json` | `stacks/lit.md` |
+| HTML, CSS y JavaScript sin framework (sin `package.json`, o sin framework en él) | `stacks/html.md` |
 | Ninguno de los anteriores | `stacks/generic.md` |
 
 Detecta además: TypeScript o JavaScript (`tsconfig.json`), sistema de estilos
@@ -90,7 +91,12 @@ textos alternativos.
 2. Haz una captura al mismo ancho que el frame y compárala con la captura de `verify`.
 3. **Mide, no solo mires**: compara en el navegador el tamaño y la posición de cada bloque
    (`getBoundingClientRect()`) con las medidas de `verify --measure`. Espera a
-   `document.fonts.ready` antes de medir. Una diferencia de 1 px es aceptable.
+   `document.fonts.ready` antes de medir. Una diferencia de 1 px es aceptable (el interlineado
+   `auto` de Inter en Figma es ≈1,21 y con `1.2` quedan diferencias de medio píxel).
+   En Web Components mide dentro del `shadowRoot`.
+   Al comprobar colores tras cambiar de tema, termina antes las transiciones
+   (`el.getAnimations().forEach(a => a.finish())`): en una pestaña que no se está pintando no
+   avanzan y `getComputedStyle` devuelve todavía el color anterior.
 4. Revisa espaciados, tamaños de texto, colores y alineación. Corrige y repite hasta que coincidan.
 5. Ejecuta el lint y los tests del proyecto si existen.
 6. Si levantaste un servidor de desarrollo, detenlo al terminar o dile al usuario en qué
