@@ -53,6 +53,11 @@ Busca en el proyecto componentes equivalentes (botones, inputs, cards…) y úsa
 Solo crea un componente nuevo si no existe ninguno, y sigue las convenciones del
 adaptador y del propio proyecto (nombres, carpetas, estilo de imports).
 
+Si un componente existente casi encaja (por ejemplo, el diseño pide un botón de 14 px y el
+del proyecto solo tiene 15), **extiéndelo de forma compatible**: una prop o input nueva con
+el valor actual por defecto, para que ningún uso existente cambie. No lo dupliques ni
+cambies su estilo global, y menciónalo en la entrega.
+
 ## 5. Implementar
 Sigue el adaptador del stack. Traduce el auto-layout de Figma así:
 
@@ -79,6 +84,8 @@ textos alternativos.
    `document.fonts.ready` antes de medir. Una diferencia de 1 px es aceptable.
 4. Revisa espaciados, tamaños de texto, colores y alineación. Corrige y repite hasta que coincidan.
 5. Ejecuta el lint y los tests del proyecto si existen.
+6. Si levantaste un servidor de desarrollo, detenlo al terminar o dile al usuario en qué
+   puerto quedó corriendo y cómo pararlo.
 
 ## Entrega
 Lista de archivos creados o modificados, componentes reutilizados, tokens nuevos
