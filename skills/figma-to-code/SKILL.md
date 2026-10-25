@@ -46,7 +46,9 @@ React úsalo solo como referencia de estructura, nunca como código final.
    (`figma-cli export dtcg` o `figma-cli export css` dan los valores) y pide confirmación.
 4. Revisa también la **tipografía**: si el diseño usa una fuente (por ejemplo Inter) que el
    proyecto no define ni carga, el texto saldrá más ancho o más estrecho y nada cuadrará.
-   Propón definirla como token (`--font-sans` en Tailwind v4) y cargarla.
+   Propón definirla como token (`--font-sans` en Tailwind v4) y cargarla con **todos los
+   pesos que usa el diseño** (por ejemplo 400, 500, 600 y 700): si falta uno, el navegador lo
+   simula y el texto no cuadrará.
 
 ## 4. Reutilizar antes de crear
 Busca en el proyecto componentes equivalentes (botones, inputs, cards…) y úsalos.

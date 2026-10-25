@@ -13,6 +13,9 @@ Requisito: conexión activa (skill `figma-connect`).
    componente ya existe (`figma-cli find "<Nombre>"`) y, si existe, coloca una
    instancia con `figma-cli instantiate "<Nombre>"` en lugar de reconstruirlo.
    Si hay un `DESIGN.md` extraído, `figma-cli spec <Nombre>` da sus variantes exactas.
+   Si no hay componente pero sí **copias sueltas** del mismo elemento en otros diseños (botones
+   dibujados a mano, por ejemplo), **copia sus medidas** (alto, radio, tamaño de texto,
+   padding) para no crear una variante más, y propón convertirlo en componente.
 3. Lee la intención del usuario:
    - "con mis variables / con el design system / themed" → `render` con `var:`.
    - Solo "crea 3 botones", sin design system cargado → puedes usar `figma-cli shadcn add button --count 3`.
@@ -37,7 +40,11 @@ Requisito: conexión activa (skill `figma-connect`).
    No vincules formas que no siguen la escala: un avatar circular (radio = mitad del lado)
    dejaría de ser un círculo.
 5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
+   **Controles interactivos** (botones, enlaces con área, inputs): alto fijo mínimo de
+   **44 px** (40 solo si el sistema ya lo usa), nunca `h="hug"` sobre el texto. Usa padding de
+   la escala del archivo (4, 8, 12, 16…), no valores sueltos como 14.
 6. Verifica siempre: `figma-cli verify "<id>" --measure` y corrige si el tamaño no cuadra.
+   Si hay controles interactivos, ejecuta también `figma-cli a11y touch "<id>"`.
    La captura se guarda en `/tmp` por defecto; en Windows indica la ruta con `--save "<ruta>.png"`.
 7. Si las variables están cargadas, comprueba que rellenos, trazos y radios quedaron vinculados.
    El radio se vincula **por esquina** (`topLeftRadius`…), no como `cornerRadius`:
@@ -61,6 +68,10 @@ Requisito: conexión activa (skill `figma-connect`).
   (estadísticas, rejillas) usa `gap` + hijos con `w="fill"`, sin `between`.
 - Tamaño: `w={320}` · `w="fill"` · `w="hug"` · `w="50%"`
 - **Texto que envuelve:** el padre y cada `<Text>` necesitan `w="fill"`, y el padre necesita `flex`.
+- **Fila con icono + texto de varias líneas:** `items="start"`, para que el icono quede a la
+  altura de la primera línea y no centrado en el bloque.
+- **Título con algo a la derecha** (hora, badge): el título con `w="fill"` y `truncate`
+  (o `maxLines={1}`), para que un texto largo no choque con lo de al lado.
 - En otra página: `figma-cli render --page "Nombre" '<Frame…>'`.
 
 ## Componentes y variantes
