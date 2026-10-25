@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="figma-steroids: de la idea a Figma y de Figma a tu código">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f0c29"/>
+      <stop offset="0.55" stop-color="#1e1b4b"/>
+      <stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.3" r="0.5">
+      <stop offset="0" stop-color="#a259ff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#a259ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+  <rect width="1200" height="360" rx="24" fill="url(#glow)"/>
+
+  <!-- Ilustración: frame de diseño → código -->
+  <g transform="translate(860 70)">
+    <rect x="0" y="0" width="150" height="110" rx="12" fill="#ffffff" fill-opacity="0.08" stroke="#a5b4fc" stroke-opacity="0.6" stroke-dasharray="6 5"/>
+    <rect x="16" y="18" width="70" height="10" rx="5" fill="#c7d2fe"/>
+    <rect x="16" y="38" width="118" height="8" rx="4" fill="#818cf8" fill-opacity="0.7"/>
+    <rect x="16" y="54" width="96" height="8" rx="4" fill="#818cf8" fill-opacity="0.7"/>
+    <rect x="16" y="76" width="56" height="20" rx="10" fill="#a259ff"/>
+    <path d="M165 55 H205" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>
+    <path d="M195 45 L207 55 L195 65" fill="none" stroke="#fde047" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="220" y="0" width="110" height="110" rx="12" fill="#0b0a1f" stroke="#a5b4fc" stroke-opacity="0.6"/>
+    <text x="236" y="38" font-family="Consolas, Menlo, monospace" font-size="16" fill="#86efac">&lt;card&gt;</text>
+    <text x="246" y="62" font-family="Consolas, Menlo, monospace" font-size="16" fill="#93c5fd">&lt;btn/&gt;</text>
+    <text x="236" y="86" font-family="Consolas, Menlo, monospace" font-size="16" fill="#86efac">&lt;/card&gt;</text>
+  </g>
+  <g fill="#fde047" transform="translate(1110 220)">
+    <path d="M18 0 L4 30 H16 L10 52 L30 18 H18 L24 0 Z"/>
+  </g>
+
+  <text x="72" y="150" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="76" font-weight="800" fill="#ffffff">figma-steroids</text>
+  <text x="76" y="205" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="28" fill="#c7d2fe">De la idea a Figma, y de Figma a tu código.</text>
+  <text x="76" y="250" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="22" fill="#a5b4fc">Skills y agentes de Claude Code · sin API key · sin MCP · sin límites</text>
+
+  <g font-family="Consolas, Menlo, monospace" font-size="18" fill="#e0e7ff">
+    <rect x="76" y="280" width="128" height="34" rx="17" fill="#ffffff" fill-opacity="0.1"/>
+    <text x="104" y="303">Angular</text>
+    <rect x="216" y="280" width="104" height="34" rx="17" fill="#ffffff" fill-opacity="0.1"/>
+    <text x="244" y="303">React</text>
+    <rect x="332" y="280" width="80" height="34" rx="17" fill="#ffffff" fill-opacity="0.1"/>
+    <text x="358" y="303">Lit</text>
+    <rect x="424" y="280" width="190" height="34" rx="17" fill="#ffffff" fill-opacity="0.1"/>
+    <text x="448" y="303">+ tu stack…</text>
+  </g>
+</svg>
