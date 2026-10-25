@@ -26,7 +26,11 @@ Requisito: conexión activa (skill `figma-connect`).
 3. **Nunca borres nodos que ya existían.** Para deshacer lo tuyo: `figma-cli undo`.
 4. Colores con `var:nombre`, no con hex, cuando haya variables. `var:` solo sirve en
    `bg`, `color` y `stroke`: `rounded` acepta **un número** (`rounded="var:radius"` hace
-   fallar el render). Consulta el valor del token con `figma-cli var list` y úsalo, por ejemplo `rounded={12}`.
+   fallar el render). `figma-cli var list` no muestra valores; obtenlos con:
+   ```
+   figma-cli eval 'const out={}; for (const v of await figma.variables.getLocalVariablesAsync()) { const val=Object.values(v.valuesByMode)[0]; out[v.name]= v.resolvedType==="COLOR" ? "#"+[val.r,val.g,val.b].map(c=>Math.round(c*255).toString(16).padStart(2,"0")).join("") : val; }; ({...out})'
+   ```
+   y usa el número, por ejemplo `rounded={12}`.
 5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
 6. Verifica siempre: `figma-cli verify "<id>" --measure` y corrige si el tamaño no cuadra.
    La captura se guarda en `/tmp` por defecto; en Windows indica la ruta con `--save "<ruta>.png"`.

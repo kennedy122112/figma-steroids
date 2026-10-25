@@ -23,6 +23,15 @@ Requisito: conexión activa (skill `figma-connect`).
 |---|---|---|---|
 | Alta | Botón "Pagar" | Contraste 2.8:1 | Usar `var:primary-strong` |
 
+## Falsos positivos conocidos
+- **Zona táctil pequeña en el texto de un botón:** la auditoría puede tomar el texto dentro de
+  un botón como si fuera el elemento interactivo. Comprueba el tamaño del contenedor (el
+  botón): si cumple, es un falso positivo. Nombra las capas por su función (`Button` para el
+  contenedor y `Label` para su texto), que además ayuda a la herramienta, pero no renombres
+  capas solo para ocultar un aviso real.
+- **"Text without style"** cuando el archivo no tiene estilos de texto: no es un fallo de
+  accesibilidad. Menciónalo como mejora del design system, no como error.
+
 ## Reglas
 - **No corrijas nada sin permiso.** Primero el informe; luego aplica solo lo que el usuario apruebe.
 - Propón correcciones con variables del design system, no con colores sueltos.
