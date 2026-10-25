@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.9.0-blue?style=for-the-badge" alt="Version 0.9.0">
-  <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
+  <img src="https://img.shields.io/badge/version-0.10.0-blue?style=for-the-badge" alt="Version 0.10.0">
+  <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agents-3-purple?style=for-the-badge" alt="3 agents">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
@@ -74,6 +74,7 @@ without patching the Figma app and without sending your design to any cloud serv
 | `figma-a11y-review` | WCAG contrast, touch targets, text size and color-blindness audit |
 | `figma-handoff` | Exports PNG/SVG/PDF, tokens, JSX, Storybook stories and specs |
 | `figma-to-code` | Implements a frame in your stack and compares it with the design |
+| `figma-from-code` | Rebuilds in Figma a screen that already exists in your code, with auto-layout, your variables, text styles and components |
 
 ### 🤖 Agents (your tool delegates work to them)
 
@@ -102,6 +103,24 @@ mode works by switching tokens only (in Lit, tokens cross the Shadow DOM).
 components and follows their style. It reuses your components, maps every Figma variable to an
 existing token (or proposes a new one instead of hardcoding hex), and measures the result
 against Figma.
+
+### 🔁 Code → Figma: your app, back in Figma as an editable design
+
+Ask *"bring this screen into Figma"* and `figma-from-code` rebuilds it from **the page rendered
+in the browser** (real measurements), not from a screenshot:
+
+| In your code | In Figma |
+|---|---|
+| `display: flex`, `gap`, padding | Auto-layout with the same spacing, bound to the spacing variables |
+| `color: var(--color-primary)` | `var:primary`: the variable your CSS uses, not a hardcoded color |
+| 16 px semibold text | The file's matching text style (`Text/Subtitle`) |
+| Your `<Button>`, `<ui-button>` or `.btn` | An **instance** of the Figma `Button` component |
+
+It works the same with React, Angular, Lit (it reads inside the Shadow DOM) and plain HTML, and
+reports what it couldn't map: colors without a token, unnamed icons or off-scale values.
+
+Round-trip tested: the profile card built in React came back to Figma practically identical to
+the original (1 px difference), with no hardcoded colors and the button as an instance.
 
 ### 🌗 Light / dark mode, from Figma to code
 

@@ -7,6 +7,20 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.10.0] - 2026-10-25
+
+### Añadido
+- Skill **`figma-from-code`**: reconstruye en Figma una pantalla que ya existe en el código, a
+  partir del DOM renderizado. Script `scripts/dom-to-figma.js` (auto-layout, variables leídas
+  del CSS, estilos de texto, instancias de componentes, Shadow DOM y `<slot>`), render en dos
+  pasos (layout y luego instancias con `--parent`), vinculación de radios y espaciado por valor
+  e informe de lo no mapeado.
+- El validador comprueba la sintaxis de los scripts de las skills.
+
+### Probado
+- Ida y vuelta Figma → React → Figma con la tarjeta de perfil, y la misma lectura en Lit y en
+  HTML/CSS: misma estructura, sin colores sueltos.
+
 ## [0.9.0] - 2026-10-25
 
 ### Añadido
@@ -117,6 +131,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.10.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.6.0...v0.7.0

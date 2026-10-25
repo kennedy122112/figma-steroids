@@ -32,6 +32,8 @@ for (const [id, p] of Object.entries(platforms)) {
       }
       // Los adaptadores de figma-to-code viajan con la skill.
       assert.ok(existsSync(join(expand(p.skills[scope], scope), 'figma-to-code', 'stacks', 'angular.md')));
+      // Y los scripts de apoyo de figma-from-code.
+      assert.ok(existsSync(join(expand(p.skills[scope], scope), 'figma-from-code', 'scripts', 'dom-to-figma.js')));
       if (p.agents) {
         const ext = AGENT_FORMATS[p.agents.format].ext;
         for (const a of agents) assert.ok(existsSync(join(expand(p.agents[scope], scope), a.name + ext)));

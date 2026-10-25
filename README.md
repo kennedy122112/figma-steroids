@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.9.0-blue?style=for-the-badge" alt="Versión 0.9.0">
-  <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
+  <img src="https://img.shields.io/badge/versión-0.10.0-blue?style=for-the-badge" alt="Versión 0.10.0">
+  <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
@@ -42,6 +42,27 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.10
+
+### Código → Figma: tu app, de vuelta en Figma como diseño editable
+
+Pide *"pasa esta pantalla a Figma"* y `figma-from-code` la reconstruye a partir de **la página
+renderizada en el navegador** (con las medidas reales), no de una captura:
+
+| En tu código | En Figma |
+|---|---|
+| `display: flex`, `gap`, padding | Auto-layout con el mismo espaciado, vinculado a las variables de espaciado |
+| `color: var(--color-primary)` | `var:primary`: la variable que usa tu CSS, no un color suelto |
+| Texto de 16 px semibold | El estilo de texto del archivo que coincide (`Text/Subtitle`) |
+| Tu `<Button>`, `<ui-button>` o `.btn` | Una **instancia** del componente `Button` de Figma |
+
+Funciona igual con React, Angular, Lit (entra en el Shadow DOM) y HTML sin framework, y entrega
+un informe de lo que no pudo mapear: colores sin token, iconos sin nombre o valores fuera de la
+escala.
+
+Probado de ida y vuelta: la tarjeta de perfil hecha en React volvió a Figma prácticamente
+idéntica a la original (1 px de diferencia), sin colores sueltos y con el botón como instancia.
 
 ## ✨ Novedades en v0.9
 
@@ -238,6 +259,7 @@ Ejemplo del resumen que entrega al terminar (ilustrativo):
 | `figma-a11y-review` | Auditoría de contraste WCAG, zonas táctiles, tamaño de texto y daltonismo |
 | `figma-handoff` | Exporta PNG/SVG/PDF, tokens, JSX, historias de Storybook y especificaciones |
 | `figma-to-code` | Implementa un frame en tu stack y lo compara con el diseño |
+| `figma-from-code` | Reconstruye en Figma una pantalla que ya existe en tu código, con auto-layout, tus variables, estilos de texto y componentes |
 
 ### 🤖 Agentes (tu herramienta les delega trabajo)
 

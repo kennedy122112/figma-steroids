@@ -3,6 +3,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors = [];
@@ -40,6 +41,15 @@ for (const dir of readdirSync(skillsDir)) {
   const file = join(path, 'SKILL.md');
   if (!existsSync(file)) errors.push(`${path}: falta SKILL.md`);
   else checkEntry(file, dir, 'nombre de la carpeta');
+
+  // Scripts de apoyo de la skill: deben ser JavaScript válido.
+  const scriptsDir = join(path, 'scripts');
+  if (existsSync(scriptsDir)) {
+    for (const f of readdirSync(scriptsDir).filter((f) => /\.(m?js)$/.test(f))) {
+      const check = spawnSync(process.execPath, ['--check', join(scriptsDir, f)], { encoding: 'utf8' });
+      if (check.status !== 0) errors.push(`${join(scriptsDir, f)}: error de sintaxis\n${check.stderr}`);
+    }
+  }
 
   // Adaptadores de stack: cada uno debe estar enlazado desde su SKILL.md y tener las secciones básicas.
   const stacksDir = join(path, 'stacks');
