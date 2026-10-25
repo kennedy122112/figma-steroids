@@ -31,17 +31,20 @@ Requisito: conexión activa (skill `figma-connect`).
    figma-cli eval 'const out={}; for (const v of await figma.variables.getLocalVariablesAsync()) { const val=Object.values(v.valuesByMode)[0]; out[v.name]= v.resolvedType==="COLOR" ? "#"+[val.r,val.g,val.b].map(c=>Math.round(c*255).toString(16).padStart(2,"0")).join("") : val; }; ({...out})'
    ```
    y usa el número, por ejemplo `rounded={12}`. Después del render, **vincula el radio a la
-   variable** para que no quede como valor suelto (en cada nodo con radio):
-   ```
-   figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); const v=(await figma.variables.getLocalVariablesAsync("FLOAT")).find(x=>x.name==="radius"); for (const k of ["topLeftRadius","topRightRadius","bottomLeftRadius","bottomRightRadius"]) n.setBoundVariable(k, v); Object.keys(n.boundVariables)'
-   ```
+   variable** en cada nodo cuyo radio sea el del token:
+   `figma-cli bind radius <variable> -n "<id>"` (igual existen `bind gap` y `bind padding`
+   para variables numéricas de espaciado; `figma-cli bind list -t FLOAT` las lista).
+   No vincules formas que no siguen la escala: un avatar circular (radio = mitad del lado)
+   dejaría de ser un círculo.
 5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
 6. Verifica siempre: `figma-cli verify "<id>" --measure` y corrige si el tamaño no cuadra.
    La captura se guarda en `/tmp` por defecto; en Windows indica la ruta con `--save "<ruta>.png"`.
-7. Si las variables están cargadas, comprueba que todos los colores quedaron vinculados:
+7. Si las variables están cargadas, comprueba que rellenos, trazos y radios quedaron vinculados.
+   El radio se vincula **por esquina** (`topLeftRadius`…), no como `cornerRadius`:
    ```
-   figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); const r=[]; const w=(x)=>{ if((x.fills||[]).length) r.push(!!(x.boundVariables&&x.boundVariables.fills)); (x.children||[]).forEach(w) }; w(n); ({total:r.length, sinVincular:r.filter(b=>!b).length})'
+   figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); const miss=[]; let total=0; const w=(x)=>{ const b=x.boundVariables||{}; if((x.fills||[]).some(f=>f.visible!==false)){ total++; if(!b.fills) miss.push("fill: "+x.name) } if((x.strokes||[]).length){ total++; if(!b.strokes) miss.push("stroke: "+x.name) } if(x.cornerRadius){ total++; if(!b.topLeftRadius) miss.push("radius: "+x.name) } (x.children||[]).forEach(w) }; w(n); ({total, sinVincular:miss})'
    ```
+   Algo sin vincular a propósito (como un avatar circular) se explica en la entrega.
    En `eval` usa siempre las variantes **async** de la API (`getNodeByIdAsync`): el plugin
    trabaja con `documentAccess: dynamic-page` y las síncronas fallan.
 
@@ -54,6 +57,8 @@ Requisito: conexión activa (skill `figma-connect`).
 </Frame>
 ```
 - Layout: `flex="row|col" gap p px py justify="between" items="center"`
+- `justify="between"` **ignora `gap`**: reparte todo el espacio libre. Para columnas iguales
+  (estadísticas, rejillas) usa `gap` + hijos con `w="fill"`, sin `between`.
 - Tamaño: `w={320}` · `w="fill"` · `w="hug"` · `w="50%"`
 - **Texto que envuelve:** el padre y cada `<Text>` necesitan `w="fill"`, y el padre necesita `flex`.
 - En otra página: `figma-cli render --page "Nombre" '<Frame…>'`.
