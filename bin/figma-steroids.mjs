@@ -2,7 +2,7 @@
 // CLI: instala las skills y agentes de figma-steroids en Claude Code, Codex, OpenCode, Cursor o el destino universal.
 import { parseArgs } from 'node:util';
 import { relative } from 'node:path';
-import { install, uninstall, detectInstalled, loadPlatforms, version } from '../lib/installer.mjs';
+import { install, uninstall, detectInstalled, loadPlatforms, version, installFigmaPlugin } from '../lib/installer.mjs';
 
 const HELP = `figma-steroids ${version()}
 
@@ -11,6 +11,7 @@ Uso:
   figma-steroids update [--ai <plataformas>] [--global] [--dry-run]
   figma-steroids uninstall --ai <plataformas> [--global] [--dry-run]
   figma-steroids list
+  figma-steroids plugin [--dry-run]   copia el plugin de Figma a una carpeta estable y muestra su manifiesto
 
 Plataformas: ${Object.keys(loadPlatforms()).join(', ')}, all
   Varias a la vez separadas por comas: --ai codex,cursor
@@ -72,6 +73,14 @@ if (command === 'list') {
   process.exit(0);
 }
 
+if (command === 'plugin') {
+  const manifest = installFigmaPlugin({ dryRun: opts.dryRun });
+  console.log(`Plugin de Figma figma-steroids${opts.dryRun ? ' (simulación)' : ''}:\n  ${manifest}\n`);
+  console.log('En Figma Desktop: Plugins → Development → Import plugin from manifest… y elige ese archivo.');
+  console.log('Después ábrelo con Plugins → Development → figma-steroids. Usa este plugin o FigCli, no los dos a la vez.');
+  process.exit(0);
+}
+
 if (command === 'init' || command === 'update') {
   let ids = selected();
   if (!ids && command === 'update') ids = detectInstalled({ scope });
@@ -86,6 +95,7 @@ if (command === 'init' || command === 'update') {
     console.log('\nNota: si ya instalaste el plugin de Claude Code (/plugin install), no hace falta también esta copia.');
   }
   console.log('\nSiguiente paso: abre el plugin FigCli en Figma (Plugins → Development → FigCli) y pide "conecta con Figma".');
+  console.log('Opcional: `figma-steroids plugin` instala nuestro plugin de Figma, con registro de actividad y botón de pausa.');
   process.exit(0);
 }
 

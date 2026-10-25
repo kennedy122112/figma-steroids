@@ -120,6 +120,25 @@ if (codexMarket) {
   }
 }
 
+// Plugin de Figma: manifiesto válido y archivos presentes. Figma rechaza 127.0.0.1 en
+// devAllowedDomains, así que no se permite volver a ponerlo.
+const figmaPlugin = readJson('figma-plugin/manifest.json');
+if (figmaPlugin) {
+  for (const k of ['name', 'id', 'api', 'main', 'ui']) {
+    if (!figmaPlugin[k]) errors.push(`figma-plugin/manifest.json: falta "${k}"`);
+  }
+  for (const f of [figmaPlugin.main, figmaPlugin.ui].filter(Boolean)) {
+    if (!existsSync(join(root, 'figma-plugin', f))) errors.push(`figma-plugin/manifest.json: no existe ${f}`);
+  }
+  const net = figmaPlugin.networkAccess || {};
+  if (!Array.isArray(net.allowedDomains) || !net.allowedDomains.length) {
+    errors.push('figma-plugin/manifest.json: networkAccess.allowedDomains debe tener al menos un valor');
+  }
+  if ((net.devAllowedDomains || []).some((d) => d.includes('127.0.0.1'))) {
+    errors.push('figma-plugin/manifest.json: Figma no acepta 127.0.0.1 en devAllowedDomains');
+  }
+}
+
 // Todas las versiones deben coincidir.
 const versions = {
   'package.json': pkg?.version,

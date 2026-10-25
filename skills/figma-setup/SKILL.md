@@ -56,6 +56,14 @@ Calcula la ruta del manifiesto y **dásela al usuario lista para copiar**:
 Luego pídele que, en Figma: **Plugins → Development → Import plugin from manifest…**, elija
 ese archivo, y después abra **Plugins → Development → FigCli** y lo deje abierto.
 
+**Alternativa recomendada: el plugin figma-steroids.** Hace lo mismo que FigCli y además
+muestra el archivo conectado, la selección con su ID para copiarla, un registro de lo que
+hace la IA (lecturas, nodos creados, modificados y borrados, errores) y un botón de **pausa**.
+`npx -y github:kennedy122112/figma-steroids plugin` lo copia a una carpeta estable y muestra
+la ruta de su `manifest.json`; se importa igual y se abre con
+**Plugins → Development → figma-steroids**. Usa uno de los dos plugins, no ambos a la vez:
+el daemon solo atiende al último que se conecta.
+
 ## 5. Conectar y comprobar
 Sigue la skill `figma-connect`. La configuración termina cuando
 `figma-cli eval 'figma.root.name'` devuelve el nombre del archivo abierto.

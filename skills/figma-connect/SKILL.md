@@ -33,6 +33,8 @@ Esto solo lo puede hacer el usuario, en Figma Desktop:
   `plugin/manifest.json` dentro del paquete figma-cli: en una instalación global está en
   `<npm root -g>/figma-ds-cli/plugin/manifest.json`; en una local, en `node_modules/figma-ds-cli/plugin/`.
 - **Cada sesión:** Plugins → Development → **FigCli**, y dejarlo abierto.
+- Si el usuario usa el plugin **figma-steroids** (ver skill `figma-setup`), es lo mismo con
+  **Plugins → Development → figma-steroids**.
 
 ## 4. Verificar
 `figma-cli eval 'figma.root.name'` debe devolver el nombre del archivo abierto.
@@ -46,5 +48,10 @@ Si hay varios archivos abiertos, fija el destino con
   herramienta con el token desincronizado. `figma-cli daemon restart` lo arregla y el plugin
   FigCli se reconecta solo.
 - **Comandos que van al archivo equivocado**: usa `FIGMA_FILE`.
+- **"Pausado desde el plugin figma-steroids"**: el usuario pulsó Pausa en Figma. **No
+  reintentes** ni busques otra vía: dile que la ejecución está en pausa y espera a que te
+  pida seguir (tendrá que pulsar Reanudar en el plugin).
+- **Dos plugins abiertos** (FigCli y figma-steroids, o el mismo en dos archivos): el daemon
+  atiende solo al último que se conectó. Pide al usuario que deje abierto solo uno.
 
 No le muestres comandos de terminal al usuario. Ejecútalos tú e informa el resultado en lenguaje sencillo.

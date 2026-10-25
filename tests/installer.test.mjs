@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
-import { install, uninstall, detectInstalled, loadPlatforms, readSource, AGENT_FORMATS, PKG_ROOT } from '../lib/installer.mjs';
+import { install, uninstall, detectInstalled, loadPlatforms, readSource, AGENT_FORMATS, PKG_ROOT, installFigmaPlugin } from '../lib/installer.mjs';
 
 let cwd;
 let home;
@@ -98,6 +98,16 @@ test('carpetas compartidas: desinstalar codex conserva lo que usa universal', ()
   uninstall('universal', { cwd });
   assert.ok(!existsSync(join(cwd, '.agents/skills/figma-connect')));
   assert.ok(!existsSync(join(cwd, 'AGENTS.md')));
+});
+
+test('plugin de Figma: se copia completo a una carpeta estable en la carpeta del usuario', () => {
+  const manifest = installFigmaPlugin();
+  assert.equal(manifest, join(home, '.figma-steroids', 'figma-plugin', 'manifest.json'));
+  const data = JSON.parse(readFileSync(manifest, 'utf8'));
+  for (const f of [data.main, data.ui]) assert.ok(existsSync(join(home, '.figma-steroids', 'figma-plugin', f)));
+  // Repetirlo reemplaza la copia anterior sin errores.
+  installFigmaPlugin();
+  assert.ok(existsSync(manifest));
 });
 
 test('dry-run no escribe nada', () => {

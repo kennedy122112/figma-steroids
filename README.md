@@ -1,7 +1,7 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.6.0-blue?style=for-the-badge" alt="Versión 0.6.0">
+  <img src="https://img.shields.io/badge/versión-0.7.0-blue?style=for-the-badge" alt="Versión 0.7.0">
   <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
@@ -38,6 +38,31 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.7
+
+### Plugin de Figma propio: ve lo que hace la IA y deténla cuando quieras
+
+El plugin FigCli de figma-cli ejecuta en tu archivo todo lo que manda la IA sin mostrar nada.
+El plugin **figma-steroids** hace lo mismo y además te enseña qué pasa:
+
+| | Qué ves |
+|---|---|
+| **Archivo conectado** | En qué archivo y página está trabajando la IA |
+| **Selección con ID** | Lo que seleccionas, con su ID y un botón para copiarlo ("revisa el 2:2") |
+| **Registro de actividad** | Cada comando de la IA: **lectura** (gris), **+creados ~modificados −borrados** (azul) o **error** (rojo, con el código que falló) |
+| **Pausa** | Un botón que bloquea al instante los comandos de la IA, que recibe un mensaje claro de que la detuviste |
+
+```bash
+npx -y github:kennedy122112/figma-steroids plugin
+```
+
+Ese comando copia el plugin a `~/.figma-steroids/figma-plugin` y te da la ruta del
+`manifest.json` para importarlo en Figma (**Plugins → Development → Import plugin from
+manifest…**). Úsalo **en lugar de** FigCli, no junto a él.
+
+Probado en Figma Desktop: conexión, selección, registro con lecturas, creaciones,
+modificaciones, borrados y errores, y pausa.
 
 ## ✨ Novedades en v0.6
 
@@ -305,6 +330,10 @@ En Figma Desktop: **Plugins → Development → Import plugin from manifest…**
   (en Windows suele ser `C:\Users\<usuario>\AppData\Roaming\npm\node_modules`).
 - **Instalación local (en esta repo):** `node_modules/figma-ds-cli/plugin/manifest.json`.
 
+**O, mejor, nuestro plugin figma-steroids** (registro de actividad y pausa):
+`npx -y github:kennedy122112/figma-steroids plugin` te da la ruta de su `manifest.json`.
+Ábrelo con **Plugins → Development → figma-steroids**. Usa uno de los dos, no ambos.
+
 ### Actualizar
 
 ```
@@ -380,6 +409,7 @@ agents/<nombre>.md           un archivo por agente
 platforms.json               dónde instalar en cada herramienta (Codex, OpenCode, Cursor…)
 lib/installer.mjs            instalador y conversores de formato de agentes
 bin/figma-steroids.mjs       CLI: init, update, uninstall, list
+figma-plugin/                plugin de Figma (registro de actividad, pausa, selección con ID)
 templates/                   plantillas para skills y agentes nuevos
 scripts/validate.mjs         validador (también corre en CI)
 tests/                       pruebas del instalador (Windows, macOS y Linux en CI)
@@ -454,6 +484,8 @@ Tienes una skill o un agente propio con el mismo nombre. El instalador no lo toc
 
 Construido sobre [figma-cli](https://github.com/silships/figma-cli) de Sil Bormüller
 ([Into Design Systems](https://intodesignsystems.com)), proyecto independiente con licencia MIT.
+El plugin de Figma de `figma-plugin/` parte del plugin FigCli de figma-cli: mantiene su
+protocolo con el daemon y añade la interfaz.
 
 ## Licencia
 

@@ -1,0 +1,16 @@
+{
+  "name": "figma-steroids",
+  "id": "figma-steroids-bridge",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "permissions": ["teamlibrary"],
+  "enableProposedApi": false,
+  "editorType": ["figma", "figjam"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Se conecta solo al daemon local de figma-cli (ws://127.0.0.1:3456-3460). Figma no acepta direcciones 127.0.0.1 en devAllowedDomains, así que se usa el mismo valor que el plugin FigCli original."
+  }
+}
