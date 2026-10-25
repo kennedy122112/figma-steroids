@@ -11,7 +11,7 @@ convenciones están en CONTRIBUTING.md.
 - Ejecuta `npm run validate && npm test` después de cualquier cambio.
 - Las skills deben funcionar en cualquier agente (Codex, OpenCode, Cursor): nada específico de Claude Code.
 - Rutas de una herramienta nueva: solo desde su documentación oficial, enlazada en `docs`.
-- Si cambia el comportamiento, sube la versión en `plugin.json`, `marketplace.json` y `package.json`.
+- Si cambia el comportamiento, sube la versión en todos los manifiestos (ver CONTRIBUTING.md).
 
 ## Al usar Figma desde esta repo
 Sigue `skills/figma-connect/SKILL.md` para conectar (modo Safe) y el resto de skills según la tarea.

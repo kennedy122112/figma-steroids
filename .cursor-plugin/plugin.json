@@ -1,0 +1,27 @@
+{
+  "name": "figma-steroids",
+  "version": "0.4.0",
+  "description": "Skills y agentes para diseñar en Figma Desktop con tu agente de IA (Claude Code, Codex, Cursor, OpenCode…) a través de figma-cli, en modo plugin/Safe, sin API key ni MCP: conexión, construcción de UI con tu design system, paso de Figma a código en cualquier stack (Angular, React, Lit…), revisión de accesibilidad y handoff.",
+  "author": {
+    "name": "kennedy122112"
+  },
+  "homepage": "https://github.com/kennedy122112/figma-steroids",
+  "repository": "https://github.com/kennedy122112/figma-steroids",
+  "license": "MIT",
+  "keywords": [
+    "figma",
+    "figma-cli",
+    "design-system",
+    "design-tokens",
+    "accessibility",
+    "agents",
+    "skills",
+    "design-to-code",
+    "angular",
+    "react",
+    "lit",
+    "codex",
+    "opencode",
+    "cursor"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "figma-steroids",
+  "interface": {
+    "displayName": "figma-steroids"
+  },
+  "plugins": [
+    {
+      "name": "figma-steroids",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

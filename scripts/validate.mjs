@@ -73,13 +73,62 @@ const market = readJson('.claude-plugin/marketplace.json');
 const pkg = readJson('package.json');
 if (plugin && market) {
   const entry = market.plugins?.find((p) => p.name === plugin.name);
-  if (!entry) errors.push(`marketplace.json: no lista el plugin "${plugin.name}"`);
+  if (!entry) errors.push(`.claude-plugin/marketplace.json: no lista el plugin "${plugin.name}"`);
   else if (entry.version !== plugin.version) {
-    errors.push(`versiones distintas: plugin.json ${plugin.version} vs marketplace.json ${entry.version}`);
+    errors.push(`versiones distintas: .claude-plugin/plugin.json ${plugin.version} vs .claude-plugin/marketplace.json ${entry.version}`);
   }
   if (pkg && pkg.version !== plugin.version) {
-    errors.push(`versiones distintas: plugin.json ${plugin.version} vs package.json ${pkg.version}`);
+    errors.push(`versiones distintas: .claude-plugin/plugin.json ${plugin.version} vs package.json ${pkg.version}`);
   }
+}
+
+// Manifiesto portable Agent Plugins (Codex y formato abierto de Cursor).
+// Reglas de https://agent-plugins.org/schemas/1.0.0/plugin.schema.json
+const portable = readJson('plugin.json');
+if (portable) {
+  const SCHEMA = 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json';
+  const allowed = ['$schema', 'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'extensions'];
+  if (portable.$schema !== SCHEMA) errors.push(`plugin.json: "$schema" debe ser ${SCHEMA}`);
+  if (!/^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(portable.name || '') || portable.name.length > 64) {
+    errors.push(`plugin.json: "name" no cumple el patrón de Agent Plugins`);
+  }
+  for (const k of Object.keys(portable)) if (!allowed.includes(k)) errors.push(`plugin.json: campo no permitido por Agent Plugins "${k}"`);
+  for (const k of Object.keys(portable.author || {})) {
+    if (!['name', 'email', 'url'].includes(k)) errors.push(`plugin.json: "author.${k}" no está permitido`);
+  }
+}
+
+// Manifiesto de Cursor: name en kebab-case (puede llevar puntos); descubre skills/ y agents/ por defecto.
+const cursor = readJson('.cursor-plugin/plugin.json');
+if (cursor && !/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(cursor.name || '')) {
+  errors.push(`.cursor-plugin/plugin.json: "name" debe ir en kebab-case`);
+}
+
+// Marketplace de Codex.
+const codexMarket = readJson('.agents/plugins/marketplace.json');
+if (codexMarket) {
+  const entry = codexMarket.plugins?.find((p) => p.name === plugin?.name);
+  if (!entry) errors.push(`.agents/plugins/marketplace.json: no lista el plugin "${plugin?.name}"`);
+  else {
+    if (entry.source?.source !== 'local' || !entry.source?.path?.startsWith('./')) {
+      errors.push(`.agents/plugins/marketplace.json: "source" debe ser { "source": "local", "path": "./…" }`);
+    }
+    if (!['AVAILABLE', 'INSTALLED_BY_DEFAULT', 'NOT_AVAILABLE'].includes(entry.policy?.installation)) {
+      errors.push(`.agents/plugins/marketplace.json: "policy.installation" no es válido`);
+    }
+    if (!entry.category) errors.push(`.agents/plugins/marketplace.json: falta "category"`);
+  }
+}
+
+// Todas las versiones deben coincidir.
+const versions = {
+  'package.json': pkg?.version,
+  '.claude-plugin/plugin.json': plugin?.version,
+  'plugin.json': portable?.version,
+  '.cursor-plugin/plugin.json': cursor?.version,
+};
+if (new Set(Object.values(versions)).size > 1) {
+  errors.push(`versiones distintas: ${Object.entries(versions).map(([f, v]) => `${f} ${v}`).join(' · ')}`);
 }
 
 // platforms.json: cada plataforma debe tener rutas de skills y un formato de agentes conocido.

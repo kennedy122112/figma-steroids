@@ -1,7 +1,7 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.3.0-blue?style=for-the-badge" alt="Versión 0.3.0">
+  <img src="https://img.shields.io/badge/versión-0.4.0-blue?style=for-the-badge" alt="Versión 0.4.0">
   <img src="https://img.shields.io/badge/skills-6-green?style=for-the-badge" alt="6 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
@@ -38,6 +38,22 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.4
+
+### También como plugin de Codex y Cursor
+
+| Herramienta | Plugin | Incluye |
+|---|---|---|
+| **Claude Code** | `/plugin install figma-steroids@figma-steroids` | skills + agentes |
+| **Codex** | `codex plugin add figma-steroids@figma-steroids` | skills |
+| **Cursor** | manifiesto listo en `.cursor-plugin/` (pendiente de publicar en su Marketplace) | skills + agentes |
+| **OpenCode** | sus plugins son código JS, no paquetes de skills: usa el instalador | — |
+
+Los manifiestos siguen los esquemas oficiales: [Agent Plugins](https://agent-plugins.org)
+(`plugin.json` en la raíz), [Codex](https://developers.openai.com/codex/plugins/build/)
+(`.agents/plugins/marketplace.json`) y [Cursor](https://cursor.com/docs/reference/plugins)
+(`.cursor-plugin/plugin.json`). Todos apuntan a las mismas carpetas `skills/` y `agents/`.
 
 ## ✨ Novedades en v0.3
 
@@ -195,7 +211,21 @@ Si no quieres instalarlo, las skills usan `npx -p figma-ds-cli figma-cli` como a
 /plugin install figma-steroids@figma-steroids
 ```
 
-**Codex, OpenCode, Cursor u otros: con el instalador.** Desde la carpeta de tu proyecto:
+**Codex: como plugin.** En una terminal:
+
+```bash
+codex plugin marketplace add kennedy122112/figma-steroids
+codex plugin add figma-steroids@figma-steroids
+```
+
+El plugin de Codex trae las skills; los plugins de Codex no incluyen agentes. Si también
+quieres los agentes, usa el instalador con `--ai codex`.
+
+**Cursor: como plugin.** La repo incluye el manifiesto `.cursor-plugin/plugin.json` (skills y
+agentes). Para aparecer en el Marketplace de Cursor hay que enviarlo a revisión; mientras no
+esté publicado, usa el instalador con `--ai cursor`.
+
+**OpenCode, Cursor, Codex u otros: con el instalador.** Desde la carpeta de tu proyecto:
 
 ```bash
 npx -y github:kennedy122112/figma-steroids init --ai codex
@@ -279,7 +309,10 @@ resume los archivos cambiados y las diferencias que queden.
 ## 🏗️ Arquitectura y contribución
 
 ```
-.claude-plugin/              manifiestos del plugin (plugin.json, marketplace.json)
+.claude-plugin/              plugin de Claude Code (plugin.json, marketplace.json)
+plugin.json                  plugin portable Agent Plugins (Codex, Cursor)
+.agents/plugins/             marketplace de Codex
+.cursor-plugin/              plugin de Cursor
 skills/<nombre>/SKILL.md     una carpeta por skill
 skills/figma-to-code/stacks/ un adaptador por stack
 agents/<nombre>.md           un archivo por agente

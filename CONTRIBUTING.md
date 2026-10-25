@@ -70,9 +70,9 @@ Pruébalos con Figma abierto y el plugin FigCli en marcha.
 ```bash
 npm run validate && npm test
 ```
-- Si cambias el comportamiento de una skill o un agente, sube la versión en
-  `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` y `package.json`
-  (las tres deben coincidir; el validador lo comprueba).
+- Si cambias el comportamiento de una skill o un agente, sube la versión en todos los
+  manifiestos: `package.json`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`,
+  `plugin.json` y `.cursor-plugin/plugin.json` (deben coincidir; el validador lo comprueba).
 - Describe en el pull request qué probaste en Figma y con qué resultado.
 
 ## Reglas que todas las skills respetan
