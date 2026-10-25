@@ -43,6 +43,27 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
 
+## ✨ Novedades en v0.9
+
+### Figma → código probado en cuatro stacks, y HTML sin framework
+
+`figma-to-code` tiene un adaptador nuevo para **HTML + CSS + JavaScript** sin framework: HTML
+semántico, tokens como variables CSS, modificadores de clase (BEM u otro patrón del proyecto),
+modo oscuro y Web Components nativos si el proyecto ya los usa.
+
+Además, la misma tarjeta de Figma se implementó en cuatro proyectos de prueba:
+
+| Stack | Componente | Resultado |
+|---|---|---|
+| **Angular 22 + Tailwind 4** | `<app-profile-card>` | ✅ |
+| **React 19 + Vite 8 + Tailwind 4** | `<ProfileCard>` | ✅ |
+| **Lit 3 + TypeScript** | `<ui-profile-card>` | ✅ Los tokens atraviesan el Shadow DOM |
+| **HTML + CSS + JavaScript** | `.profile-card` (BEM) | ✅ |
+
+En todos, el resultado coincide con Figma con **menos de 1 px** de diferencia, se reutiliza el
+botón que ya tenía el proyecto (extendido de forma compatible) y el **modo oscuro** funciona
+solo cambiando los tokens, sin tocar los componentes.
+
 ## ✨ Novedades en v0.8
 
 ### Modo claro / oscuro, de Figma al código
