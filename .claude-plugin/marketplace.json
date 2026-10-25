@@ -8,11 +8,20 @@
     {
       "name": "figma-steroids",
       "source": "./",
-      "description": "Skills y agentes para diseñar en Figma Desktop con Claude Code a través de figma-cli (modo plugin/Safe, sin API key ni MCP).",
-      "version": "0.2.0",
+      "description": "Skills y agentes para diseñar en Figma Desktop con Claude Code a través de figma-cli (modo plugin/Safe, sin API key ni MCP): conexión, construcción de UI con tu design system, paso de Figma a código en cualquier stack (Angular, React, Lit…), revisión de accesibilidad y handoff.",
+      "version": "0.2.1",
       "category": "design",
       "license": "MIT",
-      "keywords": ["figma", "figma-cli", "design-system", "accessibility"]
+      "keywords": [
+        "figma",
+        "figma-cli",
+        "design-system",
+        "accessibility",
+        "design-to-code",
+        "angular",
+        "react",
+        "lit"
+      ]
     }
   ]
 }

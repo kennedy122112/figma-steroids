@@ -54,13 +54,28 @@ Dentro de Claude Code:
 
 ### 4. El plugin de Figma (una sola vez)
 En Figma Desktop: **Plugins → Development → Import plugin from manifest…** y elige
-`plugin/manifest.json` dentro del paquete figma-cli
-(por ejemplo `node_modules/figma-ds-cli/plugin/manifest.json`).
+`plugin/manifest.json` dentro del paquete figma-cli:
+
+- **Instalación global:** `<carpeta global>/figma-ds-cli/plugin/manifest.json`, donde
+  `<carpeta global>` es lo que devuelve `npm root -g`
+  (en Windows suele ser `C:\Users\<usuario>\AppData\Roaming\npm\node_modules`).
+- **Instalación local (en esta repo):** `node_modules/figma-ds-cli/plugin/manifest.json`.
 
 ### 5. Úsalo
-Abre **Plugins → Development → FigCli** en Figma, y en Claude Code di:
+Abre **Plugins → Development → FigCli** en Figma, y en Claude Code pide lo que necesites:
 
 > "Conecta con Figma y crea una tarjeta de precios con mis variables."
+
+> "Implementa el frame seleccionado en mi proyecto Angular, usando mis componentes."
+
+> "Revisa la accesibilidad de la pantalla de login."
+
+## Actualizar
+
+Para recibir las versiones nuevas del plugin, dentro de Claude Code:
+```
+/plugin marketplace update figma-steroids
+```
 
 ## Cómo funciona
 
@@ -72,8 +87,13 @@ Todo ocurre en tu equipo. El plugin FigCli debe estar abierto mientras trabajas.
 
 ## Contribuir
 
-Lee [CONTRIBUTING.md](CONTRIBUTING.md). En resumen: copia una plantilla de
-`templates/`, escribe tu skill o agente, ejecuta `npm run validate` y abre un pull request.
+Lee [CONTRIBUTING.md](CONTRIBUTING.md). En resumen:
+
+- **Skill o agente nuevo:** copia una plantilla de `templates/` y escríbelo.
+- **Stack nuevo para `figma-to-code`** (Vue, Svelte, Flutter…): añade
+  `skills/figma-to-code/stacks/<stack>.md` y enlázalo en la tabla de detección de la skill.
+
+Después ejecuta `npm run validate` y abre un pull request.
 
 ## Licencia
 

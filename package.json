@@ -1,6 +1,6 @@
 {
   "name": "figma-steroids",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Skills y agentes de Claude Code para diseñar en Figma Desktop con figma-cli (modo plugin, sin MCP).",
   "type": "module",
