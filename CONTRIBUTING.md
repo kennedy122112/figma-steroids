@@ -74,6 +74,8 @@ npm run validate && npm test
   manifiestos: `package.json`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`,
   `plugin.json` y `.cursor-plugin/plugin.json` (deben coincidir; el validador lo comprueba).
 - Describe en el pull request qué probaste en Figma y con qué resultado.
+- Añade tu cambio a `CHANGELOG.md`, y si cambia algo visible para el usuario, actualiza
+  `README.md` y `README.en.md` (las dos versiones del README deben decir lo mismo).
 
 ## Reglas que todas las skills respetan
 - Nunca borrar nodos ni variables que el usuario ya tenía.
