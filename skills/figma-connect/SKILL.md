@@ -9,6 +9,9 @@ figma-cli controla Figma Desktop de forma local. Esta skill usa el **modo Safe**
 un plugin de desarrollo de Figma (FigCli) hace de puente con un daemon local.
 No modifica la app de Figma y no envía nada a la nube.
 
+Si es la primera vez, falta Node.js o figma-cli, o no sabes si este entorno puede llegar a
+Figma Desktop, sigue antes la skill `figma-setup`.
+
 ## 1. Encontrar el comando
 - Si existe `figma-cli` en el PATH, úsalo.
 - Si no, usa `npx -p figma-ds-cli figma-cli` (el paquete npm se llama `figma-ds-cli`;
@@ -18,8 +21,9 @@ No modifica la app de Figma y no envía nada a la nube.
 En el resto de las skills, `figma-cli` significa el comando que encontraste aquí.
 
 ## 2. Arrancar el daemon
-Ejecuta `figma-cli connect --safe` **en segundo plano**: el comando se queda
-esperando al plugin y, si lo cortas con un timeout, el daemon se detiene.
+Ejecuta `figma-cli connect --safe` **en segundo plano** y no lo cortes con un timeout
+(si lo matas, el daemon se detiene). Si el plugin aún no está abierto, el comando termina
+solo con "Plugin not detected yet" pero el daemon sigue escuchando: no hay que relanzarlo.
 Comprueba con `figma-cli daemon status` (debe decir que corre en el puerto 3456).
 
 ## 3. Pedirle al usuario que abra el plugin

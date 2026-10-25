@@ -1,8 +1,8 @@
 # figma-steroids
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.4.1-blue?style=for-the-badge" alt="Versión 0.4.1">
-  <img src="https://img.shields.io/badge/skills-6-green?style=for-the-badge" alt="6 skills">
+  <img src="https://img.shields.io/badge/versión-0.5.0-blue?style=for-the-badge" alt="Versión 0.5.0">
+  <img src="https://img.shields.io/badge/skills-7-green?style=for-the-badge" alt="7 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
@@ -143,6 +143,7 @@ Ejemplo del resumen que entrega al terminar (ilustrativo):
 
 | Skill | Qué hace |
 |---|---|
+| `figma-setup` | Primer arranque: comprueba Node.js, figma-cli, Figma y el plugin, e instala lo que falte (con tu permiso) |
 | `figma-connect` | Conecta con Figma Desktop por el plugin FigCli (modo Safe) |
 | `figma-build-ui` | Construye pantallas y componentes con tus variables, reutilizando tus componentes |
 | `figma-design-system` | Importa y exporta tokens (Tailwind, CSS, DTCG, DESIGN.md) y detecta cambios con snapshot/check |
@@ -184,6 +185,25 @@ revisa tus componentes existentes y copia su estilo.
 | Code Connect | No | Sí |
 
 No son excluyentes: puedes usar figma-steroids para construir y el MCP para leer archivos que no tienes abiertos.
+
+## ¿Dónde funciona?
+
+figma-cli habla con Figma Desktop **a través de tu propia computadora**, así que el agente
+tiene que estar en tu máquina y poder ejecutar comandos. Tú no escribes ninguno: los ejecuta
+la IA, y la skill `figma-setup` instala lo que falte con tu permiso.
+
+| App | ¿Funciona? | Por qué |
+|---|---|---|
+| **Claude Desktop, pestaña Code** | ✅ | Es Claude Code con interfaz gráfica; el plugin se instala igual |
+| **Claude Code** en la terminal o en VS Code / JetBrains | ✅ | Trabaja en tu equipo |
+| **Codex** (terminal o app de escritorio) | ✅ | Trabaja en tu equipo; plugin o instalador |
+| **Cursor** | ✅ | Su agente ejecuta comandos en tu equipo |
+| **OpenCode** | ✅ | Trabaja en tu equipo; usa el instalador |
+| **Claude Desktop o claude.ai, chat normal** | ❌ | El chat no ejecuta comandos en tu computadora: usa el conector MCP de Figma |
+| **Versiones en la nube** (Claude Code en la web, tareas de Codex en la nube) | ❌ | Corren en servidores remotos que no ven tu Figma Desktop |
+
+**Regla rápida:** si la app trabaja en una carpeta de tu computadora y puede ejecutar comandos,
+funciona. Si es un chat o corre en la nube, no.
 
 ## Requisitos
 
@@ -266,6 +286,15 @@ npx -y github:kennedy122112/figma-steroids update
 ```
 
 ## Uso
+
+### Primera vez
+
+Con Figma Desktop abierto, dile a tu agente:
+
+> "Configura figma-steroids y conéctalo a mi Figma."
+
+La skill `figma-setup` revisa Node.js, figma-cli, Figma y el plugin FigCli, te pide permiso
+antes de instalar algo y te da la ruta exacta del plugin para importarlo en Figma.
 
 ### Modo skill (automático)
 
