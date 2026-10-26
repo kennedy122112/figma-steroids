@@ -463,6 +463,7 @@
   // resultado en piezas. resolved[i] = { name, score?, unverified? } o null.
   function finish(raw, icons, report, opts, resolved) {
     report.icons = [];
+    const svgs = [];
     const jsx = raw.replace(/__ICON_(\d+)__/g, (_, i) => {
       const ic = icons[+i];
       const res = resolved[+i];
@@ -476,14 +477,48 @@
         return `<Icon name="${res.name}" size={${ic.size}} color="${ic.color}" />`;
       }
       // Por debajo del umbral no se elige ninguno, pero se listan los más parecidos para decidir.
+      // El hueco lleva el SVG del código: render-tree (o place-svgs.mjs) lo dibuja dentro como vector.
       const r = res && res.rejected;
       const closest = r ? ` (lo más parecido: ${[pct(r), ...others(r)].join(', ')})` : '';
-      report.icons.push(`sin identificar ${ic.w}×${ic.h}${closest} ← cerca de "${ic.near}"`);
-      return `<Frame name="Icono (sin identificar)" w={${ic.w || ic.size}} h={${ic.h || ic.size}} />`;
+      const w = ic.w || ic.size, h = ic.h || ic.size;
+      const markup = ic.svg ? serializeSvg(ic.svg, w, h) : '';
+      if (markup) svgs.push({ name: `Icono SVG · ${ic.near}`, svg: markup });
+      report.icons.push(`sin identificar ${ic.w}×${ic.h}${closest}${markup ? ', se copia el SVG del código' : ''} ← cerca de "${ic.near}"`);
+      return markup
+        ? `<Frame name="${SVG_SLOT}${svgs.length - 1}" w={${w}} h={${h}} />`
+        : `<Frame name="Icono (sin identificar)" w={${w}} h={${h}} />`;
     });
     const tree = splitJsx(jsx, opts.maxNodes || 60);
     report.nodes = tree.count;
-    return { jsx, tree, report, _icons: icons, _raw: raw };
+    return { jsx, tree, report, svgs, _icons: icons, _raw: raw };
+  }
+
+  const SVG_SLOT = '__svg_slot_';
+
+  // Copia el SVG con los colores ya resueltos (currentColor, fill/stroke puestos desde CSS), que
+  // Figma no puede calcular por su cuenta, y con el tamaño con que se ve en la página.
+  function serializeSvg(svg, w, h) {
+    const copy = svg.cloneNode(true);
+    const src = [svg, ...svg.querySelectorAll('*')];
+    const dst = [copy, ...copy.querySelectorAll('*')];
+    src.forEach((el, i) => {
+      const cs = getComputedStyle(el);
+      const out = dst[i];
+      for (const prop of ['fill', 'stroke']) {
+        const v = cs.getPropertyValue(prop);
+        if (v && !/^url\(/.test(v)) out.setAttribute(prop, v === 'none' || transparent(v) ? 'none' : toHex(v) || v);
+      }
+      for (const prop of ['stroke-width', 'stroke-linecap', 'stroke-linejoin', 'fill-rule', 'opacity']) {
+        const v = cs.getPropertyValue(prop);
+        if (v && v !== 'normal') out.setAttribute(prop, v.replace(/px$/, ''));
+      }
+      out.removeAttribute('class');
+      out.removeAttribute('style');
+    });
+    copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    copy.setAttribute('width', w);
+    copy.setAttribute('height', h);
+    return new XMLSerializer().serializeToString(copy);
   }
 
   // ---- Versión asíncrona: resuelve los iconos con red ----

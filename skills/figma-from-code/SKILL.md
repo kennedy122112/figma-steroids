@@ -56,12 +56,24 @@ El script (en esta misma carpeta) recorre el DOM ya pintado, entra en el Shadow 
     `-rounded`/`-sharp` y `FILL 1`) → `material-symbols:calendar-month-outline`;
   - **Material Icons y `<mat-icon>`** (texto o `fontIcon`) → `ic:baseline-settings`;
   - **SVG sin nombre** → con `domToFigmaAsync` se compara su **forma** con los ~2000 iconos de
-    lucide y se usa el más parecido si supera el umbral (`minScore`, 0,65 por defecto); si no,
-    queda un marco vacío "Icono (sin identificar)" del mismo tamaño.
+    lucide y se usa el más parecido si supera el umbral (`minScore`, 0,65 por defecto); si no
+    (un logo propio, un icono hecho a mano), se **copia el SVG del código** con sus colores reales
+    (`out.svgs`) y se dibuja como vector editable en su sitio.
 - `tree`: el mismo JSX partido en piezas de como mucho `maxNodes` nodos (60 por defecto). Un
   icono cuenta como 8 nodos, porque Figma tarda en dibujarlos.
 
 Cómo ejecutarlo, según lo que tengas:
+0. **Todo en un paso (recomendado si hay Node):** `scripts/from-url.mjs` abre la página con
+   Playwright (Edge o Chrome ya instalados), lee el DOM, lee los estilos de texto de Figma,
+   guarda el resultado y lo renderiza con `render-tree.mjs`:
+   ```
+   node scripts/from-url.mjs http://localhost:4200/dashboard --selector "main" --page "Desde código" -c <Colección> --prefix "--color-"
+   ```
+   También `figma-steroids from-url …`. Opciones: `--name`, `--width`/`--height` (1440×900),
+   `--components components.json` (`[{ selector, component, variant }]`), `--out resultado.json` y
+   `--dry-run` (solo lee y muestra el informe, sin tocar Figma: úsalo primero para revisarlo).
+   Necesita `playwright-core` en el proyecto o global; si falta, pide permiso para instalarlo
+   (`npm i -g playwright-core`). Al terminar, repasa el paso 4 con el informe.
 1. **Herramienta de navegador del agente:** abre la página, inyecta el archivo (su contenido o un
    `fetch` a un servidor local) y llama a la función.
 2. **Playwright**, si el proyecto lo tiene: `page.addScriptTag({ path })` y `page.evaluate(...)`.
@@ -95,8 +107,9 @@ con Playwright (`writeFileSync`) o con `copy()` en DevTools.
 - `tiedTokens`: dos tokens con el mismo valor y sin variable escrita en el CSS → elige el semántico.
 - `icons`: cada icono reconocido por forma con su parecido, las otras opciones y el texto que
   tiene cerca (`message-square (78 %) ← cerca de "Mensajes"`). Revisa los de parecido bajo: si la
-  segunda opción encaja mejor con el texto, cámbiala en el JSX. Los "sin identificar" (un logo
-  propio, un icono antiguo) se resuelven mirando el código o exportando ese SVG a Figma.
+  segunda opción encaja mejor con el texto, cámbiala en el JSX. Los "sin identificar" quedan como
+  "Icono SVG · <texto cercano>", copiados del código: si en realidad son de la librería del
+  proyecto (versión antigua de lucide, por ejemplo), propón cambiarlos por el `<Icon>` equivalente.
   Si el proyecto usa otra librería de iconos que el diseño, dilo (ver `figma-design-system`).
 - `rawText`: textos sin estilo → si se repiten, propón un estilo nuevo.
 
@@ -110,14 +123,16 @@ con Playwright (`writeFileSync`) o con `copy()` en DevTools.
    en piezas sueltas), quita el `w="fill"` de la raíz y lo restaura al moverla a su padre, compara
    la página antes y después para **borrar las copias** que dejan los reintentos de figma-cli, y
    repite la pieza hasta 3 veces si Figma tarda más de 90 s. Una pieza que es un solo texto o
-   icono se renderiza dentro de un marco temporal que luego se borra. Un render de ~300 nodos de una vez
+   icono se renderiza dentro de un marco temporal que luego se borra. Al final dibuja los SVG
+   copiados del código (`svgs`) en sus huecos. Un render de ~300 nodos de una vez
    desconecta el plugin y deja copias a medias.
    El plan gratuito de Figma solo permite 3 páginas por archivo: si `--page` no existe y no se
    puede crear, usa una página que ya exista.
 2. **Pantallas pequeñas:** guarda el JSX en un archivo y renderiza **sin las `<Instance>`**:
    `figma-cli render -f card.jsx --page "Desde código"`. Con una instancia de un componente que
    vive en otra página, el render completo puede pasar de 90 s (Figma tiene que cargar esa
-   página) y no dejar nada.
+   página) y no dejar nada. Si el resultado trae `svgs`, dibújalos después en sus huecos:
+   `node scripts/place-svgs.mjs resultado.json <id del frame raíz>`.
 3. Añade cada instancia en su sitio con `--parent` (solo funciona con `<Instance>`; con un
    `<Frame>`, figma-cli 2.2.5 falla con "'frame' is not defined"):
    `figma-cli render --parent "<id del frame>" '<Instance component="Button" … />'`.

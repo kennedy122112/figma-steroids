@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.12.0-blue?style=for-the-badge" alt="Version 0.12.0">
+  <img src="https://img.shields.io/badge/version-0.13.0-blue?style=for-the-badge" alt="Version 0.13.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agents-3-purple?style=for-the-badge" alt="3 agents">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -129,6 +129,14 @@ recognized by name, and unnamed SVG icons by comparing their shape with the ~200
 (17 of 18 right on the test dashboard; the rest are flagged with the closest alternatives). Pick
 the project's icon library once and `figma-build-ui`, `figma-design-system` and `figma-to-code`
 all use it.
+
+**One command, from URL to Figma:**
+`npx -y github:kennedy122112/figma-steroids from-url http://localhost:4200/dashboard --selector "main" --page "From code"`
+opens your app with Playwright (using the Edge or Chrome you already have), reads it and rebuilds
+it in Figma piece by piece. `--dry-run` shows the report without touching Figma (needs `playwright-core` in your project or
+globally). Icons that
+belong to no library (your own logo, a hand-drawn icon) are copied from the code as editable
+vectors with their real colors.
 
 ### 🌗 Light / dark mode, from Figma to code
 

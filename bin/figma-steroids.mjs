@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // CLI: instala las skills y agentes de figma-steroids en Claude Code, Codex, OpenCode, Cursor o el destino universal.
 import { parseArgs } from 'node:util';
-import { relative } from 'node:path';
+import { relative, join, dirname } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { install, uninstall, detectInstalled, loadPlatforms, version, installFigmaPlugin } from '../lib/installer.mjs';
 
 const HELP = `figma-steroids ${version()}
@@ -12,6 +14,8 @@ Uso:
   figma-steroids uninstall --ai <plataformas> [--global] [--dry-run]
   figma-steroids list
   figma-steroids plugin [--dry-run]   copia el plugin de Figma a una carpeta estable y muestra su manifiesto
+  figma-steroids from-url <url> [--selector "main"] [--page "<página>"] [-c <colección>] [--dry-run]
+                                      lleva a Figma una página de tu app (necesita playwright-core)
 
 Plataformas: ${Object.keys(loadPlatforms()).join(', ')}, all
   Varias a la vez separadas por comas: --ai codex,cursor
@@ -21,6 +25,13 @@ Opciones:
   --dry-run   muestra qué haría sin escribir nada
   --force     sobrescribe skills o agentes con el mismo nombre que no son de figma-steroids
 `;
+
+// from-url tiene sus propias opciones: se pasan tal cual al script de la skill figma-from-code.
+if (process.argv[2] === 'from-url') {
+  const script = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills', 'figma-from-code', 'scripts', 'from-url.mjs');
+  const res = spawnSync(process.execPath, [script, ...process.argv.slice(3)], { stdio: 'inherit' });
+  process.exit(res.status ?? 1);
+}
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,

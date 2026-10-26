@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.12.0-blue?style=for-the-badge" alt="Versión 0.12.0">
+  <img src="https://img.shields.io/badge/versión-0.13.0-blue?style=for-the-badge" alt="Versión 0.13.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -42,6 +42,23 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.13
+
+### De la URL a Figma en un solo comando
+
+```bash
+npx -y github:kennedy122112/figma-steroids from-url http://localhost:4200/dashboard --selector "main" --page "Desde código"
+```
+
+Abre tu app con Playwright (usa el Edge o Chrome que ya tienes), la lee y la reconstruye en Figma
+pieza a pieza. Funciona igual con Angular, React, Lit o HTML. Con `--dry-run` primero ves el
+informe sin tocar Figma. El dashboard de prueba se lee en 3 s. Necesita `playwright-core` en
+tu proyecto o global (`npm i -g playwright-core`).
+
+Y los **iconos que no son de ninguna librería** (un logo propio, un icono dibujado a mano) ya no
+quedan como un hueco: se copia el SVG del código y aparece en Figma como vector editable, con
+sus colores reales.
 
 ## ✨ Novedades en v0.12
 

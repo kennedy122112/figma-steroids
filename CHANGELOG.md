@@ -7,6 +7,24 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.13.0] - 2026-10-25
+
+### Añadido
+- `scripts/from-url.mjs` y `figma-steroids from-url`: de la URL a Figma en un comando. Abre la
+  página con Playwright (Edge, Chrome o Chromium), lee los estilos de texto de Figma, ejecuta
+  `domToFigmaAsync`, guarda el resultado y lo renderiza con `render-tree`. `--dry-run` solo lee.
+- Los iconos SVG que no se identifican se copian del código, con los colores ya resueltos, y se
+  dibujan como vector en su sitio (`out.svgs`, `scripts/place-svgs.mjs`, automático en
+  `render-tree`).
+
+### Corregido
+- `render-tree.mjs`: mover una pieza dentro de su padre se reintenta si la conexión falla un
+  momento (antes se paraba en la última pieza).
+
+### Probado
+- Dashboard de DentaFlow con `from-url`: lectura en 3 s, 56 piezas, logo e icono de ajustes
+  propios como vectores.
+
 ## [0.12.0] - 2026-10-25
 
 ### Añadido
@@ -167,6 +185,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.13.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.9.0...v0.10.0

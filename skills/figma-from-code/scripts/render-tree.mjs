@@ -10,12 +10,13 @@
 //
 //   node render-tree.mjs tree.json --page "Desde código" [-c Colección] [--parent <id>]
 //
-// tree.json puede ser el árbol ({ jsx, children, shell }) o todo el resultado ({ jsx, tree }).
+// tree.json puede ser el árbol ({ jsx, children, shell }) o todo el resultado ({ jsx, tree, svgs }).
 // Usa `figma-cli` del PATH; con FIGMA_CLI="npx -p figma-ds-cli figma-cli" se cambia el comando.
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execSync } from 'node:child_process';
+import { placeSvgs } from './place-svgs.mjs';
 
 const args = process.argv.slice(2);
 const valued = ['--page', '-c', '--collection', '--parent'];
@@ -124,8 +125,18 @@ function moveInto(id, parent, jsx) {
     ` "ok"`;
   const f = join(dir, `move-${calls}.js`);
   writeFileSync(f, code);
-  const out = run(`eval -f ${quote(f)}`);
-  if (!/ok/.test(out)) throw new Error(`No se pudo mover ${id} dentro de ${parent}:\n${out}`);
+  // Mover es idempotente: si la conexión falla un momento, se repite sin riesgo de duplicar.
+  let out = '';
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      out = run(`eval -f ${quote(f)}`);
+      if (/ok/.test(out)) return;
+    } catch (e) {
+      out = `${e.stdout || ''}${e.stderr || ''}` || e.message;
+    }
+    if (attempt < ATTEMPTS) sleep(3000);
+  }
+  throw new Error(`No se pudo mover ${id} dentro de ${parent}:\n${out}`);
 }
 
 // render solo acepta JSX que empiece por <Frame>: una pieza que es un solo texto, icono o
@@ -150,7 +161,9 @@ function walk(node, parent) {
 const started = Date.now();
 try {
   const rootId = walk(tree, opt('--parent'));
-  console.log(JSON.stringify({ rootId, calls, nodes: tree.count, cleanedDuplicates: cleaned, seconds: Math.round((Date.now() - started) / 1000) }));
+  // Los iconos que no se identificaron se dibujan con el SVG del código (data.svgs).
+  const svgs = placeSvgs(data.svgs, rootId, { cli });
+  console.log(JSON.stringify({ rootId, calls, nodes: tree.count, cleanedDuplicates: cleaned, svgIcons: svgs.placed, svgErrors: svgs.missing, seconds: Math.round((Date.now() - started) / 1000) }));
 } catch (e) {
   // Se para en la primera pieza que falla. Lo creado queda en Figma para revisarlo o borrarlo;
   // ojo: tras un fallo, figma-cli puede haber reintentado y dejado copias sueltas en la página.
