@@ -78,6 +78,14 @@ npm install -g figma-ds-cli
 /plugin install figma-steroids@figma-steroids
 ```
 
+> **Using the Code tab in Claude Desktop?** `/plugin` isn't available there. Run the same thing
+> from a terminal (on macOS: the **Terminal** app) and start a new session afterwards:
+>
+> ```bash
+> claude plugin marketplace add kennedy122112/figma-steroids
+> claude plugin install figma-steroids@figma-steroids
+> ```
+
 **Codex:**
 
 ```bash
@@ -103,7 +111,24 @@ npx -y github:kennedy122112/figma-steroids plugin
 It prints the path to a `manifest.json`. In Figma Desktop: **Plugins → Development → Import
 plugin from manifest…** and pick that file.
 
+> **Can't see the folder on macOS?** The file lives in `~/.figma-steroids/figma-plugin/`, which
+> macOS hides because its name starts with a dot. In Figma's file picker:
+>
+> - press **Cmd + Shift + G**, paste `~/.figma-steroids/figma-plugin/manifest.json` and press **Enter**, or
+> - press **Cmd + Shift + .** (period) to show hidden folders.
+>
+> You can also open the folder in Finder with `open ~/.figma-steroids/figma-plugin`, drag
+> `manifest.json` onto Figma's picker and click **Open**.
+
 ### 4. Connect
+
+First start the figma-cli daemon (the local program the plugin talks to):
+
+```bash
+figma-cli daemon start
+```
+
+It stops when you restart your computer; run it again whenever you need it.
 
 Open the plugin in Figma (**Plugins → Development → figma-steroids**) and tell your AI:
 
@@ -145,6 +170,9 @@ and the code in sync.
 | Problem | Fix |
 |---|---|
 | "Plugin not detected" | Open the plugin in Figma and keep it open while you work |
+| The plugin is stuck on "Buscando el daemon…" (looking for the daemon) | The daemon is off: `figma-cli daemon start`, then reopen the plugin |
+| Can't find `.figma-steroids` when importing the plugin (macOS) | In Figma's picker press **Cmd + Shift + G** and paste `~/.figma-steroids/figma-plugin/manifest.json` |
+| `/plugin` doesn't exist in Claude Desktop | Run `claude plugin marketplace add …` and `claude plugin install …` in a terminal |
 | The daemon doesn't respond | `figma-cli daemon restart`, or ask your AI to reconnect |
 | Changes land in another file | Keep only the file you want to work on open |
 | `npm install -g` fails with permissions | Skip it: the skills fall back to `npx -p figma-ds-cli figma-cli` |
