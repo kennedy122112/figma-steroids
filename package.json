@@ -1,6 +1,6 @@
 {
   "name": "figma-steroids",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "description": "Skills y agentes para diseñar en Figma Desktop con figma-cli (modo plugin, sin MCP), para Claude Code, Codex, OpenCode, Cursor y el estándar Agent Skills.",
   "type": "module",
@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "test": "node --test tests/installer.test.mjs",
+    "test": "node --test tests/installer.test.mjs tests/setup.test.mjs",
     "figma": "figma-cli",
     "connect": "figma-cli connect --safe"
   },

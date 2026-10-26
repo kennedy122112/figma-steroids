@@ -17,4 +17,6 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/validate.mjs
-      - run: node --test tests/installer.test.mjs
+      - run: npm test
+      # El comando de una sola vez, de punta a punta sin escribir nada, en cada sistema.
+      - run: node bin/figma-steroids.mjs setup --dry-run --no-open --wait 0

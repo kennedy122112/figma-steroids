@@ -9,6 +9,8 @@ import { install, uninstall, detectInstalled, loadPlatforms, version, installFig
 const HELP = `figma-steroids ${version()}
 
 Uso:
+  figma-steroids setup [--ai <plataformas>] [--no-cli] [--no-open] [--wait <s>] [--dry-run]
+                                      todo en uno: figma-cli, skills en tus IAs, plugin de Figma y conexión
   figma-steroids init --ai <plataformas> [--global] [--dry-run] [--force]
   figma-steroids update [--ai <plataformas>] [--global] [--dry-run]
   figma-steroids uninstall --ai <plataformas> [--global] [--dry-run]
@@ -25,6 +27,30 @@ Opciones:
   --dry-run   muestra qué haría sin escribir nada
   --force     sobrescribe skills o agentes con el mismo nombre que no son de figma-steroids
 `;
+
+// setup: instala todo lo automatizable y espera a que el plugin se conecte.
+if (process.argv[2] === 'setup') {
+  const { values: o } = parseArgs({
+    args: process.argv.slice(3),
+    options: {
+      ai: { type: 'string' },
+      'no-cli': { type: 'boolean', default: false },
+      'no-open': { type: 'boolean', default: false },
+      wait: { type: 'string', default: '180' },
+      'dry-run': { type: 'boolean', default: false },
+    },
+  });
+  const { setup } = await import('../lib/setup.mjs');
+  const known = Object.keys(loadPlatforms());
+  const ai = o.ai ? (o.ai === 'all' ? known : o.ai.split(',').map((s) => s.trim())) : undefined;
+  const unknown = (ai || []).filter((id) => !known.includes(id));
+  if (unknown.length) {
+    console.error(`Plataforma desconocida: ${unknown.join(', ')}. Disponibles: ${known.join(', ')}, all`);
+    process.exit(1);
+  }
+  const res = await setup({ ai, installCli: !o['no-cli'], open: !o['no-open'], wait: Number(o.wait), dryRun: o['dry-run'] });
+  process.exit(res.ok ? 0 : 1);
+}
 
 // from-url tiene sus propias opciones: se pasan tal cual al script de la skill figma-from-code.
 if (process.argv[2] === 'from-url') {

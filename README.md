@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.13.0-blue?style=for-the-badge" alt="Versión 0.13.0">
+  <img src="https://img.shields.io/badge/versión-0.14.0-blue?style=for-the-badge" alt="Versión 0.14.0">
   <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex y OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
@@ -59,62 +59,48 @@ El plugin te muestra en vivo lo que hace la IA y tiene un botón para **pausarla
 
 **Necesitas:** [Figma Desktop](https://www.figma.com/downloads/) abierto,
 [Node.js](https://nodejs.org/) 18.17 o superior y un asistente de IA que trabaje en tu computadora.
+Funciona igual en **Windows, macOS y Linux**.
 
-> **Atajo:** con figma-steroids ya instalado, dile a tu IA *"configura figma-steroids"* y la
-> skill `figma-setup` revisa todo e instala lo que falte, pidiéndote permiso.
-
-### 1. Instala figma-cli
+### 1. Ejecuta un solo comando
 
 ```bash
-npm install -g figma-ds-cli
+npx -y github:kennedy122112/figma-steroids setup
 ```
 
-### 2. Añade las skills a tu IA
+Instala figma-cli, añade las skills a cada IA que tengas (Claude Code, Codex, OpenCode, Cursor),
+copia el plugin de Figma, **deja su ruta en el portapapeles** y abre su carpeta.
 
-**Claude Code** (dentro de Claude Code):
+### 2. Importa el plugin en Figma (solo la primera vez)
 
-```
-/plugin marketplace add kennedy122112/figma-steroids
-/plugin install figma-steroids@figma-steroids
-```
+En Figma Desktop: **Plugins → Development → Import plugin from manifest…**, pega la ruta
+(en macOS: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> y <kbd>Cmd</kbd>+<kbd>V</kbd>) y ábrelo con
+**Plugins → Development → figma-steroids**.
 
-**Codex:**
+El comando lo detecta y muestra **✓ Conectado con Figma**. Listo: pídele diseños a tu IA.
+Las siguientes veces solo abres el plugin.
 
-```bash
-codex plugin marketplace add kennedy122112/figma-steroids
-codex plugin add figma-steroids@figma-steroids
-```
+> Figma no deja instalar plugins de desarrollo desde fuera: importar el plugin es el único paso
+> que tienes que hacer a mano.
 
-**OpenCode, Cursor u otras** (desde la carpeta de tu proyecto):
+<details>
+<summary>Instalación manual o por plugin de tu IA</summary>
 
-```bash
-npx -y github:kennedy122112/figma-steroids init --ai opencode
-```
+1. `npm install -g figma-ds-cli`
+2. Las skills:
+   - **Claude Code:** `/plugin marketplace add kennedy122112/figma-steroids` y
+     `/plugin install figma-steroids@figma-steroids`
+   - **Codex:** `codex plugin marketplace add kennedy122112/figma-steroids` y
+     `codex plugin add figma-steroids@figma-steroids`
+   - **Otras:** `npx -y github:kennedy122112/figma-steroids init --ai opencode --global`
+     (o `codex`, `cursor`, `claude`, `universal`, `all`)
+3. El plugin: `npx -y github:kennedy122112/figma-steroids plugin` y luego el paso 2 de arriba.
+4. Dile a tu IA *"conecta con Figma"*.
 
-Cambia `opencode` por `codex`, `cursor`, `claude`, `universal` o `all`. Con `--global` queda
-disponible en todos tus proyectos.
-
-### 3. Añade el plugin a Figma (una sola vez)
-
-```bash
-npx -y github:kennedy122112/figma-steroids plugin
-```
-
-Te muestra la ruta de un `manifest.json`. En Figma Desktop: **Plugins → Development → Import
-plugin from manifest…** y elige ese archivo.
-
-### 4. Conecta
-
-Abre el plugin en Figma (**Plugins → Development → figma-steroids**) y dile a tu IA:
-
-> *"Conecta con Figma"*
-
-Listo: ya puedes pedirle diseños. Deja el plugin abierto mientras trabajas.
+</details>
 
 ### Actualizar
 
-- **Claude Code:** `/plugin marketplace update figma-steroids`
-- **Con el instalador:** `npx -y github:kennedy122112/figma-steroids update`
+Vuelve a ejecutar `setup`, o en Claude Code con el plugin: `/plugin marketplace update figma-steroids`.
 
 ## ¿Dónde funciona?
 

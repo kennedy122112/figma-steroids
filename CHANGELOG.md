@@ -7,6 +7,25 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.14.0] - 2026-10-26
+
+### Añadido
+- `figma-steroids setup`: la instalación en un solo comando, en Windows, macOS y Linux. Comprueba
+  Node.js, instala figma-cli si falta, pone las skills en cada IA que encuentra (Claude Code, Codex,
+  OpenCode, Cursor; sin duplicar si Claude Code ya tiene el plugin), copia el plugin de Figma, deja
+  la ruta del `manifest.json` en el portapapeles, abre su carpeta y espera a que el plugin se conecte.
+  Opciones `--ai`, `--no-cli`, `--no-open`, `--wait` y `--dry-run`.
+- Pruebas de `setup` (detección de IAs, portapapeles y explorador por sistema) y CI ejecuta
+  `setup --dry-run` en los tres sistemas.
+
+### Cambiado
+- README más corto: qué es, cómo funciona e instalación en 2 pasos; las novedades por versión
+  quedan solo aquí.
+
+### Probado
+- `setup` en Windows 11: skills en Claude Code, Codex y OpenCode, ruta en el portapapeles, carpeta
+  abierta y conexión con el plugin en 4 s. macOS y Linux: pruebas automáticas en CI.
+
 ## [0.13.0] - 2026-10-25
 
 ### Añadido
@@ -185,6 +204,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.14.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.10.0...v0.11.0

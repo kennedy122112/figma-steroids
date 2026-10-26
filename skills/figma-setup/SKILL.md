@@ -31,6 +31,13 @@ Si falta o es antiguo, propón instalarlo:
 
 Después de instalar, puede hacer falta abrir una sesión nueva para que `node` aparezca en el PATH.
 
+## Atajo: todo en un comando
+Con Node.js listo, `npx -y github:kennedy122112/figma-steroids setup` hace los pasos 2, 4 y 5 de
+una vez, en Windows, macOS y Linux: instala figma-cli si falta, pone las skills en cada IA que
+encuentre, copia el plugin, deja la ruta del `manifest.json` en el portapapeles, abre su carpeta
+y espera a que el plugin se conecte. Pídele permiso al usuario antes (instala cosas) y después
+guíalo solo en lo que queda: importar el plugin en Figma. Si algo falla, sigue los pasos de abajo.
+
 ## 2. figma-cli
 `figma-cli --version`
 
