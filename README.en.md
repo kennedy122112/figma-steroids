@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.11.0-blue?style=for-the-badge" alt="Version 0.11.0">
+  <img src="https://img.shields.io/badge/version-0.12.0-blue?style=for-the-badge" alt="Version 0.12.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agents-3-purple?style=for-the-badge" alt="3 agents">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -123,6 +123,12 @@ Round-trip tested: the profile card built in React came back to Figma practicall
 the original (1 px difference), with no hardcoded colors and the button as an instance. And with
 a real screen: the full dashboard of a dental clinic app (1440×960, ~330 nodes, with a table, a
 chart and a sidebar) was rebuilt in Figma practically identical to the original.
+
+**Icons:** lucide icons, [Material Symbols](https://fonts.google.com/icons) and `<mat-icon>` are
+recognized by name, and unnamed SVG icons by comparing their shape with the ~2000 lucide icons
+(17 of 18 right on the test dashboard; the rest are flagged with the closest alternatives). Pick
+the project's icon library once and `figma-build-ui`, `figma-design-system` and `figma-to-code`
+all use it.
 
 ### 🌗 Light / dark mode, from Figma to code
 

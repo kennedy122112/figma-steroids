@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.11.0-blue?style=for-the-badge" alt="Versión 0.11.0">
+  <img src="https://img.shields.io/badge/versión-0.12.0-blue?style=for-the-badge" alt="Versión 0.12.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -42,6 +42,20 @@ herramienta compatible con el estándar Agent Skills (con el instalador `figma-s
 
 Todo ocurre en tu equipo: el agente controla Figma a través de un plugin local (modo Safe), sin
 modificar la app de Figma y sin enviar tu diseño a ningún servicio en la nube.
+
+## ✨ Novedades en v0.12
+
+### Iconos: lucide o Material Symbols de Google, también al llevar código a Figma
+
+- **Elige la librería de iconos del proyecto** (lucide o [Material Symbols](https://fonts.google.com/icons))
+  y todo el diseño nuevo la usa: `figma-design-system` la detecta en el código y la anota,
+  `figma-build-ui` dibuja con ella y `figma-to-code` la traduce al componente correcto
+  (`lucide-react`, `lucide-angular`, `<span class="material-symbols-outlined">`, `<mat-icon>`).
+- **`figma-from-code` reconoce Material Symbols y `<mat-icon>`** por su nombre, con su estilo
+  (outlined, rounded, sharp, relleno), y los coloca como iconos reales en Figma.
+- **Y reconoce iconos SVG sin nombre** comparando su forma con los ~2000 iconos de lucide. En el
+  dashboard de prueba acertó 17 de 18; los que no reconoce (un logo propio) quedan marcados para
+  revisarlos, con las alternativas más parecidas y el texto que tienen cerca.
 
 ## ✨ Novedades en v0.10
 

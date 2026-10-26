@@ -57,6 +57,15 @@ React úsalo solo como referencia de estructura, nunca como código final.
    `@custom-variant dark (&:where(.dark, .dark *));`. Si el componente usa solo tokens, cambia de
    tema sin tocar su código; un color fijo en una clase (`bg-white`, `text-[#…]`) no cambiará,
    así que búscalos al verificar con la clase `dark` puesta.
+6. **Iconos:** usa la librería de iconos **del proyecto**, no la del diseño si difieren (y
+   avísalo). El nombre de Figma (`<colección>:<nombre>` en el nombre de la capa) se traduce así:
+   - `lucide:calendar-days` → `<CalendarDays />` de `lucide-react`,
+     `<lucide-icon name="calendar-days">` de `lucide-angular`, o el SVG de lucide en HTML/Lit.
+   - `material-symbols:calendar-month-outline` → `<span class="material-symbols-outlined">calendar_month</span>`
+     (guiones a `_`; `-rounded`/`-sharp` → `material-symbols-rounded`/`-sharp`; sin `-outline`,
+     relleno: `font-variation-settings: 'FILL' 1`). En Angular Material: `<mat-icon fontSet="material-symbols-outlined">calendar_month</mat-icon>`.
+   - `ic:baseline-settings` → `<mat-icon>settings</mat-icon>` o `<span class="material-icons">settings</span>`.
+   Si el proyecto no tiene la librería instalada, propón instalarla antes de añadirla.
 
 ## 4. Reutilizar antes de crear
 Busca en el proyecto componentes equivalentes (botones, inputs, cards…) y úsalos.

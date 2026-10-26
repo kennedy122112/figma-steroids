@@ -42,7 +42,10 @@ Requisito: conexión activa (skill `figma-connect`).
    para variables numéricas de espaciado; `figma-cli bind list -t FLOAT` las lista).
    No vincules formas que no siguen la escala: un avatar circular (radio = mitad del lado)
    dejaría de ser un círculo.
-5. Iconos reales: `<Icon name="lucide:home" size={20} />`, nunca emojis.
+5. Iconos reales, nunca emojis, **de la librería del proyecto** (ver "Librería de iconos" en
+   `figma-design-system`): `<Icon name="lucide:house" size={20} />` o, con iconos de Google,
+   `<Icon name="material-symbols:home-outline" size={24} />`. Si no sabes cuál usa, mira el
+   código o pregunta; por defecto, lucide. No mezcles librerías en un mismo diseño.
    **Controles interactivos** (botones, enlaces con área, inputs): alto fijo mínimo de
    **44 px** (40 solo si el sistema ya lo usa), nunca `h="hug"` sobre el texto. Usa padding de
    la escala del archivo (4, 8, 12, 16…), no valores sueltos como 14.

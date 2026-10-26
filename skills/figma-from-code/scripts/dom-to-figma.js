@@ -238,7 +238,37 @@
       const cls = svg.getAttribute('class') || '';
       const lucide = cls.match(/lucide-([a-z0-9-]+)/);
       const named = svg.getAttribute('data-icon') || svg.getAttribute('data-lucide') || (lucide && lucide[1]);
-      return named ? `lucide:${named.replace(/^lucide:/, '')}` : null;
+      if (!named) return null;
+      return named.includes(':') ? named : `lucide:${named}`;
+    }
+
+    // Iconos de Google: <mat-icon>home</mat-icon> o <span class="material-symbols-outlined">
+    // calendar_month</span>. El nombre es el texto (ligadura); la variante sale de la fuente.
+    // Devuelve los nombres candidatos de Iconify en orden de preferencia.
+    function materialCandidates(el, cs) {
+      const family = cs.fontFamily.toLowerCase();
+      const isMat = el.tagName === 'MAT-ICON' || /material (symbols|icons)/.test(family);
+      if (!isMat) return null;
+      const raw = (el.getAttribute('fonticon') || el.textContent || '').trim();
+      if (!raw || /\s/.test(raw)) return null;
+      const name = raw.replace(/_/g, '-').toLowerCase();
+      // El navegador devuelve font-variation-settings con comillas dobles ("FILL" 1).
+      const filled = /["']FILL["']\s+1\b/.test(cs.fontVariationSettings || '');
+      if (family.includes('material symbols')) {
+        const style = family.includes('rounded') ? '-rounded' : family.includes('sharp') ? '-sharp' : '';
+        const out = filled ? [`${name}${style}`] : [`${name}-outline${style}`, `${name}${style}`];
+        return [...out, name].map((n) => `material-symbols:${n}`);
+      }
+      // Material Icons (la versión anterior, por fuente) → colección "ic" de Iconify.
+      const v = family.includes('outlined') ? 'outline' : family.includes('round') ? 'round' : family.includes('sharp') ? 'sharp' : 'baseline';
+      return [`ic:${v}-${name}`, `ic:baseline-${name}`];
+    }
+
+    // Cada icono se registra y en el JSX queda un marcador; al final se resuelve: sin red con
+    // domToFigma, o con Iconify y comparación de formas con domToFigmaAsync.
+    function registerIcon(entry) {
+      icons.push(entry);
+      return `__ICON_${icons.length - 1}__`;
     }
 
     function walk(el, parent, depth) {
@@ -264,13 +294,30 @@
         return `${pad}<Instance component="${esc(comp.component)}"${comp.variant ? ` variant="${esc(comp.variant)}"` : ''}${text ? ` text="${esc(text)}"` : ''}${w} />`;
       }
 
+      // Para el informe de iconos: el texto más cercano dice más que el nombre de la capa
+      // ("cerca de Agenda"). Se ignoran los nombres de iconos de Google, que también son texto.
+      const nearText = () => {
+        for (let n = el.parentElement; n && n !== root.parentElement; n = n.parentElement) {
+          const t = [...n.querySelectorAll('*')].filter((x) => !materialCandidates(x, getComputedStyle(x)) && x.children.length === 0)
+            .map((x) => (x.textContent || '').trim()).find(Boolean);
+          if (t) return t.slice(0, 30);
+        }
+        return layerName(el).slice(0, 30);
+      };
+
+      const material = materialCandidates(el, cs);
+      if (material) {
+        const size = round(px(cs.fontSize) || Math.max(r.width, r.height));
+        return pad + registerIcon({ kind: 'material', candidates: material, size, color: colorAttr(cs.color, 'icono', el, ['color']), near: nearText(), w: round(r.width), h: round(r.height) });
+      }
+
       if (el.tagName === 'svg' || el.tagName === 'SVG') {
-        const name = iconFor(el);
         const size = round(Math.max(r.width, r.height));
+        const label = nearText();
         const color = colorAttr(cs.color, 'icono', el, ['color', 'stroke']);
-        if (name) return `${pad}<Icon name="${name}" size={${size}} color="${color}" />`;
-        report.icons.push(`${round(r.width)}×${round(r.height)} sin nombre (cerca de "${label}")`);
-        return `${pad}<Frame name="Icono (elige uno de lucide)" w={${round(r.width)}} h={${round(r.height)}} />`;
+        const name = iconFor(el);
+        if (name) return pad + registerIcon({ kind: 'named', name, size, color, near: label });
+        return pad + registerIcon({ kind: 'svg', svg: el, size, color, near: label, w: round(r.width), h: round(r.height) });
       }
 
       const kids = composedChildren(el).filter((k) => (k.nodeType === 3 && k.textContent.trim()) || (k.nodeType === 1 && visible(k)));
@@ -403,12 +450,194 @@
       return `${'  '.repeat(depth)}<Text ${textAttrs(pcs, t.slice(0, 24), parent)}${hugIfOneLine(node, pcs)}>${escText(t)}</Text>`;
     }
 
-    const jsx = walk(root, root.parentElement, 0);
+    const icons = [];
+    const raw = walk(root, root.parentElement, 0);
     probe.remove();
+    return finish(raw, icons, report, opts, icons.map((ic) =>
+      ic.kind === 'named' ? { name: ic.name }
+        : ic.kind === 'material' ? { name: ic.candidates[0], unverified: true }
+        : null));
+  };
+
+  // Sustituye los marcadores de icono por <Icon> (o por un hueco si no se resolvió) y parte el
+  // resultado en piezas. resolved[i] = { name, score?, unverified? } o null.
+  function finish(raw, icons, report, opts, resolved) {
+    report.icons = [];
+    const jsx = raw.replace(/__ICON_(\d+)__/g, (_, i) => {
+      const ic = icons[+i];
+      const res = resolved[+i];
+      const pct = (a) => `${a.name} ${Math.round(a.score * 100)} %`;
+      const others = (r) => (r && r.alternatives ? r.alternatives.map(pct) : []);
+      if (res && res.name) {
+        if (ic.kind !== 'named') {
+          const alt = others(res).length ? ` (otras: ${others(res).join(', ')})` : '';
+          report.icons.push(`${res.name}${res.score ? ` (parecido ${Math.round(res.score * 100)} %)` : ''}${res.unverified ? ' (sin verificar)' : ''}${alt} ← cerca de "${ic.near}"`);
+        }
+        return `<Icon name="${res.name}" size={${ic.size}} color="${ic.color}" />`;
+      }
+      // Por debajo del umbral no se elige ninguno, pero se listan los más parecidos para decidir.
+      const r = res && res.rejected;
+      const closest = r ? ` (lo más parecido: ${[pct(r), ...others(r)].join(', ')})` : '';
+      report.icons.push(`sin identificar ${ic.w}×${ic.h}${closest} ← cerca de "${ic.near}"`);
+      return `<Frame name="Icono (sin identificar)" w={${ic.w || ic.size}} h={${ic.h || ic.size}} />`;
+    });
     const tree = splitJsx(jsx, opts.maxNodes || 60);
     report.nodes = tree.count;
-    return { jsx, tree, report };
+    return { jsx, tree, report, _icons: icons, _raw: raw };
+  }
+
+  // ---- Versión asíncrona: resuelve los iconos con red ----
+  // · Material: pregunta a Iconify qué variante existe (calendar-month-outline, …).
+  // · SVG sin nombre: compara su forma con los iconos de lucide (o la colección de opts.iconSet)
+  //   dibujando ambos en una rejilla de 32 px; se acepta el más parecido si supera minScore.
+  window.domToFigmaAsync = async function domToFigmaAsync(target, opts = {}) {
+    const base = window.domToFigma(target, opts);
+    const icons = base._icons;
+    const resolved = [];
+    const material = icons.filter((ic) => ic.kind === 'material');
+    let existing = new Set();
+    if (material.length) {
+      const byPrefix = {};
+      for (const ic of material) for (const c of ic.candidates) {
+        const [p, n] = c.split(':');
+        (byPrefix[p] = byPrefix[p] || new Set()).add(n);
+      }
+      for (const [p, names] of Object.entries(byPrefix)) {
+        try {
+          const res = await (await fetch(`https://api.iconify.design/${p}.json?icons=${[...names].join(',')}`)).json();
+          for (const n of [...Object.keys(res.icons || {}), ...Object.keys(res.aliases || {})]) existing.add(`${p}:${n}`);
+        } catch (e) { /* sin red: se queda el primer candidato sin verificar */ }
+      }
+    }
+    const svgs = icons.filter((ic) => ic.kind === 'svg');
+    const matcher = svgs.length ? await shapeMatcher(opts.iconSet || 'lucide') : null;
+    for (const ic of icons) {
+      if (ic.kind === 'named') resolved.push({ name: ic.name });
+      else if (ic.kind === 'material') {
+        const hit = ic.candidates.find((c) => existing.has(c));
+        resolved.push(hit ? { name: hit } : existing.size ? null : { name: ic.candidates[0], unverified: true });
+      } else {
+        const best = matcher && matcher(ic.svg);
+        resolved.push(best && best.score >= (opts.minScore || 0.65) ? best : best ? { rejected: best } : null);
+      }
+    }
+    return finish(base._raw, icons, base.report, opts, resolved);
   };
+
+  // Convierte las formas de un SVG (path, circle, rect, line, polyline, polygon, ellipse) en
+  // un Path2D, para poder dibujarlo en un canvas.
+  function shapesToPath(root) {
+    const p = new Path2D();
+    const num = (el, a) => parseFloat(el.getAttribute(a)) || 0;
+    for (const el of root.querySelectorAll('path,circle,rect,line,polyline,polygon,ellipse')) {
+      const t = el.tagName.toLowerCase();
+      if (t === 'path') p.addPath(new Path2D(el.getAttribute('d') || ''));
+      else if (t === 'circle') { p.moveTo(num(el, 'cx') + num(el, 'r'), num(el, 'cy')); p.arc(num(el, 'cx'), num(el, 'cy'), num(el, 'r'), 0, Math.PI * 2); }
+      else if (t === 'ellipse') { p.moveTo(num(el, 'cx') + num(el, 'rx'), num(el, 'cy')); p.ellipse(num(el, 'cx'), num(el, 'cy'), num(el, 'rx'), num(el, 'ry'), 0, 0, Math.PI * 2); }
+      else if (t === 'rect') {
+        const x = num(el, 'x'), y = num(el, 'y'), w = num(el, 'width'), h = num(el, 'height');
+        const rx = Math.min(num(el, 'rx') || num(el, 'ry'), w / 2, h / 2);
+        if (p.roundRect) p.roundRect(x, y, w, h, rx); else p.rect(x, y, w, h);
+      } else if (t === 'line') { p.moveTo(num(el, 'x1'), num(el, 'y1')); p.lineTo(num(el, 'x2'), num(el, 'y2')); }
+      else {
+        const pts = (el.getAttribute('points') || '').trim().split(/[\s,]+/).map(Number);
+        for (let i = 0; i + 1 < pts.length; i += 2) i ? p.lineTo(pts[i], pts[i + 1]) : p.moveTo(pts[i], pts[i + 1]);
+        if (t === 'polygon') p.closePath();
+      }
+    }
+    return p;
+  }
+
+  const GRID = 32;
+  const canvas = document.createElement('canvas');
+
+  // Dibuja el icono normalizado: busca la zona que ocupa la tinta, la escala para llenar la
+  // rejilla (manteniendo proporción) y la centra. Así una versión antigua del mismo icono, algo
+  // desplazada o más pequeña, sigue pareciéndose a la actual.
+  function rasterize(path, viewBox) {
+    const [vx, vy, vw, vh] = viewBox;
+    // 1) Caja de la tinta, en unidades del viewBox, con un dibujo de prueba a 64 px.
+    const P = 64;
+    canvas.width = canvas.height = P;
+    let ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let s = P / Math.max(vw, vh);
+    ctx.setTransform(s, 0, 0, s, -vx * s, -vy * s);
+    ctx.lineWidth = 2;
+    ctx.lineCap = ctx.lineJoin = 'round';
+    ctx.stroke(path);
+    const probeData = ctx.getImageData(0, 0, P, P).data;
+    let x0 = P, y0 = P, x1 = -1, y1 = -1;
+    for (let y = 0; y < P; y++) for (let x = 0; x < P; x++) {
+      if (probeData[(y * P + x) * 4 + 3] > 40) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+    }
+    const box = x1 < 0 ? [vx, vy, vw, vh] : [vx + x0 / s, vy + y0 / s, (x1 - x0 + 1) / s, (y1 - y0 + 1) / s];
+    // 2) Dibujo final: la caja ocupa la rejilla con 2 px de margen; trazo de grosor fijo en px.
+    canvas.width = canvas.height = GRID;
+    ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const inner = GRID - 4;
+    s = inner / Math.max(box[2], box[3]);
+    const ox = 2 + (inner - box[2] * s) / 2 - box[0] * s;
+    const oy = 2 + (inner - box[3] * s) / 2 - box[1] * s;
+    ctx.setTransform(s, 0, 0, s, ox, oy);
+    ctx.lineWidth = 2.5 / s;
+    ctx.lineCap = ctx.lineJoin = 'round';
+    ctx.stroke(path);
+    const data = ctx.getImageData(0, 0, GRID, GRID).data;
+    const alpha = new Float32Array(GRID * GRID);
+    for (let i = 0; i < alpha.length; i++) alpha[i] = data[i * 4 + 3] / 255;
+    // Desenfoque 3×3: versiones antiguas de un icono suelen estar desplazadas 1 unidad (el
+    // calendario empezaba en y=4 y ahora en y=3); sin esto ese desplazamiento parece otra forma.
+    const out = new Float32Array(GRID * GRID);
+    for (let y = 0; y < GRID; y++) for (let x = 0; x < GRID; x++) {
+      let s = 0, n = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const yy = y + dy, xx = x + dx;
+        if (yy >= 0 && yy < GRID && xx >= 0 && xx < GRID) { s += alpha[yy * GRID + xx]; n++; }
+      }
+      out[y * GRID + x] = s / n;
+    }
+    return out;
+  }
+
+  // Parecido entre dos imágenes de 0 a 1 (Jaccard ponderado): 1 = idénticas.
+  function similarity(a, b) {
+    let min = 0, max = 0;
+    for (let i = 0; i < a.length; i++) { min += Math.min(a[i], b[i]); max += Math.max(a[i], b[i]); }
+    return max ? min / max : 0;
+  }
+
+  const setCache = {};
+  async function shapeMatcher(prefix) {
+    if (!setCache[prefix]) {
+      const set = await (await fetch(`https://cdn.jsdelivr.net/npm/@iconify-json/${prefix}/icons.json`)).json();
+      const parser = new DOMParser();
+      const size = [0, 0, set.width || 24, set.height || 24];
+      setCache[prefix] = Object.entries(set.icons).map(([name, ic]) => {
+        const doc = parser.parseFromString(`<svg xmlns="http://www.w3.org/2000/svg">${ic.body}</svg>`, 'image/svg+xml');
+        return { name: `${prefix}:${name}`, bmp: rasterize(shapesToPath(doc.documentElement), [0, 0, ic.width || size[2], ic.height || size[3]]) };
+      });
+    }
+    const library = setCache[prefix];
+    const seen = new Map();
+    return (svg) => {
+      const key = svg.innerHTML;
+      if (seen.has(key)) return seen.get(key);
+      const vb = (svg.getAttribute('viewBox') || '0 0 24 24').split(/[\s,]+/).map(Number);
+      const bmp = rasterize(shapesToPath(svg), vb);
+      const top = [];
+      for (const ic of library) {
+        const score = similarity(bmp, ic.bmp);
+        if (top.length < 3 || score > top[2].score) {
+          top.push({ name: ic.name, score });
+          top.sort((a, b) => b.score - a.score);
+          top.length = Math.min(top.length, 3);
+        }
+      }
+      const best = top[0] ? { ...top[0], alternatives: top.slice(1) } : null;
+      seen.set(key, best);
+      return best;
+    };
+  }
 
   // Parte el JSX en un árbol de piezas renderizables por separado: un contenedor con más de
   // maxNodes nodos se convierte en su "cascarón" (el Frame vacío) más sus hijos, y así hacia
@@ -418,9 +647,12 @@
     const lines = jsx.split('\n');
     const indent = (l) => l.match(/^ */)[0].length;
     const isOpen = (l) => /^\s*<Frame\b/.test(l) && !/\/>\s*$/.test(l);
+    // Un <Icon> pesa más que un frame o un texto: figma-cli lo descarga de Iconify al dibujarlo
+    // (una pieza de 41 nodos con 9 iconos tardó 52 s). Se cuenta como 8 nodos.
+    const weight = (l) => (/^\s*<Icon\b/.test(l) ? 8 : 1);
     function parse(i) {
       const line = lines[i];
-      if (!isOpen(line)) return { node: { jsx: line.trim(), count: 1, children: [] }, next: i + 1 };
+      if (!isOpen(line)) return { node: { jsx: line.trim(), count: weight(line), children: [] }, next: i + 1 };
       const ind = indent(line);
       const kids = [];
       let j = i + 1;

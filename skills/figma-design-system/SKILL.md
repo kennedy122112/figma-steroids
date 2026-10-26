@@ -58,7 +58,27 @@ Después, los diseños usan `<Text textStyle="Text/Body">` en `render`, en vez d
 
 Si una llamada se corta a medias, borra solo lo que creaste en esa llamada antes de repetirla.
 
-### 4. Modo claro / oscuro (temas)
+### 4. Librería de iconos
+Un sistema usa **una sola** librería de iconos, en Figma y en código. figma-cli las dibuja desde
+Iconify con `<Icon name="<colección>:<nombre>">`:
+
+| Librería | En Figma | En el código suele aparecer como |
+|---|---|---|
+| Lucide (por defecto) | `lucide:calendar` | `lucide-react`, `lucide-angular`, `data-lucide`, SVG con `class="lucide-…"` |
+| Material Symbols (Google) | `material-symbols:calendar-month-outline` (contorno), `…-rounded`, `…-sharp`; sin `-outline` = relleno | `<span class="material-symbols-outlined">calendar_month</span>`, fuente de Google Fonts |
+| Material Icons (anterior) | `ic:baseline-settings`, `ic:outline-…`, `ic:round-…` | `<mat-icon>settings</mat-icon>`, `class="material-icons"` |
+
+- **Detecta** la del proyecto en el código (dependencias, `<link>` de Google Fonts, `mat-icon`).
+  Si no hay ninguna, pregunta; si el usuario no tiene preferencia, usa lucide.
+- **Anótala** donde el equipo la vea, por ejemplo en el `DESIGN.md` del proyecto
+  (`Iconos: Material Symbols, estilo outlined`), para que `figma-build-ui` y `figma-to-code` la usen.
+- Antes de usar un nombre, compruébalo: `https://api.iconify.design/<colección>.json?icons=a,b`
+  devuelve en `not_found` los que no existen. En Material Symbols el nombre de Google cambia `_`
+  por `-` (`calendar_month` → `calendar-month`).
+- Cambiar de librería cambia el aspecto del producto (trazo fino vs. formas rellenas): es una
+  decisión de diseño, no la tomes sin preguntar.
+
+### 5. Modo claro / oscuro (temas)
 figma-cli no tiene comando para modos, y `figma-cli import` **ignora** los bloques `.dark` del
 CSS: el tema oscuro se crea con `eval`. Antes, propón la paleta oscura al usuario (fondos
 oscuros, textos claros y un `primary` más luminoso que siga teniendo contraste).

@@ -7,6 +7,24 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.12.0] - 2026-10-25
+
+### Añadido
+- Librería de iconos del proyecto (lucide o Material Symbols): `figma-design-system` la detecta y
+  la anota, `figma-build-ui` la usa en `<Icon>` y `figma-to-code` traduce cada icono al
+  componente de la librería del código.
+- `dom-to-figma.js`: reconoce Material Symbols (outlined, rounded, sharp, relleno), Material
+  Icons y `<mat-icon>` (texto o `fontIcon`) por su nombre, y los SVG sin nombre comparando su
+  forma con lucide (`domToFigmaAsync`, umbral `minScore`). El informe da el parecido, las
+  alternativas y el texto cercano de cada icono.
+
+### Probado
+- Dashboard de DentaFlow con iconos: 17 de 18 reconocidos por forma; 56 piezas, sin copias.
+
+### Corregido
+- `render-tree.mjs`: las piezas que son un solo texto o icono ya no fallan ("must start with
+  <Frame>"), y los iconos cuentan más al partir el árbol para que ninguna pieza supere los 90 s.
+
 ## [0.11.0] - 2026-10-25
 
 ### Probado
@@ -149,6 +167,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.12.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.8.0...v0.9.0

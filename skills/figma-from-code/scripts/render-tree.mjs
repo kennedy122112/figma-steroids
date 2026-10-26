@@ -128,7 +128,19 @@ function moveInto(id, parent, jsx) {
   if (!/ok/.test(out)) throw new Error(`No se pudo mover ${id} dentro de ${parent}:\n${out}`);
 }
 
+// render solo acepta JSX que empiece por <Frame>: una pieza que es un solo texto, icono o
+// instancia se envuelve en un frame temporal; luego se mueve su contenido y se borra el envoltorio.
+const WRAP = '__render_tree_wrap__';
+
 function walk(node, parent) {
+  const leaf = !/^\s*<Frame\b/.test(node.jsx);
+  if (leaf) {
+    const wrapId = render(`<Frame name="${WRAP}" flex="row">\n${node.jsx}\n</Frame>`);
+    const childId = JSON.parse(evalCode(`const w=await figma.getNodeByIdAsync(${JSON.stringify(wrapId)}); JSON.stringify(w.children[0].id)`));
+    if (parent) moveInto(childId, parent, node.jsx);
+    removeIds([wrapId]);
+    return childId;
+  }
   const id = render(node.jsx);
   if (parent) moveInto(id, parent, node.jsx);
   for (const child of node.children || []) walk(child, id);
