@@ -78,6 +78,14 @@ npm install -g figma-ds-cli
 /plugin install figma-steroids@figma-steroids
 ```
 
+> **¿Usas la pestaña Code de Claude Desktop?** Ahí no puedes usar `/plugin`. Ejecuta lo mismo
+> desde la terminal (en macOS: app **Terminal**) y abre una sesión nueva después:
+>
+> ```bash
+> claude plugin marketplace add kennedy122112/figma-steroids
+> claude plugin install figma-steroids@figma-steroids
+> ```
+
 **Codex:**
 
 ```bash
@@ -103,7 +111,24 @@ npx -y github:kennedy122112/figma-steroids plugin
 Te muestra la ruta de un `manifest.json`. En Figma Desktop: **Plugins → Development → Import
 plugin from manifest…** y elige ese archivo.
 
+> **En macOS no se ve la carpeta:** el archivo está en `~/.figma-steroids/figma-plugin/`, que
+> macOS oculta porque empieza con punto. En la ventana de selección de Figma:
+>
+> - Pulsa **Cmd + Shift + G**, pega `~/.figma-steroids/figma-plugin/manifest.json` y pulsa **Enter**, o
+> - pulsa **Cmd + Shift + .** (punto) para mostrar las carpetas ocultas.
+>
+> También puedes abrir la carpeta en el Finder con `open ~/.figma-steroids/figma-plugin`, arrastrar
+> el `manifest.json` a la ventana de Figma y pulsar **Abrir**.
+
 ### 4. Conecta
+
+Primero enciende el daemon de figma-cli (el programa local con el que habla el plugin):
+
+```bash
+figma-cli daemon start
+```
+
+Se apaga al reiniciar la computadora; vuelve a ejecutarlo cuando haga falta.
 
 Abre el plugin en Figma (**Plugins → Development → figma-steroids**) y dile a tu IA:
 
@@ -145,6 +170,9 @@ que Figma y el código no se desincronicen.
 | Problema | Solución |
 |---|---|
 | "Plugin not detected" | Abre el plugin en Figma y déjalo abierto mientras trabajas |
+| El plugin se queda en "Buscando el daemon…" | El daemon está apagado: `figma-cli daemon start` y reabre el plugin |
+| No encuentro `.figma-steroids` al importar el plugin (macOS) | En la ventana de Figma pulsa **Cmd + Shift + G** y pega `~/.figma-steroids/figma-plugin/manifest.json` |
+| `/plugin` no existe en Claude Desktop | Usa `claude plugin marketplace add …` y `claude plugin install …` en la terminal |
 | El daemon no responde | `figma-cli daemon restart`, o pídele a tu IA que vuelva a conectar |
 | Los cambios van a otro archivo | Deja abierto solo el archivo en el que quieres trabajar |
 | `npm install -g` falla por permisos | Sáltalo: las skills usan `npx -p figma-ds-cli figma-cli` |
