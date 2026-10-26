@@ -72,12 +72,19 @@ Cursor), copies the Figma plugin, **puts its path on your clipboard** and opens 
 
 ### 2. Import the plugin in Figma (first time only)
 
-In Figma Desktop: **Plugins → Development → Import plugin from manifest…**, paste the path
-(on macOS: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> then <kbd>Cmd</kbd>+<kbd>V</kbd>) and open it with
-**Plugins → Development → figma-steroids**.
+In Figma Desktop: **Plugins → Development → Import plugin from manifest…**, paste the path into
+the file name and open it with **Plugins → Development → figma-steroids**.
+
+> **On macOS you can't see the folder:** it's `~/.figma-steroids/figma-plugin/`, hidden because
+> it starts with a dot. In Figma's dialog press **Cmd + Shift + G**, paste the path
+> (<kbd>Cmd</kbd>+<kbd>V</kbd>) and press **Enter**. **Cmd + Shift + .** (period) also shows hidden
+> folders, or drag the `manifest.json` from Finder onto Figma's dialog.
 
 The command notices and shows **✓ Connected to Figma**. Done: start asking your AI for designs.
-Next time you only open the plugin.
+
+Next time you only open the plugin. If it stays on **"Buscando el daemon…"** (it happens after
+restarting your computer), start figma-cli with `figma-cli daemon start` or ask your AI to
+*"connect to Figma"*.
 
 > Figma doesn't allow installing development plugins from outside: importing the plugin is the
 > only step you do by hand.
@@ -88,13 +95,15 @@ Next time you only open the plugin.
 1. `npm install -g figma-ds-cli`
 2. The skills:
    - **Claude Code:** `/plugin marketplace add kennedy122112/figma-steroids` and
-     `/plugin install figma-steroids@figma-steroids`
+     `/plugin install figma-steroids@figma-steroids`. The Code tab of Claude Desktop has no
+     `/plugin`: run `claude plugin marketplace add kennedy122112/figma-steroids` and
+     `claude plugin install figma-steroids@figma-steroids` in a terminal, then start a new session.
    - **Codex:** `codex plugin marketplace add kennedy122112/figma-steroids` and
      `codex plugin add figma-steroids@figma-steroids`
    - **Others:** `npx -y github:kennedy122112/figma-steroids init --ai opencode --global`
      (or `codex`, `cursor`, `claude`, `universal`, `all`)
 3. The plugin: `npx -y github:kennedy122112/figma-steroids plugin`, then step 2 above.
-4. Tell your AI *"connect to Figma"*.
+4. Start figma-cli (`figma-cli daemon start`), open the plugin and tell your AI *"connect to Figma"*.
 
 </details>
 
@@ -131,6 +140,9 @@ and the code in sync.
 | Problem | Fix |
 |---|---|
 | "Plugin not detected" | Open the plugin in Figma and keep it open while you work |
+| The plugin stays on "Buscando el daemon…" | figma-cli is off: `figma-cli daemon start` and reopen the plugin |
+| Can't find `.figma-steroids` when importing (macOS) | In Figma's dialog press **Cmd + Shift + G** and paste `~/.figma-steroids/figma-plugin/manifest.json` |
+| `/plugin` doesn't exist in Claude Desktop | Use `setup`, or `claude plugin marketplace add …` and `claude plugin install …` in a terminal |
 | The daemon doesn't respond | `figma-cli daemon restart`, or ask your AI to reconnect |
 | Changes land in another file | Keep only the file you want to work on open |
 | `npm install -g` fails with permissions | Skip it: the skills fall back to `npx -p figma-ds-cli figma-cli` |
