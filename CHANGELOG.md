@@ -7,6 +7,24 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.11.0] - 2026-10-25
+
+### Probado
+- `figma-from-code` con una pantalla real: el dashboard de DentaFlow (proyecto clinica-dent,
+  HTML + CSS, 1440×960, ~330 nodos). Resultado prácticamente idéntico al original.
+
+### Añadido
+- `scripts/render-tree.mjs`: renderiza pantallas grandes pieza a pieza, borra las copias que
+  dejan los reintentos de figma-cli y repite las piezas que superan los 90 s.
+- `dom-to-figma.js`: tablas, CSS grid, márgenes (también `margin: auto`) como espaciadores,
+  proporciones distintas entre hijos que crecen, textos de una línea con `w="hug"`, árbol de
+  piezas (`tree`) y solo variables de color con un prefijo genérico.
+
+### Corregido
+- El color del texto ya no sube hasta el `body` cuando un elemento más cercano declara un color
+  fijo.
+- Un padre "hug" con hijos "fill" (inválido en Figma) ahora lleva su ancho real.
+
 ## [0.10.0] - 2026-10-25
 
 ### Añadido
@@ -131,6 +149,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.11.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.7.0...v0.8.0

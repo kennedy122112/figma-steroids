@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.10.0-blue?style=for-the-badge" alt="Version 0.10.0">
+  <img src="https://img.shields.io/badge/version-0.11.0-blue?style=for-the-badge" alt="Version 0.11.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agents-3-purple?style=for-the-badge" alt="3 agents">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -120,7 +120,9 @@ It works the same with React, Angular, Lit (it reads inside the Shadow DOM) and 
 reports what it couldn't map: colors without a token, unnamed icons or off-scale values.
 
 Round-trip tested: the profile card built in React came back to Figma practically identical to
-the original (1 px difference), with no hardcoded colors and the button as an instance.
+the original (1 px difference), with no hardcoded colors and the button as an instance. And with
+a real screen: the full dashboard of a dental clinic app (1440×960, ~330 nodes, with a table, a
+chart and a sidebar) was rebuilt in Figma practically identical to the original.
 
 ### 🌗 Light / dark mode, from Figma to code
 

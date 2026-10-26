@@ -23,7 +23,12 @@ código sirve para entender qué es cada cosa (componentes, props, tokens).
 - **Variables:** `figma-cli var list`. El script relaciona las variables CSS del proyecto con las
   de Figma **por nombre**, quitando el prefijo (`--color-primary` → `var:primary`). Si los nombres
   no coinciden, no hay variables o el archivo tiene otro sistema, proponle al usuario importar
-  primero los tokens del proyecto (skill `figma-design-system`).
+  primero los tokens del proyecto **en su propia colección**
+  (`figma-cli import tokens.css --collection <Nombre>`) y renderiza fijando esa colección con
+  `-c <Nombre>`: así `var:card` no se confunde con otra colección que tenga el mismo nombre.
+  Revisa lo importado: con CSS compacto (varias reglas por línea) `import` crea variables basura
+  como `ink);background`; bórralas antes de seguir.
+- Con un prefijo genérico (`tokenPrefix: '--'`) el script solo toma las variables que son colores.
 - **Estilos de texto** con su tamaño, peso e interlineado:
   ```
   figma-cli eval 'const s=await figma.getLocalTextStylesAsync(); s.map(t=>({name:t.name,size:t.fontSize,weight:({"Regular":400,"Medium":500,"Semi Bold":600,"Bold":700})[t.fontName.style],lineHeight:t.lineHeight.unit==="PIXELS"?t.lineHeight.value:null}))'
@@ -31,13 +36,24 @@ código sirve para entender qué es cada cosa (componentes, props, tokens).
 
 ## 3. Leer la página con `scripts/dom-to-figma.js`
 El script (en esta misma carpeta) recorre el DOM ya pintado, entra en el Shadow DOM y en los
-`<slot>`, y devuelve `{ jsx, report }`:
-- flex → auto-layout (`flex`, `gap`, padding, `justify`, `items`), con `w="fill"`, fijo o "hug";
+`<slot>`, y devuelve `{ jsx, tree, report }`:
+- flex → auto-layout (`flex`, `gap`, padding, `justify`, `items`), con `w="fill"`, fijo o "hug".
+  Si varios hijos crecen con proporciones distintas (`flex: 1.5` / `flex: 1`), solo el más ancho
+  queda "fill" (Figma reparte a partes iguales). Los márgenes del eje principal, también
+  `margin: auto`, se convierten en espaciadores con la medida que calculó el navegador;
+- tablas (`<table>`) → filas con celdas de su ancho real y las líneas de separación; CSS grid →
+  fila con *wrap*;
 - colores → `var:<token>` leyendo **la variable que usa el CSS** (`color: var(--color-…)`), y por
-  valor solo si no la encuentra;
-- textos → `textStyle` cuando tamaño, peso e interlineado coinciden (±1 px); si no, valores sueltos;
+  valor solo si no la encuentra. Para el color del texto sube hasta el primer elemento que declara
+  un color: un `color: #fff` cercano manda sobre el `var(--ink)` del body;
+- textos → `textStyle` cuando tamaño, peso e interlineado coinciden (±1 px); si no, valores sueltos.
+  Los que caben en una línea van con `w="hug"` (Figma mide la fuente un poco distinto y un ancho
+  exacto los partiría);
 - elementos que indiques en `components` → `<Instance>` del componente de Figma;
 - iconos SVG → `<Icon name="lucide:…">` si llevan nombre (`class="lucide-mail"`, `data-icon`).
+  Si el código genera los SVG sin nombre, búscalo en el código (por ejemplo `ic('calendar')`) o
+  propón añadir `data-icon` al generador.
+- `tree`: el mismo JSX partido en piezas de como mucho `maxNodes` nodos (60 por defecto).
 
 Cómo ejecutarlo, según lo que tengas:
 1. **Herramienta de navegador del agente:** abre la página, inyecta el archivo (su contenido o un
@@ -58,6 +74,10 @@ const out = domToFigma('article.profile-card', {   // selector o elemento (en Li
 Espera a `document.fonts.ready` y termina las transiciones antes de leer
 (`el.getAnimations().forEach(a => a.finish())`).
 
+Una pantalla completa da decenas de KB de JSX. No lo pases por el chat: guárdalo en un archivo
+(`JSON.stringify(out)` con `{ jsx, tree, report }`) con un `fetch` POST a un servidor local mínimo,
+con Playwright (`writeFileSync`) o con `copy()` en DevTools.
+
 ## 4. Revisar el informe antes de renderizar
 - `unmappedColors`: colores sin variable → propón un token o confirma que son intencionales.
 - `tiedTokens`: dos tokens con el mismo valor y sin variable escrita en el CSS → elige el semántico.
@@ -65,16 +85,29 @@ Espera a `document.fonts.ready` y termina las transiciones antes de leer
 - `rawText`: textos sin estilo → si se repiten, propón un estilo nuevo.
 
 ## 5. Renderizar
-1. Guarda el JSX en un archivo y renderiza **sin las `<Instance>`**, en la página que pida el
-   usuario: `figma-cli render -f card.jsx --page "Desde código"`.
-   Con una instancia de un componente que vive en otra página, el render completo puede pasar de
-   90 s (Figma tiene que cargar esa página) y no dejar nada.
-2. Añade cada instancia en su sitio con `--parent`:
+1. **Pantallas grandes (más de ~60 nodos): `scripts/render-tree.mjs`.**
+   ```
+   node scripts/render-tree.mjs resultado.json --page "Desde código" -c <Colección>
+   ```
+   Renderiza el árbol pieza a pieza (cada contenedor grande primero vacío y luego sus hijos
+   dentro) y por cada pieza: usa `--keep-wrapper` (sin él figma-cli separa una fila de tarjetas
+   en piezas sueltas), quita el `w="fill"` de la raíz y lo restaura al moverla a su padre, compara
+   la página antes y después para **borrar las copias** que dejan los reintentos de figma-cli, y
+   repite la pieza hasta 3 veces si Figma tarda más de 90 s. Un render de ~300 nodos de una vez
+   desconecta el plugin y deja copias a medias.
+   El plan gratuito de Figma solo permite 3 páginas por archivo: si `--page` no existe y no se
+   puede crear, usa una página que ya exista.
+2. **Pantallas pequeñas:** guarda el JSX en un archivo y renderiza **sin las `<Instance>`**:
+   `figma-cli render -f card.jsx --page "Desde código"`. Con una instancia de un componente que
+   vive en otra página, el render completo puede pasar de 90 s (Figma tiene que cargar esa
+   página) y no dejar nada.
+3. Añade cada instancia en su sitio con `--parent` (solo funciona con `<Instance>`; con un
+   `<Frame>`, figma-cli 2.2.5 falla con "'frame' is not defined"):
    `figma-cli render --parent "<id del frame>" '<Instance component="Button" … />'`.
    Si debe ocupar el ancho, corrígelo después (`render` puede aplicar el `fill` al alto):
    `figma-cli eval 'const n=await figma.getNodeByIdAsync("<id>"); n.layoutSizingHorizontal="FILL"; n.layoutSizingVertical="FIXED"'`.
    Si el elemento del código tenía algo que el componente no admite (un icono), dilo.
-3. Vincula radios y espaciado a las variables **por valor**; los valores fuera de la escala se listan:
+4. Vincula radios y espaciado a las variables **por valor**; los valores fuera de la escala se listan:
    ```
    figma-cli eval 'const root=await figma.getNodeByIdAsync("<id>"); const vars=await figma.variables.getLocalVariablesAsync("FLOAT"); const val=(v)=>Object.values(v.valuesByMode)[0]; const radius=vars.filter(v=>/radius/i.test(v.name)); const spacing=vars.filter(v=>/^spacing\//.test(v.name)); const find=(list,n)=>list.find(v=>Math.abs(val(v)-n)<0.01); const bound={radius:0,gap:0,padding:0}, skipped=[]; const walk=(n)=>{ if(n.type==="INSTANCE") return; if("cornerRadius" in n && typeof n.cornerRadius==="number" && n.cornerRadius>0){ const v=find(radius,n.cornerRadius); if(v){ for (const k of ["topLeftRadius","topRightRadius","bottomLeftRadius","bottomRightRadius"]) n.setBoundVariable(k,v); bound.radius++ } else skipped.push(n.name+": radio "+n.cornerRadius) } if("layoutMode" in n && n.layoutMode!=="NONE"){ if(n.itemSpacing>0){ const v=find(spacing,n.itemSpacing); if(v){ n.setBoundVariable("itemSpacing",v); bound.gap++ } else skipped.push(n.name+": gap "+n.itemSpacing) } for (const k of ["paddingTop","paddingRight","paddingBottom","paddingLeft"]) if(n[k]>0){ const v=find(spacing,n[k]); if(v){ n.setBoundVariable(k,v); bound.padding++ } else skipped.push(n.name+": "+k+" "+n[k]) } } (n.children||[]).forEach(walk) }; walk(root); ({bound, skipped})'
    ```

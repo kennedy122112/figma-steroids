@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.10.0-blue?style=for-the-badge" alt="Versión 0.10.0">
+  <img src="https://img.shields.io/badge/versión-0.11.0-blue?style=for-the-badge" alt="Versión 0.11.0">
   <img src="https://img.shields.io/badge/skills-8-green?style=for-the-badge" alt="8 skills">
   <img src="https://img.shields.io/badge/agentes-3-purple?style=for-the-badge" alt="3 agentes">
   <img src="https://img.shields.io/badge/stacks-Angular_·_React_·_Lit_·_HTML-orange?style=for-the-badge" alt="Stacks: Angular, React, Lit, HTML">
@@ -63,6 +63,8 @@ escala.
 
 Probado de ida y vuelta: la tarjeta de perfil hecha en React volvió a Figma prácticamente
 idéntica a la original (1 px de diferencia), sin colores sueltos y con el botón como instancia.
+Y con una pantalla real: el dashboard completo de una app de clínica dental (1440×960, ~330
+nodos, con tabla, gráfico y menú) se reconstruyó en Figma prácticamente igual al original.
 
 ## ✨ Novedades en v0.9
 
