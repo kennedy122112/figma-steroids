@@ -1,6 +1,6 @@
 ---
 name: figma-consistency-audit
-description: Revisa la coherencia de un archivo de Figma completo frente a su design system (todas las páginas) y propone o aplica correcciones seguras. Encuentra colores, textos, espaciados y radios fuera del sistema, agrupados por valor y con la variable o el estilo que corresponde; copias de componentes que deberían ser instancias, y botones o campos dibujados a mano. Úsala cuando el usuario diga "revisa la coherencia de mi archivo", "¿qué se sale del design system?", "audita el archivo", "limpia los colores sueltos", "vincula todo a las variables", "consistency audit".
+description: Revisa la coherencia de un archivo de Figma completo frente a su design system (todas las páginas) y propone o aplica correcciones seguras, incluida la conversión de copias hechas a mano en un componente con variantes. Encuentra colores, textos, espaciados y radios fuera del sistema, agrupados por valor y con la variable o el estilo que corresponde; copias de componentes que deberían ser instancias, y botones o campos dibujados a mano. Úsala cuando el usuario diga "convierte estos botones en un componente", "revisa la coherencia de mi archivo", "¿qué se sale del design system?", "audita el archivo", "limpia los colores sueltos", "vincula todo a las variables", "consistency audit".
 ---
 
 # Auditoría de coherencia del archivo
@@ -57,6 +57,29 @@ colecciones de tema oscuro (`… · Dark`) no se usan para emparejar. El campo `
 Lo que necesita decisión no se toca sin confirmación, una por una o por grupo
 ("¿cambio los 12 textos de 15 px a Text/Body de 16 px?"). Para esos cambios usa `eval` sobre los
 IDs de los ejemplos, o pídele al usuario que lo revise en el lienzo.
+
+## 4. Convertir copias en un componente (con permiso)
+Para los `handmade` y las `copies` que se repiten (botones, badges, inputs…):
+```
+node scripts/componentize.mjs --match badge --dry-run
+```
+Agrupa las copias por aspecto (alto, radio, relleno, borde, color y tamaño del texto): cada grupo
+es una variante, con el nombre de su color en el sistema (`variant=green-50`). Enséñale al usuario
+el plan (cuántas copias, qué variantes) y, si dice que sí:
+```
+node scripts/componentize.mjs --match badge --name Badge
+```
+Crea el componente en la página del sistema (`Design System` o similar) y **sustituye cada copia
+por una instancia** en su sitio, con su texto y su tamaño. Una copia con otra estructura (un icono
+de más) no se toca y sale en `skipped`; si se vuelve a ejecutar, esas forman su propia variante.
+
+- Usa un nombre que no choque con un componente existente de otro esquema de variantes
+  (si ya hay un `Button` con `variant/size/state`, llama al nuevo de otra forma y propón luego
+  unificarlos).
+- Es seguro repetirlo: reutiliza el componente si ya existe y solo procesa las copias que quedan.
+- **No muevas instancias entre componentes a mano con `swapComponent`**: puede perder los textos
+  editados. Si algo sale duplicado, usa `--ids` o vuelve a ejecutar el script.
+- Verifica después: `figma-cli verify "<id de la pantalla>"` antes y después; debe verse igual.
 
 ## Reglas
 - La auditoría no modifica nada; `--fix` solo vincula coincidencias exactas.

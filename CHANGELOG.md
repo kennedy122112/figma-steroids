@@ -7,6 +7,20 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.16.0] - 2026-10-27
+
+### Añadido
+- `figma-consistency-audit/scripts/componentize.mjs`: convierte copias hechas a mano (botones,
+  badges, inputs…) en un componente con variantes y sustituye cada copia por una instancia, en su
+  sitio, con su texto y su tamaño. Agrupa por aspecto y nombra cada variante con su color del
+  sistema; `--dry-run` muestra el plan. Va en fases (analizar, crear, sustituir por lotes de 8)
+  para no pasar de los 25 s por llamada del plugin, y es seguro repetirlo: reutiliza el componente
+  y solo procesa las copias que quedan.
+
+### Probado
+- En el dashboard de prueba: 22 badges → componente `Badge` con 7 variantes y 10 botones →
+  `Botón dashboard` con 5 variantes. Las dos pantallas quedan idénticas píxel a píxel (PSNR ∞).
+
 ## [0.15.0] - 2026-10-26
 
 ### Añadido
@@ -223,6 +237,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.16.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.12.0...v0.13.0

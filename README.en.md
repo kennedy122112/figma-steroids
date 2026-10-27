@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.15.0-blue?style=for-the-badge" alt="Version 0.15.0">
+  <img src="https://img.shields.io/badge/version-0.16.0-blue?style=for-the-badge" alt="Version 0.16.0">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Works with Claude Code, Codex and OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
@@ -130,7 +130,7 @@ see your Figma Desktop.
 | `figma-design-system` | Tokens, spacing, text styles, a button with variants, dark mode, icons |
 | `figma-to-code` | Turns a design into code in your stack |
 | `figma-from-code` | Brings a screen that already exists in your app into Figma |
-| `figma-consistency-audit` | Reviews the whole file: what falls outside your design system, and binds it only when it's safe |
+| `figma-consistency-audit` | Reviews the whole file: what falls outside your design system, binds it when it's safe and turns hand-made buttons or badges into a component |
 | `figma-a11y-review` | Reviews accessibility |
 | `figma-handoff` | Exports images, tokens and specs for developers |
 
