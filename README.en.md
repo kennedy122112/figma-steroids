@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.14.0-blue?style=for-the-badge" alt="Version 0.14.0">
+  <img src="https://img.shields.io/badge/version-0.15.0-blue?style=for-the-badge" alt="Version 0.15.0">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Works with Claude Code, Codex and OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
@@ -52,6 +52,7 @@ leaves your machine. The plugin shows you live what the AI is doing and has a bu
 | *"Create a login screen with my design system"* | It builds it in Figma with your colors, text styles and components, fully editable |
 | *"Implement the selected frame in my project"* | It writes the component in your stack (Angular, React, Lit, HTML…) reusing what you already have |
 | *"Bring this screen of my app into Figma"* | It reads your app in the browser and rebuilds it in Figma with auto-layout and your variables |
+| *"Check my file's consistency"* | Goes through every page, tells you which colors, text, spacing and buttons fall outside the system, and binds what already matches |
 | *"Review the accessibility"* | It checks contrast, button and text sizes, and suggests fixes |
 | *"Add dark mode"* | It creates the dark theme in Figma and carries it to your code |
 
@@ -129,6 +130,7 @@ see your Figma Desktop.
 | `figma-design-system` | Tokens, spacing, text styles, a button with variants, dark mode, icons |
 | `figma-to-code` | Turns a design into code in your stack |
 | `figma-from-code` | Brings a screen that already exists in your app into Figma |
+| `figma-consistency-audit` | Reviews the whole file: what falls outside your design system, and binds it only when it's safe |
 | `figma-a11y-review` | Reviews accessibility |
 | `figma-handoff` | Exports images, tokens and specs for developers |
 

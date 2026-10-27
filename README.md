@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.14.0-blue?style=for-the-badge" alt="Versión 0.14.0">
+  <img src="https://img.shields.io/badge/versión-0.15.0-blue?style=for-the-badge" alt="Versión 0.15.0">
   <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex y OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
@@ -52,6 +52,7 @@ El plugin te muestra en vivo lo que hace la IA y tiene un botón para **pausarla
 | *"Crea una pantalla de login con mi design system"* | La construye en Figma con tus colores, textos y componentes, editable |
 | *"Implementa el frame seleccionado en mi proyecto"* | Escribe el componente en tu stack (Angular, React, Lit, HTML…) reutilizando lo que ya tienes |
 | *"Pasa esta pantalla de mi app a Figma"* | Lee tu app en el navegador y la reconstruye en Figma con auto-layout y tus variables |
+| *"Revisa la coherencia de mi archivo"* | Recorre todas las páginas, te dice qué colores, textos, espaciados y botones se salen del sistema, y vincula lo que ya coincide |
 | *"Revisa la accesibilidad"* | Revisa contraste, tamaño de botones y textos, y propone correcciones |
 | *"Añade modo oscuro"* | Crea el tema oscuro en Figma y lo lleva a tu código |
 
@@ -129,6 +130,7 @@ Figma Desktop.
 | `figma-design-system` | Tokens, espaciado, estilos de texto, botón con variantes, modo oscuro, iconos |
 | `figma-to-code` | Pasa un diseño a código en tu stack |
 | `figma-from-code` | Lleva a Figma una pantalla que ya existe en tu app |
+| `figma-consistency-audit` | Revisa todo el archivo: qué se sale de tu design system y lo vincula solo cuando es seguro |
 | `figma-a11y-review` | Revisa la accesibilidad |
 | `figma-handoff` | Exporta imágenes, tokens y especificaciones para desarrollo |
 

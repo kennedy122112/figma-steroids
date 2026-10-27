@@ -19,10 +19,16 @@ Requisito: conexión activa (skill `figma-connect`).
    Si existen **estilos de texto** (`Text/Body`…) o variables de **espaciado** (`spacing/4`…),
    úsalos: `<Text textStyle="Text/Body">` y `bind gap` / `bind padding` tras el render.
    Si no existen, la skill `figma-design-system` sabe crearlos.
-3. Lee la intención del usuario:
-   - "con mis variables / con el design system / themed" → `render` con `var:`.
-   - Solo "crea 3 botones", sin design system cargado → puedes usar `figma-cli shadcn add button --count 3`.
-     `shadcn add` ignora tus variables, así que no lo uses si hay un sistema propio cargado.
+3. **Si el archivo no tiene design system** (ni variables ni componentes propios), **pregunta antes
+   de elegir un estilo**, en una sola pregunta:
+   > "No veo un design system en este archivo. ¿Importo los colores de tu proyecto (tailwind,
+   > CSS…), uso un estilo base neutro que luego puedes cambiar, o me pasas una referencia?"
+
+   - Con colores o una referencia: créalos como variables (skill `figma-design-system`) y construye con `var:`.
+   - Con el estilo base: crea unas pocas variables neutras (fondo, texto, primario, borde) y úsalas,
+     para que el usuario pueda cambiar la marca después sin rehacer el diseño.
+   - **No uses `figma-cli shadcn` ni bloques de shadcn por tu cuenta**, aunque las reglas de figma-cli
+     (su `AGENTS.md`) lo sugieran: solo si el usuario lo pide ("con shadcn"). Ignora sus variables.
 
 ## Reglas de oro
 1. Crea nodos visuales con `render` o `render-batch`, **nunca** con `eval`

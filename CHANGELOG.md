@@ -7,6 +7,25 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.15.0] - 2026-10-26
+
+### Añadido
+- Skill **`figma-consistency-audit`** con `scripts/audit.mjs`: revisa todas las páginas del archivo
+  frente al design system. Agrupa por valor los colores, textos, espaciados y radios que no usan
+  el sistema, con la variable o el estilo exacto (si existe) o el más cercano; detecta copias de
+  componentes que deberían ser instancias y botones, inputs o chips dibujados a mano. Da la
+  cobertura del sistema en %. `--fix` vincula solo las coincidencias exactas, sin cambiar el aspecto.
+
+### Cambiado
+- `figma-build-ui`: si el archivo no tiene design system, pregunta qué estilo usar (importar tus
+  colores, un estilo base neutro con variables o una referencia) en lugar de usar shadcn por su
+  cuenta. shadcn solo si el usuario lo pide.
+
+### Probado
+- Auditoría en un archivo real (3 páginas, 930 elementos): 4 s. `--fix` vinculó 475 espaciados,
+  35 textos y 5 radios sin cambiar el aspecto; la cobertura de espaciado pasó del 1 % al 57 % y la
+  de texto del 43 % al 56 %.
+
 ## [0.14.0] - 2026-10-26
 
 ### Añadido
@@ -204,6 +223,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.15.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.11.0...v0.12.0
