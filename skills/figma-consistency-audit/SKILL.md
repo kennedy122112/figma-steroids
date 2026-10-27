@@ -54,9 +54,23 @@ semántica correcta (un texto oscuro es `foreground`, no `card`, aunque valgan l
 colecciones de tema oscuro (`… · Dark`) no se usan para emparejar. El campo `fixed` dice cuántos se vincularon, y
 `coverage` cómo quedó.
 
-Lo que necesita decisión no se toca sin confirmación, una por una o por grupo
-("¿cambio los 12 textos de 15 px a Text/Body de 16 px?"). Para esos cambios usa `eval` sobre los
-IDs de los ejemplos, o pídele al usuario que lo revise en el lienzo.
+## 3b. Resolver en bloque lo que pide decisión (con permiso)
+Lo que no coincide exacto **cambia un poco el diseño** al resolverlo, así que propón cada decisión
+por grupo, enséñale el plan con `--dry-run` y aplica solo lo que acepte:
+```
+node scripts/resolve.mjs --round-spacing --dry-run
+node scripts/resolve.mjs --round-spacing --color "#fafbfc=bg" --text "Inter Semi Bold 12/20=Text/Caption Strong"
+```
+| Opción | Qué hace |
+|---|---|
+| `--round-spacing` | Gaps y paddings fuera de escala → el paso más cercano, solo si la diferencia es ≤ 2 px (`--max-delta`); nunca los pega a 0 |
+| `--add-spacing 10` | Si un valor se repite mucho y es intencional: lo añade a la escala y lo vincula |
+| `--color "#hex=variable"` | Ese color pasa a usar la variable (útil para casi-iguales: diferencia pequeña en el informe) |
+| `--text "Fuente Peso Tamaño[/Interlineado]=Estilo"` | Aplica ese estilo; si no existe, lo crea con esos valores |
+
+Entra también en los componentes: corregir un componente arregla todas sus instancias. Toma una
+captura de la pantalla antes y después (`figma-cli verify "<id>" --save …`) y enséñasela: deben
+verse diferencias mínimas. Ctrl+Z en Figma lo deshace.
 
 ## 4. Convertir copias en un componente (con permiso)
 Para los `handmade` y las `copies` que se repiten (botones, badges, inputs…):

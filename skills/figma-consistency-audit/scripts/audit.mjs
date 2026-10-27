@@ -168,7 +168,7 @@ async function visit(node, pageName) {
     }
   }
 
-  if ('children' in node && node.type !== 'COMPONENT_SET') for (const c of node.children) await visit(c, pageName);
+  if ('children' in node) for (const c of node.children) await visit(c, pageName);
 }
 
 const pages = figma.root.children.filter((p) => !ONLY_PAGE || p.name === ONLY_PAGE);
