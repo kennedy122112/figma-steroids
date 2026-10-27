@@ -86,6 +86,24 @@ Requisito: conexión activa (skill `figma-connect`).
   (o `maxLines={1}`), para que un texto largo no choque con lo de al lado.
 - En otra página: `figma-cli render --page "Nombre" '<Frame…>'`.
 
+## Versiones responsive
+Para *"hazla responsive"* / *"versión móvil"* de una pantalla de escritorio:
+```
+node scripts/responsive.mjs --id "<id de la pantalla>" [--widths 768,390]
+```
+Copia la pantalla a su derecha como `… · Tablet 768` y `… · Móvil 390` (la original no se toca;
+si ya existen, las rehace) y reorganiza el auto-layout: oculta el menú lateral por debajo de
+1024 px, pasa las filas de tarjetas a 2 columnas (tablet) o en columna (móvil), apila las filas
+mixtas, hace saltar de línea las barras de herramientas, encoge lo pequeño (barras de gráficos),
+oculta la cabecera de las tablas en móvil y ajusta la altura al contenido. `changes` lista lo
+que hizo.
+
+Es una **primera pasada**: mira cada versión (`figma-cli verify "<id>" --save …`) y afínala.
+Lo que siempre queda para ti:
+- el menú lateral oculto: propón su versión (barra inferior con 4–5 destinos o menú hamburguesa);
+- tamaños de texto: los títulos de escritorio suelen quedar grandes en móvil;
+- zonas táctiles de al menos 44 px (`figma-cli a11y touch`).
+
 ## Componentes y variantes
 - Convertir en componente: `figma-cli node to-component "<id>"`.
 - Set de variantes: `render-batch '["<Frame name=\"size=sm, state=default\" …>", …]' --variant-set Button`.

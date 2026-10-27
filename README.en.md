@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.16.0-blue?style=for-the-badge" alt="Version 0.16.0">
+  <img src="https://img.shields.io/badge/version-0.17.0-blue?style=for-the-badge" alt="Version 0.17.0">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Works with Claude Code, Codex and OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
@@ -54,6 +54,7 @@ leaves your machine. The plugin shows you live what the AI is doing and has a bu
 | *"Bring this screen of my app into Figma"* | It reads your app in the browser and rebuilds it in Figma with auto-layout and your variables |
 | *"Check my file's consistency"* | Goes through every page, tells you which colors, text, spacing and buttons fall outside the system, and binds what already matches |
 | *"Review the accessibility"* | It checks contrast, button and text sizes, and suggests fixes |
+| *"Make the mobile and tablet versions"* | Copies the screen and rearranges it for 768 and 390 px: cards into columns, tables as cards, menu set aside |
 | *"Add dark mode"* | It creates the dark theme in Figma and carries it to your code |
 
 ## Installation

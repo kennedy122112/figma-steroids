@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.16.0-blue?style=for-the-badge" alt="Versión 0.16.0">
+  <img src="https://img.shields.io/badge/versión-0.17.0-blue?style=for-the-badge" alt="Versión 0.17.0">
   <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex y OpenCode">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
@@ -54,6 +54,7 @@ El plugin te muestra en vivo lo que hace la IA y tiene un botón para **pausarla
 | *"Pasa esta pantalla de mi app a Figma"* | Lee tu app en el navegador y la reconstruye en Figma con auto-layout y tus variables |
 | *"Revisa la coherencia de mi archivo"* | Recorre todas las páginas, te dice qué colores, textos, espaciados y botones se salen del sistema, y vincula lo que ya coincide |
 | *"Revisa la accesibilidad"* | Revisa contraste, tamaño de botones y textos, y propone correcciones |
+| *"Hazme la versión móvil y tablet"* | Copia la pantalla y la reorganiza para 768 y 390 px: tarjetas en columnas, tablas como tarjetas, menú aparte |
 | *"Añade modo oscuro"* | Crea el tema oscuro en Figma y lo lleva a tu código |
 
 ## Instalación

@@ -7,6 +7,26 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.17.0] - 2026-10-27
+
+### Añadido
+- `figma-build-ui/scripts/responsive.mjs`: crea las versiones tablet (768) y móvil (390) de una
+  pantalla de escritorio, a su derecha y sin tocar la original. Oculta el menú lateral por debajo
+  de 1024 px, pasa las tarjetas a 2 columnas o en columna, apila las filas mixtas, hace saltar de
+  línea las barras de herramientas, encoge las barras de los gráficos y oculta la cabecera de las
+  tablas en móvil. Es una primera pasada para afinar después.
+- `figma-consistency-audit/scripts/resolve.mjs`: resuelve en bloque lo que la auditoría deja para
+  decidir: redondear el espaciado a la escala (`--round-spacing`, máx. 2 px), añadir un valor a la
+  escala (`--add-spacing`), usar una variable para un color (`--color`) y aplicar o crear un estilo
+  de texto (`--text`).
+
+### Cambiado
+- La auditoría y `resolve` entran también en los componentes: corregir uno arregla sus instancias.
+
+### Probado
+- Dashboard de prueba: tras resolver, espaciado al 99 % y texto al 68 % del sistema; versiones de
+  768 y 390 px sin nada fuera de la pantalla.
+
 ## [0.16.0] - 2026-10-27
 
 ### Añadido
@@ -237,6 +257,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.17.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.13.0...v0.14.0
