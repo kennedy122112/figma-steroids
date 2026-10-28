@@ -7,6 +7,23 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.18.0] - 2026-10-27
+
+### Añadido
+- **Antigravity** como plataforma: skills en `.agents/skills` (proyecto) y `~/.gemini/config/skills`
+  (global), y el bloque de instrucciones en `AGENTS.md` / `~/.gemini/GEMINI.md`. Rutas tomadas de la
+  documentación que trae el propio Antigravity (skill `agy-customizations`). Antigravity no tiene
+  subagentes: los agentes van como roles en las instrucciones. `setup` lo detecta solo
+  (`~/.gemini/antigravity`) e `init --ai antigravity` lo instala.
+
+### Cambiado
+- El mensaje final de `init` y el bloque de instrucciones recomiendan el plugin de figma-steroids
+  en lugar de FigCli.
+
+### Probado
+- Instalación global en un Antigravity real (Windows): 9 skills en `~/.gemini/config/skills` sin
+  tocar las skills propias del usuario, y el bloque en `GEMINI.md`.
+
 ## [0.17.0] - 2026-10-27
 
 ### Añadido
@@ -257,6 +274,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.18.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.14.0...v0.15.0

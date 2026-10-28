@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.17.0-blue?style=for-the-badge" alt="Versión 0.17.0">
-  <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex y OpenCode">
+  <img src="https://img.shields.io/badge/versión-0.18.0-blue?style=for-the-badge" alt="Versión 0.18.0">
+  <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex, OpenCode y Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
 
@@ -69,7 +69,7 @@ Funciona igual en **Windows, macOS y Linux**.
 npx -y github:kennedy122112/figma-steroids setup
 ```
 
-Instala figma-cli, añade las skills a cada IA que tengas (Claude Code, Codex, OpenCode, Cursor),
+Instala figma-cli, añade las skills a cada IA que tengas (Claude Code, Codex, OpenCode, Cursor, Antigravity),
 copia el plugin de Figma, **deja su ruta en el portapapeles** y abre su carpeta.
 
 ### 2. Importa el plugin en Figma (solo la primera vez)
@@ -103,7 +103,7 @@ de reiniciar la computadora), enciende figma-cli con `figma-cli daemon start` o 
    - **Codex:** `codex plugin marketplace add kennedy122112/figma-steroids` y
      `codex plugin add figma-steroids@figma-steroids`
    - **Otras:** `npx -y github:kennedy122112/figma-steroids init --ai opencode --global`
-     (o `codex`, `cursor`, `claude`, `universal`, `all`)
+     (o `codex`, `cursor`, `antigravity`, `claude`, `universal`, `all`)
 3. El plugin: `npx -y github:kennedy122112/figma-steroids plugin` y luego el paso 2 de arriba.
 4. Enciende figma-cli (`figma-cli daemon start`), abre el plugin y dile a tu IA *"conecta con Figma"*.
 
@@ -116,7 +116,7 @@ Vuelve a ejecutar `setup`, o en Claude Code con el plugin: `/plugin marketplace 
 ## ¿Dónde funciona?
 
 En cualquier asistente que **trabaje en una carpeta de tu computadora y pueda ejecutar comandos**:
-Claude Code (terminal, VS Code o la pestaña Code de Claude Desktop), Codex, OpenCode o Cursor.
+Claude Code (terminal, VS Code o la pestaña Code de Claude Desktop), Codex, OpenCode, Cursor o Antigravity.
 
 No funciona en chats normales (claude.ai, ChatGPT) ni en versiones en la nube, porque no ven tu
 Figma Desktop.

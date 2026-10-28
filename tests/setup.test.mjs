@@ -1,6 +1,6 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { detectTools, hasClaudePlugin, clipboardCommand, revealCommand, setup } from '../lib/setup.mjs';
@@ -25,6 +25,19 @@ test('detecta las IAs por sus carpetas de configuración', () => {
   mkdirSync(join(home, '.claude'));
   mkdirSync(join(home, '.cursor'));
   assert.deepEqual(detectTools(), ['claude', 'codex', 'opencode', 'cursor']);
+  mkdirSync(join(home, '.gemini', 'antigravity'), { recursive: true });
+  assert.deepEqual(detectTools(), ['claude', 'codex', 'opencode', 'cursor', 'antigravity']);
+});
+
+test('setup instala en Antigravity: skills globales y su bloque en GEMINI.md', async () => {
+  mkdirSync(join(home, '.gemini', 'antigravity'), { recursive: true });
+  writeFileSync(join(home, '.gemini', 'GEMINI.md'), '# Mis reglas\n');
+  const res = await setup({ installCli: false, open: false, wait: 0, log: quiet });
+  assert.deepEqual(res.tools, ['antigravity']);
+  assert.ok(existsSync(join(home, '.gemini', 'config', 'skills', 'figma-build-ui', 'SKILL.md')));
+  const rules = readFileSync(join(home, '.gemini', 'GEMINI.md'), 'utf8');
+  assert.ok(rules.startsWith('# Mis reglas'), 'conserva las reglas del usuario');
+  assert.ok(rules.includes('figma-steroids'), 'añade su bloque');
 });
 
 test('reconoce el plugin de Claude Code ya instalado', () => {

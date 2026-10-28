@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.17.0-blue?style=for-the-badge" alt="Version 0.17.0">
-  <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode-D97757?style=for-the-badge" alt="Works with Claude Code, Codex and OpenCode">
+  <img src="https://img.shields.io/badge/version-0.18.0-blue?style=for-the-badge" alt="Version 0.18.0">
+  <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Works with Claude Code, Codex, OpenCode and Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
 
@@ -70,7 +70,7 @@ npx -y github:kennedy122112/figma-steroids setup
 ```
 
 It installs figma-cli, adds the skills to every AI you have (Claude Code, Codex, OpenCode,
-Cursor), copies the Figma plugin, **puts its path on your clipboard** and opens its folder.
+Cursor, Antigravity), copies the Figma plugin, **puts its path on your clipboard** and opens its folder.
 
 ### 2. Import the plugin in Figma (first time only)
 
@@ -103,7 +103,7 @@ restarting your computer), start figma-cli with `figma-cli daemon start` or ask 
    - **Codex:** `codex plugin marketplace add kennedy122112/figma-steroids` and
      `codex plugin add figma-steroids@figma-steroids`
    - **Others:** `npx -y github:kennedy122112/figma-steroids init --ai opencode --global`
-     (or `codex`, `cursor`, `claude`, `universal`, `all`)
+     (or `codex`, `cursor`, `antigravity`, `claude`, `universal`, `all`)
 3. The plugin: `npx -y github:kennedy122112/figma-steroids plugin`, then step 2 above.
 4. Start figma-cli (`figma-cli daemon start`), open the plugin and tell your AI *"connect to Figma"*.
 
@@ -116,7 +116,7 @@ Run `setup` again, or in Claude Code with the plugin: `/plugin marketplace updat
 ## Where does it work?
 
 In any assistant that **works in a folder on your computer and can run commands**: Claude Code
-(terminal, VS Code or the Code tab of Claude Desktop), Codex, OpenCode or Cursor.
+(terminal, VS Code or the Code tab of Claude Desktop), Codex, OpenCode, Cursor or Antigravity.
 
 It doesn't work in regular chats (claude.ai, ChatGPT) or in cloud versions, because they can't
 see your Figma Desktop.

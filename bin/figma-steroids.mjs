@@ -131,8 +131,8 @@ if (command === 'init' || command === 'update') {
   if (ids.includes('claude')) {
     console.log('\nNota: si ya instalaste el plugin de Claude Code (/plugin install), no hace falta también esta copia.');
   }
-  console.log('\nSiguiente paso: abre el plugin FigCli en Figma (Plugins → Development → FigCli) y pide "conecta con Figma".');
-  console.log('Opcional: `figma-steroids plugin` instala nuestro plugin de Figma, con registro de actividad y botón de pausa.');
+  console.log('\nSiguiente paso: `figma-steroids plugin` te da el plugin de Figma (impórtalo con Plugins → Development →');
+  console.log('Import plugin from manifest…), ábrelo y pide a tu IA "conecta con Figma". O hazlo todo con `figma-steroids setup`.');
   process.exit(0);
 }
 

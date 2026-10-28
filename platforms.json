@@ -43,6 +43,16 @@
       "agents": { "project": ".cursor/agents", "global": "~/.cursor/agents", "format": "cursor-md" },
       "instructions": { "project": "AGENTS.md", "global": null }
     },
+    "antigravity": {
+      "label": "Antigravity",
+      "docs": [
+        "https://codelabs.developers.google.com/getting-started-with-antigravity-skills",
+        "Skill integrada agy-customizations de Antigravity (~/.gemini/antigravity/builtin/skills/agy-customizations): skills en .agents/skills y ~/.gemini/config/skills; reglas en AGENTS.md / GEMINI.md; sin subagentes"
+      ],
+      "skills": { "project": ".agents/skills", "global": "~/.gemini/config/skills" },
+      "agents": null,
+      "instructions": { "project": "AGENTS.md", "global": "~/.gemini/GEMINI.md" }
+    },
     "universal": {
       "label": "Universal (estándar Agent Skills: .agents/skills)",
       "docs": ["https://agentskills.io"],
