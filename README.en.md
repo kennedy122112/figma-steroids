@@ -163,6 +163,13 @@ Thanks to [Sil Bormüller](https://github.com/silships) ([Into Design Systems](h
 for [figma-cli](https://github.com/silships/figma-cli), the foundation of all this (MIT license).
 The Figma plugin in `figma-plugin/` starts from its FigCli plugin and adds the interface.
 
+## Sibling projects
+
+- [**ea-steroids**](https://github.com/kennedy122112/ea-steroids): model architecture in Enterprise Architect from your AI agent.
+- [**bizagi-steroids**](https://github.com/kennedy122112/bizagi-steroids): describe a process and get the BPMN for Bizagi plus its Word document.
+- [**blender-steroids**](https://github.com/kennedy122112/blender-steroids): model 3D scenes in Blender from your AI agent.
+- [**ps-steroids**](https://github.com/kennedy122112/ps-steroids): design layered graphics in Adobe Photoshop from your AI agent, starting from your idea or your photos.
+
 ## License
 
 [MIT](LICENSE)
