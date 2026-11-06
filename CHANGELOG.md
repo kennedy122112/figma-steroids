@@ -7,6 +7,21 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.19.0] - 2026-11-06
+
+### Añadido
+- Skill **`figma-wireframe`** con `scripts/wireframe.mjs`: pasa una pantalla a wireframe (baja
+  fidelidad) en una copia a su derecha, sin tocar la original y conservando el auto-layout, los
+  textos y las instancias, así que sigue siendo editable. Cajas claras → papel con borde fino,
+  oscuras → gris suave, textos e iconos en el color del estilo, imágenes → caja gris con una X, sin
+  sombras ni degradados. Estilos: gris, azul, blueprint, rosa, verde, dorado y carbón. La skill
+  también explica cómo diseñar directamente en wireframe. Idea inspirada en Wire Box (Help Scout),
+  con código propio.
+
+### Probado
+- En pantallas reales de un proyecto (formulario y carga de documentos, en gris y blueprint): misma
+  estructura y textos en 1,3 s por pantalla; imágenes → caja con X.
+
 ## [0.18.0] - 2026-10-27
 
 ### Añadido
@@ -274,6 +289,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.19.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.15.0...v0.16.0

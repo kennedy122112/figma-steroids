@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.18.0-blue?style=for-the-badge" alt="Versión 0.18.0">
+  <img src="https://img.shields.io/badge/versión-0.19.0-blue?style=for-the-badge" alt="Versión 0.19.0">
   <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex, OpenCode y Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
@@ -55,6 +55,7 @@ El plugin te muestra en vivo lo que hace la IA y tiene un botón para **pausarla
 | *"Revisa la coherencia de mi archivo"* | Recorre todas las páginas, te dice qué colores, textos, espaciados y botones se salen del sistema, y vincula lo que ya coincide |
 | *"Revisa la accesibilidad"* | Revisa contraste, tamaño de botones y textos, y propone correcciones |
 | *"Hazme la versión móvil y tablet"* | Copia la pantalla y la reorganiza para 768 y 390 px: tarjetas en columnas, tablas como tarjetas, menú aparte |
+| *"Pásala a wireframe"* | Crea al lado una versión en baja fidelidad, editable y con el auto-layout intacto, para tests de usabilidad o propuestas |
 | *"Añade modo oscuro"* | Crea el tema oscuro en Figma y lo lleva a tu código |
 
 ## Instalación
@@ -132,6 +133,7 @@ Figma Desktop.
 | `figma-to-code` | Pasa un diseño a código en tu stack |
 | `figma-from-code` | Lleva a Figma una pantalla que ya existe en tu app |
 | `figma-consistency-audit` | Revisa todo el archivo: qué se sale de tu design system, lo vincula cuando es seguro y convierte botones o badges hechos a mano en un componente |
+| `figma-wireframe` | Pasa una pantalla a wireframe (baja fidelidad) sin perder la estructura, o diseña directamente en wireframe |
 | `figma-a11y-review` | Revisa la accesibilidad |
 | `figma-handoff` | Exporta imágenes, tokens y especificaciones para desarrollo |
 
