@@ -12,9 +12,10 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 ### Añadido
 - Skill **`figma-wireframe`** con `scripts/wireframe.mjs`: pasa una pantalla a wireframe (baja
   fidelidad) en una copia a su derecha, sin tocar la original y conservando el auto-layout, los
-  textos y las instancias, así que sigue siendo editable. Cajas claras → papel con borde fino,
-  oscuras → gris suave, textos e iconos en el color del estilo, imágenes → caja gris con una X, sin
-  sombras ni degradados. Estilos: gris, azul, blueprint, rosa, verde, dorado y carbón. La skill
+  textos y las instancias, así que sigue siendo editable. Aspecto `wirebox` (por defecto, como Wire
+  Box): todo en blanco con una línea de 1 px de color en cada caja, iconos en contorno y textos en
+  Roboto Regular. Aspecto `suave`: oscuros en gris suave y textos con su fuente. Imágenes → caja con
+  una X, sin sombras ni degradados. Estilos: rosa, azul, verde, dorado, carbón, gris y blueprint. La skill
   también explica cómo diseñar directamente en wireframe. Idea inspirada en Wire Box (Help Scout),
   con código propio.
 

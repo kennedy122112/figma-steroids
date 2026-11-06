@@ -13,24 +13,26 @@ información con negocio.
 
 ## De una pantalla terminada a wireframe
 ```
-node scripts/wireframe.mjs --id "<id de la pantalla>" [--style gris]
+node scripts/wireframe.mjs --id "<id de la pantalla>" [--look wirebox|suave] [--style rosa]
 ```
-Crea `<pantalla> · Wireframe` a la derecha de lo que hay en la página (la original no se toca;
-si ya existe, la rehace). Solo cambia el aspecto:
+Crea `<pantalla> · Wireframe (<estilo>)` a la derecha de lo que hay en la página (la original no
+se toca; si ya existe, la rehace). Solo cambia el aspecto. Dos aspectos:
 
-| En el diseño | En el wireframe |
-|---|---|
-| Cajas, tarjetas y secciones claras | Papel con borde fino |
-| Barras, botones o avatares de color oscuro | Gris suave con borde fino |
-| Textos e iconos | El color del estilo, en su sitio y con su tamaño |
-| Imágenes | Caja gris con una X |
-| Sombras y degradados | Fuera |
+| En el diseño | `wirebox` (por defecto, como Wire Box) | `suave` |
+|---|---|---|
+| Cajas, tarjetas, secciones, círculos | Blanco con línea de 1 px del color del estilo | Claras → papel, oscuras → gris suave, borde al 70 % |
+| Iconos | Solo contorno | Rellenos del color del estilo |
+| Textos | Color del estilo, todos en Roboto Regular | Color del estilo, con su fuente y su peso |
+| Imágenes | Caja blanca con una X | Caja gris con una X |
+| Sombras y degradados | Fuera | Fuera |
 
 El auto-layout, los textos, los nombres de capa y las instancias se conservan: el wireframe se
 puede seguir editando, hacer responsive (`figma-build-ui`) o convertir en flujo.
 
-Estilos (`--style`): `gris` (por defecto), `azul`, `blueprint` (líneas blancas sobre azul), `rosa`,
-`verde`, `dorado`, `carbon`. El script devuelve cuántas cajas, textos, iconos e imágenes cambió.
+Estilos (`--style`): `rosa` (por defecto en `wirebox`, el de Wire Box), `azul`, `verde`, `dorado`,
+`carbon` (los cinco de Wire Box), `gris` (por defecto en `suave`) y `blueprint` (líneas blancas
+sobre azul). Si el usuario muestra una referencia de Wire Box, usa `wirebox`; si quiere algo más
+sobrio para clientes, `--look suave`. El script devuelve cuántas cajas, textos, iconos e imágenes cambió.
 
 Después, captura el resultado (`figma-cli verify "<id>" --save …`) y enséñaselo. Si algo importante
 quedó poco visible (un botón principal que ya no destaca), propón marcarlo, por ejemplo con el
