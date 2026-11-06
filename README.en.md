@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <b>Your AI designs in Figma and turns it into your code. And the other way around.</b><br>
+  <b>From idea to wireframe, from wireframe to Figma and from Figma to your code. And back.</b><br>
   Local, no MCP, no API key, no usage limits.
 </p>
 
@@ -24,8 +24,9 @@
 ## What is it?
 
 A set of **skills** and **agents** for your AI assistant (Claude Code, Codex, OpenCode…) that
-teach it to work in **Figma Desktop**: design with your design system, turn a design into code in
-your stack, and bring a screen that already exists in your app into Figma.
+teach it to work in **Figma Desktop**: turn an idea into clickable wireframes, design with your
+design system, keep the file consistent, turn a design into code in your stack, and bring a screen
+that already exists in your app into Figma.
 
 Built on [figma-cli](https://github.com/silships/figma-cli) by Sil Bormüller.
 
@@ -49,13 +50,13 @@ leaves your machine. The plugin shows you live what the AI is doing and has a bu
 
 | You ask | What happens |
 |---|---|
+| *"I have an idea: a biometric attendance app"* | Proposes the flow's screens and, once you approve them, draws the wireframes linked as a clickable prototype |
 | *"Create a login screen with my design system"* | It builds it in Figma with your colors, text styles and components, fully editable |
 | *"Implement the selected frame in my project"* | It writes the component in your stack (Angular, React, Lit, HTML…) reusing what you already have |
 | *"Bring this screen of my app into Figma"* | It reads your app in the browser and rebuilds it in Figma with auto-layout and your variables |
 | *"Check my file's consistency"* | Goes through every page, tells you which colors, text, spacing and buttons fall outside the system, and binds what already matches |
 | *"Review the accessibility"* | It checks contrast, button and text sizes, and suggests fixes |
 | *"Make the mobile and tablet versions"* | Copies the screen and rearranges it for 768 and 390 px: cards into columns, tables as cards, menu set aside |
-| *"I have an idea: a biometric attendance app"* | Proposes the flow's screens and, once you approve them, draws the wireframes linked as a clickable prototype |
 | *"Turn it into a wireframe"* | Creates a low-fidelity version next to it, editable and with auto-layout intact, for usability tests or proposals |
 | *"Add dark mode"* | It creates the dark theme in Figma and carries it to your code |
 

@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <b>Tu IA diseña en Figma y lo pasa a tu código. Y al revés.</b><br>
+  <b>De la idea al wireframe, del wireframe a Figma y de Figma a tu código. Y al revés.</b><br>
   Local, sin MCP, sin API key y sin límites de uso.
 </p>
 
@@ -24,8 +24,9 @@
 ## ¿Qué es?
 
 Un conjunto de **skills** y **agentes** para tu asistente de IA (Claude Code, Codex, OpenCode…)
-que le enseñan a trabajar en **Figma Desktop**: diseñar con tu design system, pasar un diseño a
-código en tu stack y llevar a Figma una pantalla que ya existe en tu app.
+que le enseñan a trabajar en **Figma Desktop**: convertir una idea en wireframes navegables,
+diseñar con tu design system, mantener el archivo coherente, pasar un diseño a código en tu stack y
+llevar a Figma una pantalla que ya existe en tu app.
 
 Está construido sobre [figma-cli](https://github.com/silships/figma-cli), de Sil Bormüller.
 
@@ -49,13 +50,13 @@ El plugin te muestra en vivo lo que hace la IA y tiene un botón para **pausarla
 
 | Pides | Pasa |
 |---|---|
+| *"Tengo una idea: un control de asistencia biométrico"* | Te propone las pantallas del flujo y, cuando las apruebas, dibuja los wireframes conectados como prototipo navegable |
 | *"Crea una pantalla de login con mi design system"* | La construye en Figma con tus colores, textos y componentes, editable |
 | *"Implementa el frame seleccionado en mi proyecto"* | Escribe el componente en tu stack (Angular, React, Lit, HTML…) reutilizando lo que ya tienes |
 | *"Pasa esta pantalla de mi app a Figma"* | Lee tu app en el navegador y la reconstruye en Figma con auto-layout y tus variables |
 | *"Revisa la coherencia de mi archivo"* | Recorre todas las páginas, te dice qué colores, textos, espaciados y botones se salen del sistema, y vincula lo que ya coincide |
 | *"Revisa la accesibilidad"* | Revisa contraste, tamaño de botones y textos, y propone correcciones |
 | *"Hazme la versión móvil y tablet"* | Copia la pantalla y la reorganiza para 768 y 390 px: tarjetas en columnas, tablas como tarjetas, menú aparte |
-| *"Tengo una idea: un control de asistencia biométrico"* | Te propone las pantallas del flujo y, cuando las apruebas, dibuja los wireframes conectados como prototipo navegable |
 | *"Pásala a wireframe"* | Crea al lado una versión en baja fidelidad, editable y con el auto-layout intacto, para tests de usabilidad o propuestas |
 | *"Añade modo oscuro"* | Crea el tema oscuro en Figma y lo lleva a tu código |
 

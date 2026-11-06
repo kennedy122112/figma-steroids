@@ -1,7 +1,7 @@
 {
   "name": "figma-steroids",
   "version": "0.20.0",
-  "description": "Skills y agentes para diseñar en Figma Desktop con tu agente de IA (Claude Code, Codex, Cursor, OpenCode…) a través de figma-cli, en modo plugin/Safe, sin API key ni MCP: conexión, construcción de UI con tu design system, paso de Figma a código en cualquier stack (Angular, React, Lit…), revisión de accesibilidad y handoff.",
+  "description": "Skills y agentes para diseñar en Figma Desktop con tu agente de IA (Claude Code, Codex, OpenCode, Cursor, Antigravity…) a través de figma-cli, en modo plugin, sin API key ni MCP: de la idea a wireframes navegables, construcción de UI con tu design system, auditoría de coherencia y componentes, versiones responsive, paso de Figma a código en cualquier stack (Angular, React, Lit, HTML) y de tu app a Figma, accesibilidad y handoff.",
   "author": {
     "name": "kennedy122112"
   },
@@ -13,15 +13,20 @@
     "figma-cli",
     "design-system",
     "design-tokens",
+    "wireframe",
+    "prototype",
+    "responsive",
     "accessibility",
     "agents",
     "skills",
     "design-to-code",
+    "code-to-design",
     "angular",
     "react",
     "lit",
     "codex",
     "opencode",
-    "cursor"
+    "cursor",
+    "antigravity"
   ]
 }
