@@ -7,6 +7,20 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.20.0] - 2026-11-06
+
+### Añadido
+- **De la idea a wireframes** en `figma-wireframe`: la IA propone el mapa de pantallas, y al
+  aprobarlo `scripts/screens.mjs` las dibuja desde un JSON con un kit de componentes de wireframe
+  (`scripts/kit.mjs`: Botón, Botón principal, Campo, Tarjeta, Fila, Imagen, Visor de cámara, Barra
+  superior, Pestañas, Chip, Avatar), con auto-layout, en el orden del flujo, con flechas, "lleva a"
+  debajo de cada pantalla y enlaces de prototipo navegables. Una llamada por pantalla (límite de
+  25 s del plugin) y sin duplicar al repetir.
+
+### Probado
+- Idea "control biométrico fácil para el registro de asistencia" (app móvil del empleado): 7
+  pantallas y 12 enlaces de prototipo en 26 s.
+
 ## [0.19.0] - 2026-11-06
 
 ### Añadido
@@ -290,6 +304,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.20.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.16.0...v0.17.0

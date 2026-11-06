@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.19.0-blue?style=for-the-badge" alt="Version 0.19.0">
+  <img src="https://img.shields.io/badge/version-0.20.0-blue?style=for-the-badge" alt="Version 0.20.0">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Works with Claude Code, Codex, OpenCode and Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
@@ -55,6 +55,7 @@ leaves your machine. The plugin shows you live what the AI is doing and has a bu
 | *"Check my file's consistency"* | Goes through every page, tells you which colors, text, spacing and buttons fall outside the system, and binds what already matches |
 | *"Review the accessibility"* | It checks contrast, button and text sizes, and suggests fixes |
 | *"Make the mobile and tablet versions"* | Copies the screen and rearranges it for 768 and 390 px: cards into columns, tables as cards, menu set aside |
+| *"I have an idea: a biometric attendance app"* | Proposes the flow's screens and, once you approve them, draws the wireframes linked as a clickable prototype |
 | *"Turn it into a wireframe"* | Creates a low-fidelity version next to it, editable and with auto-layout intact, for usability tests or proposals |
 | *"Add dark mode"* | It creates the dark theme in Figma and carries it to your code |
 
@@ -133,7 +134,7 @@ see your Figma Desktop.
 | `figma-to-code` | Turns a design into code in your stack |
 | `figma-from-code` | Brings a screen that already exists in your app into Figma |
 | `figma-consistency-audit` | Reviews the whole file: what falls outside your design system, binds it when it's safe and turns hand-made buttons or badges into a component |
-| `figma-wireframe` | Turns a screen into a wireframe (low fidelity) without losing its structure, or designs straight in wireframe |
+| `figma-wireframe` | From an idea to wireframes with a clickable prototype, or from a finished screen to its wireframe |
 | `figma-a11y-review` | Reviews accessibility |
 | `figma-handoff` | Exports images, tokens and specs for developers |
 

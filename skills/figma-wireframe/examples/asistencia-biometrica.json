@@ -1,0 +1,119 @@
+{
+  "device": "mobile",
+  "flow": "Asistencia biométrica",
+  "screens": [
+    {
+      "id": "registro", "name": "1 · Registro de rostro",
+      "top": { "kit": "Barra superior", "texts": ["‹", "Registra tu rostro", "?"] },
+      "body": [
+        { "text": "Es solo una vez. Así podrás marcar tu asistencia con tu cara.", "size": 15 },
+        { "row": [{ "kit": "Visor de cámara" }], "justify": "center", "fill": true },
+        { "text": "Ubica tu rostro dentro del óvalo, con buena luz y sin lentes oscuros.", "size": 13, "muted": true, "align": "center" },
+        { "spacer": true },
+        { "kit": "Botón principal", "texts": ["Registrar mi rostro"], "fill": true }
+      ],
+      "links": [{ "on": "Registrar mi rostro", "to": "inicio" }]
+    },
+    {
+      "id": "inicio", "name": "2 · Inicio",
+      "top": { "kit": "Barra superior", "texts": ["☰", "Asistencia", "?"] },
+      "body": [
+        { "col": [{ "text": "Hola, Ana", "size": 26 }, { "text": "Martes 6 de noviembre", "size": 14, "muted": true }], "gap": 4 },
+        { "col": [
+            { "row": [{ "text": "Hoy", "size": 16 }, { "kit": "Chip", "texts": ["Sin marcar"] }], "justify": "between", "fill": true },
+            { "text": "Horario: 08:00 – 17:00", "size": 13, "muted": true }
+          ], "card": true, "fill": true, "gap": 6 },
+        { "col": [
+            { "text": "Sede detectada", "size": 13, "muted": true },
+            { "text": "Sede Central · Av. Arequipa 1520", "size": 15 },
+            { "text": "Estás dentro de la zona permitida", "size": 13, "muted": true }
+          ], "card": true, "fill": true, "gap": 4 },
+        { "spacer": true },
+        { "kit": "Botón principal", "texts": ["Marcar entrada"], "fill": true }
+      ],
+      "bottom": { "kit": "Pestañas" },
+      "links": [
+        { "on": "Marcar entrada", "to": "verificando" },
+        { "on": "Historial", "to": "historial" },
+        { "on": "Justificar", "to": "justificar" }
+      ]
+    },
+    {
+      "id": "verificando", "name": "3 · Verificando",
+      "top": { "kit": "Barra superior", "texts": ["‹", "Marcar entrada", "?"] },
+      "body": [
+        { "text": "Mira a la cámara", "size": 22, "align": "center", "fill": true },
+        { "row": [{ "kit": "Visor de cámara" }], "justify": "center", "fill": true },
+        { "text": "Mantén el celular a la altura de tu cara. Solo tarda un segundo.", "size": 13, "muted": true, "align": "center" },
+        { "spacer": true },
+        { "kit": "Botón", "texts": ["Cancelar"], "fill": true }
+      ],
+      "links": [
+        { "on": "Mira a la cámara", "to": "registrada" },
+        { "on": "Cancelar", "to": "inicio" }
+      ]
+    },
+    {
+      "id": "registrada", "name": "4 · Marcación registrada",
+      "top": { "kit": "Barra superior", "texts": ["‹", "Listo", "?"] },
+      "body": [
+        { "spacer": true },
+        { "row": [{ "kit": "Avatar" }], "justify": "center", "fill": true },
+        { "text": "Entrada registrada", "size": 26, "align": "center", "fill": true },
+        { "text": "08:02 · Sede Central", "size": 18, "align": "center", "fill": true },
+        { "col": [{ "text": "Ana Torres", "size": 15 }, { "text": "Puntual · 2 minutos antes de tu horario", "size": 13, "muted": true }], "card": true, "fill": true, "gap": 4 },
+        { "spacer": true },
+        { "kit": "Botón principal", "texts": ["Volver al inicio"], "fill": true }
+      ],
+      "links": [{ "on": "Volver al inicio", "to": "inicio" }]
+    },
+    {
+      "id": "error", "name": "5 · No se pudo marcar",
+      "top": { "kit": "Barra superior", "texts": ["‹", "No se pudo marcar", "?"] },
+      "body": [
+        { "row": [{ "kit": "Visor de cámara" }], "justify": "center", "fill": true },
+        { "text": "No pudimos reconocer tu rostro", "size": 22 },
+        { "text": "Puede ser la luz o la distancia. Revisa también que estés dentro de tu sede.", "size": 14, "muted": true },
+        { "col": [{ "text": "Sede detectada", "size": 13, "muted": true }, { "text": "Fuera de la zona permitida (350 m)", "size": 15 }], "card": true, "fill": true, "gap": 4 },
+        { "spacer": true },
+        { "kit": "Botón principal", "texts": ["Intentar de nuevo"], "fill": true },
+        { "kit": "Botón", "texts": ["Justificar marcación"], "fill": true }
+      ],
+      "links": [
+        { "on": "Intentar de nuevo", "to": "verificando" },
+        { "on": "Justificar marcación", "to": "justificar" }
+      ]
+    },
+    {
+      "id": "historial", "name": "6 · Mi historial",
+      "top": { "kit": "Barra superior", "texts": ["‹", "Mi historial", "?"] },
+      "body": [
+        { "row": [{ "kit": "Chip", "texts": ["Esta semana"] }, { "kit": "Chip", "texts": ["Noviembre"] }], "gap": 8 },
+        { "kit": "Fila", "texts": ["Mar 6 nov", "Entrada 08:02 · En curso", "›"], "fill": true },
+        { "kit": "Fila", "texts": ["Lun 5 nov", "Entrada 07:58 · Salida 17:05", "›"], "fill": true },
+        { "kit": "Fila", "texts": ["Vie 2 nov", "Entrada 08:21 · Tardanza 21 min", "›"], "fill": true },
+        { "kit": "Fila", "texts": ["Jue 1 nov", "Feriado", "›"], "fill": true },
+        { "kit": "Fila", "texts": ["Mié 31 oct", "Sin marcación de salida", "›"], "fill": true }
+      ],
+      "bottom": { "kit": "Pestañas" },
+      "links": [
+        { "on": "Inicio", "to": "inicio" },
+        { "on": "Justificar", "to": "justificar" }
+      ]
+    },
+    {
+      "id": "justificar", "name": "7 · Justificar",
+      "top": { "kit": "Barra superior", "texts": ["‹", "Justificar", "?"] },
+      "body": [
+        { "kit": "Campo", "texts": ["Tipo", "Marcación olvidada"], "fill": true },
+        { "kit": "Campo", "texts": ["Fecha", "Mié 31 oct 2026"], "fill": true },
+        { "kit": "Campo", "texts": ["Motivo", "Cuéntanos qué pasó"], "fill": true },
+        { "text": "Foto de sustento (opcional)", "size": 13, "muted": true },
+        { "kit": "Imagen", "h": 120, "fill": true },
+        { "spacer": true },
+        { "kit": "Botón principal", "texts": ["Enviar justificación"], "fill": true }
+      ],
+      "links": [{ "on": "Enviar justificación", "to": "historial" }]
+    }
+  ]
+}
