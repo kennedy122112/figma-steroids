@@ -3,11 +3,11 @@
 // derecha y cambia solo el aspecto. El auto-layout, los textos y las instancias se conservan, así
 // que el wireframe sigue siendo editable. La original no se toca.
 //
-//   node wireframe.mjs --id 16:2789 [--look wirebox|suave] [--style rosa|azul|verde|dorado|carbon|gris|blueprint]
+//   node wireframe.mjs --id 16:2789 [--look wirebox|suave] [--style gris|rosa|azul|verde|dorado|carbon|blueprint]
 //
 // Aspectos (--look):
 // · wirebox (por defecto, el de Wire Box de Help Scout): todo en blanco con una línea de 1 px del
-//   color del estilo (rosa por defecto) en cada caja, círculo y forma; iconos solo en contorno;
+//   color del estilo (gris por defecto) en cada caja, círculo y forma; iconos solo en contorno;
 //   textos del color del estilo, todos en Roboto Regular;
 // · suave: cajas claras → papel y oscuras → gris suave, borde fino al 70 %, iconos rellenos y los
 //   textos conservan su fuente y su peso.
@@ -34,7 +34,7 @@ const opt = (name) => {
 };
 const id = opt('--id');
 const look = opt('--look') || 'wirebox';
-const style = opt('--style') || (look === 'wirebox' ? 'rosa' : 'gris');
+const style = opt('--style') || 'gris';
 if (!id || !STYLES[style] || !['wirebox', 'suave'].includes(look)) {
   console.error(`Uso: node wireframe.mjs --id <id de la pantalla> [--look wirebox|suave] [--style ${Object.keys(STYLES).join('|')}]`);
   process.exit(1);

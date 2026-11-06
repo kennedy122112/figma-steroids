@@ -13,7 +13,7 @@ información con negocio.
 
 ## De una pantalla terminada a wireframe
 ```
-node scripts/wireframe.mjs --id "<id de la pantalla>" [--look wirebox|suave] [--style rosa]
+node scripts/wireframe.mjs --id "<id de la pantalla>" [--look wirebox|suave] [--style gris]
 ```
 Crea `<pantalla> · Wireframe (<estilo>)` a la derecha de lo que hay en la página (la original no
 se toca; si ya existe, la rehace). Solo cambia el aspecto. Dos aspectos:
@@ -29,9 +29,8 @@ se toca; si ya existe, la rehace). Solo cambia el aspecto. Dos aspectos:
 El auto-layout, los textos, los nombres de capa y las instancias se conservan: el wireframe se
 puede seguir editando, hacer responsive (`figma-build-ui`) o convertir en flujo.
 
-Estilos (`--style`): `rosa` (por defecto en `wirebox`, el de Wire Box), `azul`, `verde`, `dorado`,
-`carbon` (los cinco de Wire Box), `gris` (por defecto en `suave`) y `blueprint` (líneas blancas
-sobre azul). Si el usuario muestra una referencia de Wire Box, usa `wirebox`; si quiere algo más
+Estilos (`--style`): `gris` (por defecto), `rosa`, `azul`, `verde`, `dorado`, `carbon` (los colores
+de Wire Box) y `blueprint` (líneas blancas sobre azul). Si el usuario muestra una referencia de Wire Box, usa `wirebox`; si quiere algo más
 sobrio para clientes, `--look suave`. El script devuelve cuántas cajas, textos, iconos e imágenes cambió.
 
 Después, captura el resultado (`figma-cli verify "<id>" --save …`) y enséñaselo. Si algo importante

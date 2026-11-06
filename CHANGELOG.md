@@ -15,7 +15,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
   textos y las instancias, así que sigue siendo editable. Aspecto `wirebox` (por defecto, como Wire
   Box): todo en blanco con una línea de 1 px de color en cada caja, iconos en contorno y textos en
   Roboto Regular. Aspecto `suave`: oscuros en gris suave y textos con su fuente. Imágenes → caja con
-  una X, sin sombras ni degradados. Estilos: rosa, azul, verde, dorado, carbón, gris y blueprint. La skill
+  una X, sin sombras ni degradados. Estilos: gris (por defecto), rosa, azul, verde, dorado, carbón y blueprint. La skill
   también explica cómo diseñar directamente en wireframe. Idea inspirada en Wire Box (Help Scout),
   con código propio.
 
