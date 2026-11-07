@@ -173,6 +173,7 @@ plugin de Figma de `figma-plugin/` parte de su plugin FigCli y le añade la inte
 - [**bizagi-steroids**](https://github.com/kennedy122112/bizagi-steroids): describe un proceso y obtén el BPMN para Bizagi y su documento Word.
 - [**blender-steroids**](https://github.com/kennedy122112/blender-steroids): modela escenas 3D en Blender desde tu agente de IA.
 - [**ps-steroids**](https://github.com/kennedy122112/ps-steroids): diseña piezas gráficas por capas en Adobe Photoshop desde tu agente de IA, a partir de tu idea o tus fotos.
+- [**pc-steroids**](https://github.com/kennedy122112/pc-steroids): diseña piezas gráficas por capas en PhotoCraft desde tu agente de IA, a partir de tu idea o tus fotos.
 
 ## Licencia
 

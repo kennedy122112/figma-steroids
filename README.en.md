@@ -173,6 +173,7 @@ The Figma plugin in `figma-plugin/` starts from its FigCli plugin and adds the i
 - [**bizagi-steroids**](https://github.com/kennedy122112/bizagi-steroids): describe a process and get the BPMN for Bizagi plus its Word document.
 - [**blender-steroids**](https://github.com/kennedy122112/blender-steroids): model 3D scenes in Blender from your AI agent.
 - [**ps-steroids**](https://github.com/kennedy122112/ps-steroids): design layered graphics in Adobe Photoshop from your AI agent, starting from your idea or your photos.
+- [**pc-steroids**](https://github.com/kennedy122112/pc-steroids): design layered graphics in PhotoCraft from your AI agent, starting from your idea or your photos.
 
 ## License
 
