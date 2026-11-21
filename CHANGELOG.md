@@ -7,6 +7,28 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.22.0] - 2026-11-21
+
+### Añadido
+- **De wireframe a alta fidelidad** (`figma-wireframe/scripts/hifi.mjs`): copia cada pantalla del
+  flujo y cambia las piezas del kit por los componentes del design system (con sus textos, ancho y
+  enlaces), vincula los grises a variables (fondo, tarjeta, apagado, texto, borde), aplica estilos
+  de texto y tokens de espaciado y radio, y pasa el prototipo a las copias. `--dry-run` enseña el
+  plan; `--map` elige a mano un componente o deja una pieza en wireframe.
+- **Pruebas sin Figma**: un Figma simulado (`tests/helpers/figma-mock.mjs`) que imita la parte de
+  la Plugin API que usan los scripts y la forma en que `figma-cli eval` devuelve el resultado. Cubre
+  la auditoría, `resolve` y la alta fidelidad; corre en `npm test` y en CI.
+
+### Cambiado
+- **La auditoría y `resolve` trabajan por lotes**: cada página, de 15 en 15 pantallas de primer
+  nivel (`--batch`), y unen los resultados. En archivos grandes ya no chocan con el corte de 25 s
+  del plugin ni dejan el trabajo a medias. El informe es el mismo (más `batches`). Repetir un lote
+  es seguro: lo ya vinculado no se vuelve a tocar.
+
+### Corregido
+- `audit --fix` podía perder la vinculación de un relleno si el mismo nodo tenía otro relleno
+  vinculable después.
+
 ## [0.21.0] - 2026-11-21
 
 ### Cambiado
@@ -319,6 +341,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.22.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.18.0...v0.19.0

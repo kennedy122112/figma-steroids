@@ -31,6 +31,22 @@ export function figmaEval(code) {
   }
 }
 
+// Versión asíncrona de figmaEval. Las pruebas la redirigen a un Figma simulado con setRunner
+// (código → salida de texto, o su promesa).
+let runner = null;
+export function setRunner(fn) {
+  runner = fn;
+}
+export async function figmaRun(code) {
+  if (!runner) return figmaEval(code);
+  const raw = String(await runner(code));
+  try {
+    return JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+  } catch {
+    throw new Error(`figma-cli no devolvió lo esperado:\n${raw.slice(0, 2000)}`);
+  }
+}
+
 // Paleta del aspecto Wire Box en gris (la misma que wireframe.mjs).
 export const PALETTE = { ink: '#4b5563', paper: '#ffffff', soft: '#f3f4f6' };
 

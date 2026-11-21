@@ -6,30 +6,38 @@
 //   node audit.mjs --page "Pantallas"    solo esa página
 //   node audit.mjs --fix                 además vincula lo que coincide EXACTAMENTE con el sistema
 //   node audit.mjs --out informe.json    guarda el informe
+//   node audit.mjs --batch 15            pantallas por llamada (por defecto 15)
 //
 // --fix nunca cambia el aspecto: solo vincula colores, espaciados y radios al token que ya tiene
 // ese valor, y aplica el estilo de texto que ya coincide en fuente, tamaño, peso e interlineado.
+//
+// Trabaja por lotes (cada página, en grupos de pantallas de primer nivel) para no chocar con el
+// corte de 25 s del plugin en archivos grandes, y une los resultados aquí. Repetir un lote con
+// --fix es seguro: lo ya vinculado no se vuelve a tocar.
 // Usa `figma-cli` del PATH; FIGMA_CLI="npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli" lo cambia.
-import { writeFileSync, mkdtempSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
-import { execSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+import { figmaEval, figmaEvalLarge, batches, mergeGroups, sumInto } from './lib.mjs';
 
-const args = process.argv.slice(2);
-const opt = (name) => {
-  const i = args.indexOf(name);
-  return i >= 0 ? args[i + 1] : undefined;
+// Lo que se calcula una sola vez para todo el archivo: los componentes (exige cargar todas las páginas).
+const SYSTEM_CODE = `
+const components = [];
+for (const p of figma.root.children) {
+  await p.loadAsync();
+  p.findAllWithCriteria({ types: ['COMPONENT', 'COMPONENT_SET'] }).forEach((c) => {
+    if (c.type === 'COMPONENT' && c.parent && c.parent.type === 'COMPONENT_SET') return;
+    components.push(c.name);
+  });
 };
-const fix = args.includes('--fix');
-const page = opt('--page');
-const out = opt('--out');
-const cli = process.env.FIGMA_CLI || 'figma-cli';
+JSON.stringify({ file: figma.root.name, components })`;
 
-// Código que corre dentro de Figma (Plugin API). Termina en "; JSON.stringify(…)": figma-cli
-// eval devuelve lo que va tras el último ";".
-const code = `
-const ONLY_PAGE = ${JSON.stringify(page || null)};
-const FIX = ${fix};
+// Código de un lote (Plugin API). Recalcula variables y estilos (es barato) y recorre solo `ids`.
+function batchCode({ ids, pageName, fix, components }) {
+  return `
+const IDS = ${JSON.stringify(ids)};
+const PAGE = ${JSON.stringify(pageName)};
+const FIX = ${!!fix};
+const components = ${JSON.stringify(components)};
 const EXAMPLES = 5;
 const hex = (c) => '#' + [c.r, c.g, c.b].map((x) => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
 const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -50,28 +58,20 @@ for (const v of await figma.variables.getLocalVariablesAsync()) {
   const val = await resolve(v);
   if (v.resolvedType === 'COLOR' && val && 'r' in val) colorVars.push({ v, hex: hex(val), a: val.a ?? 1 });
   if (v.resolvedType === 'FLOAT' && typeof val === 'number') floatVars.push({ v, value: val });
-}
+};
 const spacingVars = floatVars.filter((x) => /spac|gap|space|padding/i.test(x.v.name));
 const radiusVars = floatVars.filter((x) => /radius|round|corner/i.test(x.v.name));
 const textStyles = [];
 for (const s of await figma.getLocalTextStylesAsync()) {
   textStyles.push({ s, family: s.fontName.family, style: s.fontName.style, size: s.fontSize, lh: s.lineHeight.unit === 'PIXELS' ? s.lineHeight.value : null, ls: JSON.stringify(s.letterSpacing), tcase: s.textCase, deco: s.textDecoration });
-}
-const components = [];
-for (const p of figma.root.children) {
-  await p.loadAsync();
-  p.findAllWithCriteria({ types: ['COMPONENT', 'COMPONENT_SET'] }).forEach((c) => {
-    if (c.type === 'COMPONENT' && c.parent && c.parent.type === 'COMPONENT_SET') return;
-    components.push(c.name);
-  });
-}
+};
 
 // ---- Recorrido ----
-const groups = { color: new Map(), text: new Map(), spacing: new Map(), radius: new Map(), copies: new Map(), handmade: new Map() };
+const groups = { color: {}, text: {}, spacing: {}, radius: {}, copies: {}, handmade: {} };
 const totals = { nodes: 0, fills: 0, fillsBound: 0, texts: 0, textsStyled: 0, spacing: 0, spacingBound: 0, radius: 0, radiusBound: 0 };
 const fixed = { color: 0, text: 0, spacing: 0, radius: 0 };
 const add = (map, key, base, node, where) => {
-  let g = map.get(key); if (!g) { g = { ...base, count: 0, examples: [] }; map.set(key, g); }
+  let g = map[key]; if (!g) { g = { ...base, count: 0, examples: [] }; map[key] = g; }
   g.count++; if (g.examples.length < EXAMPLES) g.examples.push({ id: node.id, name: node.name, where });
 };
 const screenOf = (n) => { let s = n; while (s.parent && s.parent.type !== 'PAGE') s = s.parent; return s.name; };
@@ -83,10 +83,10 @@ const exactColor = (h, a) => { const m = colorVars.filter((c) => c.hex === h && 
 const exactFloat = (list, val) => { const m = list.filter((x) => Math.abs(x.value - val) < 0.01); return m.length ? { v: m[0].v, names: m.map((x) => x.v.name), ambiguous: m.length > 1 } : null; };
 const tokenLabel = (ex) => (ex ? (ex.ambiguous ? 'ambiguo: ' + ex.names.join(' | ') : ex.names[0]) : null);
 
-async function visit(node, pageName) {
+async function visit(node) {
   if (node.type === 'INSTANCE') return; // lo de dentro viene del componente
   totals.nodes++;
-  const where = pageName + ' / ' + screenOf(node);
+  const where = PAGE + ' / ' + screenOf(node);
   const b = node.boundVariables || {};
 
   // Colores de relleno y trazo
@@ -102,7 +102,7 @@ async function visit(node, pageName) {
       const h = hex(p.color), a = p.opacity ?? 1;
       const ex = exactColor(h, a);
       if (FIX && ex && !ex.ambiguous) {
-        const copy = [...paints]; copy[i] = figma.variables.setBoundVariableForPaint(p, 'color', ex.v); node[prop] = copy;
+        const copy = [...node[prop]]; copy[i] = figma.variables.setBoundVariableForPaint(p, 'color', ex.v); node[prop] = copy;
         fixed.color++; totals.fillsBound++; continue;
       }
       const near = nearestColor(h);
@@ -168,62 +168,63 @@ async function visit(node, pageName) {
     }
   }
 
-  if ('children' in node) for (const c of node.children) await visit(c, pageName);
+  if ('children' in node) for (const c of node.children) await visit(c);
 }
 
-const pages = figma.root.children.filter((p) => !ONLY_PAGE || p.name === ONLY_PAGE);
-for (const p of pages) { await p.loadAsync(); for (const c of p.children) await visit(c, p.name); }
-
-const list = (m) => [...m.values()].sort((a, b) => b.count - a.count);
-const pct = (a, b) => (b ? Math.round((a / b) * 100) : 100);
+for (const id of IDS) { const n = await figma.getNodeByIdAsync(id); if (n) await visit(n); };
+if (FIX) figma.commitUndo();
 const result = {
-  file: figma.root.name,
-  pages: pages.map((p) => p.name),
-  system: { colorVariables: colorVars.length, spacingVariables: spacingVars.length, radiusVariables: radiusVars.length, textStyles: textStyles.length, components: components.length },
-  coverage: {
-    colors: pct(totals.fillsBound, totals.fills) + '% (' + totals.fillsBound + '/' + totals.fills + ')',
-    text: pct(totals.textsStyled, totals.texts) + '% (' + totals.textsStyled + '/' + totals.texts + ')',
-    spacing: pct(totals.spacingBound, totals.spacing) + '% (' + totals.spacingBound + '/' + totals.spacing + ')',
-    radius: pct(totals.radiusBound, totals.radius) + '% (' + totals.radiusBound + '/' + totals.radius + ')',
-  },
-  nodes: totals.nodes,
-  fixed: FIX ? fixed : null,
-  colors: list(groups.color), text: list(groups.text), spacing: list(groups.spacing), radius: list(groups.radius),
-  copies: list(groups.copies), handmade: list(groups.handmade),
-};
-// figma-cli corta cada resultado a 20 000 caracteres: el informe se queda en memoria del plugin
-// y se lee por partes.
-globalThis.__fsAudit = JSON.stringify(result);
-JSON.stringify({ length: globalThis.__fsAudit.length })`;
+  system: { colorVariables: colorVars.length, spacingVariables: spacingVars.length, radiusVariables: radiusVars.length, textStyles: textStyles.length },
+  totals, fixed, groups,
+};`;
+}
 
-const CHUNK = 15000;
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 100);
+const list = (g) => Object.values(g).sort((a, b) => b.count - a.count);
 
-const dir = mkdtempSync(join(tmpdir(), 'fs-audit-'));
-let n = 0;
-function evalCode(src) {
-  const f = join(dir, `eval-${++n}.js`);
-  writeFileSync(f, src);
-  const raw = execSync(`${cli} eval -f "${f}"`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 1 << 26 });
-  const json = raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1);
+export async function audit({ page = null, fix = false, size = 15, log = () => {} } = {}) {
+  const { file, components } = await figmaEval(SYSTEM_CODE);
+  const { pages, list: work } = await batches({ page, size });
+  const groups = { color: {}, text: {}, spacing: {}, radius: {}, copies: {}, handmade: {} };
+  const totals = {};
+  const fixed = {};
+  let system = null;
+  for (const [i, b] of work.entries()) {
+    log(`Lote ${i + 1}/${work.length}: ${b.page} (${b.ids.length} elementos)`);
+    const r = await figmaEvalLarge(batchCode({ ids: b.ids, pageName: b.page, fix, components }));
+    system = r.system;
+    sumInto(totals, r.totals);
+    sumInto(fixed, r.fixed);
+    for (const k of Object.keys(groups)) mergeGroups(groups[k], r.groups[k]);
+  }
+  const t = (k) => totals[k] || 0;
+  const cov = (bound, all) => `${pct(t(bound), t(all))}% (${t(bound)}/${t(all)})`;
+  return {
+    file,
+    pages,
+    system: { ...(system || {}), components: components.length },
+    coverage: { colors: cov('fillsBound', 'fills'), text: cov('textsStyled', 'texts'), spacing: cov('spacingBound', 'spacing'), radius: cov('radiusBound', 'radius') },
+    nodes: t('nodes'),
+    fixed: fix ? { color: fixed.color || 0, text: fixed.text || 0, spacing: fixed.spacing || 0, radius: fixed.radius || 0 } : null,
+    batches: work.length,
+    colors: list(groups.color), text: list(groups.text), spacing: list(groups.spacing), radius: list(groups.radius),
+    copies: list(groups.copies), handmade: list(groups.handmade),
+  };
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
+  const args = process.argv.slice(2);
+  const opt = (name) => {
+    const i = args.indexOf(name);
+    return i >= 0 ? args[i + 1] : undefined;
+  };
   try {
-    return JSON.parse(json);
-  } catch {
-    console.error(`figma-cli no devolvió lo esperado:
-${raw.slice(0, 2000)}`);
+    const result = await audit({ page: opt('--page') || null, fix: args.includes('--fix'), size: Number(opt('--batch')) || 15, log: (m) => console.error(m) });
+    const pretty = JSON.stringify(result, null, 2);
+    if (opt('--out')) writeFileSync(opt('--out'), pretty);
+    console.log(pretty);
+  } catch (e) {
+    console.error(e.message);
     process.exit(1);
   }
-}
-try {
-  const { length } = evalCode(code);
-  let text = '';
-  for (let i = 0; i < length; i += CHUNK) {
-    text += evalCode(`JSON.stringify({ part: globalThis.__fsAudit.slice(${i}, ${i + CHUNK}) })`).part;
-  }
-  evalCode('globalThis.__fsAudit = null; JSON.stringify({ ok: true })');
-  const result = JSON.parse(text);
-  const pretty = JSON.stringify(result, null, 2);
-  if (out) writeFileSync(out, pretty);
-  console.log(pretty);
-} finally {
-  rmSync(dir, { recursive: true, force: true });
 }

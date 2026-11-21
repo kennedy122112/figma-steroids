@@ -13,9 +13,10 @@ Requisito: conexión activa (skill `figma-connect`). Si el archivo no tiene desi
 ```
 node scripts/audit.mjs --out auditoria.json
 ```
-`--page "<nombre>"` limita a una página (útil en archivos muy grandes, o si figma-cli tarda
-más de 90 s). El informe se lee por partes, así que no le afecta el límite de 20 000
-caracteres de `figma-cli eval`. El informe trae:
+Recorre el archivo por lotes (cada página, de 15 en 15 pantallas de primer nivel) y une los
+resultados, así que los archivos grandes no chocan con el corte de 25 s del plugin; cada lote se
+lee por partes, sin el límite de 20 000 caracteres de `figma-cli eval`. `--page "<nombre>"`
+limita a una página; `--batch 5` hace lotes más pequeños si una pantalla es enorme. El informe trae:
 
 | Campo | Qué es |
 |---|---|
@@ -68,7 +69,8 @@ node scripts/resolve.mjs --round-spacing --color "#fafbfc=bg" --text "Inter Semi
 | `--color "#hex=variable"` | Ese color pasa a usar la variable (útil para casi-iguales: diferencia pequeña en el informe) |
 | `--text "Fuente Peso Tamaño[/Interlineado]=Estilo"` | Aplica ese estilo; si no existe, lo crea con esos valores |
 
-Entra también en los componentes: corregir un componente arregla todas sus instancias. Toma una
+Entra también en los componentes: corregir un componente arregla todas sus instancias. Como la
+auditoría, trabaja por lotes (`--batch`), y repetirlo no hace nada nuevo. Toma una
 captura de la pantalla antes y después (`figma-cli verify "<id>" --save …`) y enséñasela: deben
 verse diferencias mínimas. Ctrl+Z en Figma lo deshace.
 

@@ -1,6 +1,6 @@
 ---
 name: figma-wireframe
-description: Wireframes en Figma. De una idea contada por chat a un flujo de pantallas en baja fidelidad (mapa de pantallas, kit de componentes, pantallas con auto-layout y prototipo navegable), o de una pantalla terminada a su wireframe editable (gris como Wire Box, azul, blueprint…). Úsala cuando el usuario diga "tengo una idea de app", "hazme los wireframes de…", "de la idea a wireframes", "boceta el flujo de…", "pásala a wireframe", "hazme el wireframe", "versión de baja fidelidad", "lo-fi", "en blanco y negro para el test de usabilidad", "quítale el diseño para enseñar la estructura", "wireframe this screen".
+description: Wireframes en Figma. De una idea contada por chat a un flujo de pantallas en baja fidelidad (mapa de pantallas, kit de componentes, pantallas con auto-layout y prototipo navegable), de esos wireframes a alta fidelidad con el design system del archivo, o de una pantalla terminada a su wireframe editable (gris como Wire Box, azul, blueprint…). Úsala cuando el usuario diga "tengo una idea de app", "hazme los wireframes de…", "de la idea a wireframes", "boceta el flujo de…", "pásala a wireframe", "hazme el wireframe", "versión de baja fidelidad", "lo-fi", "en blanco y negro para el test de usabilidad", "quítale el diseño para enseñar la estructura", "wireframe this screen", "pásalo a alta fidelidad", "aplícale el design system a los wireframes", "de wireframe a diseño final".
 ---
 
 # Wireframes en Figma
@@ -36,7 +36,35 @@ Cuando el usuario cuenta una idea ("un control biométrico fácil para la asiste
 5. **Revisar:** captura cada pantalla (`figma-cli verify "<id>" --save …`), corrige lo que no se
    lea bien en el JSON y vuelve a ejecutarlo. Enséñale el resultado y pregunta qué ajustar.
 
-Después: `figma-build-ui` para hacerlo responsive o pasarlo a alta fidelidad con su design system.
+Después: `figma-build-ui` para hacerlo responsive, o la sección siguiente para pasarlo a alta fidelidad.
+
+## De wireframe a alta fidelidad
+Cuando el flujo está aprobado y el archivo tiene design system (componentes, variables, estilos
+de texto; si no, primero `figma-design-system`):
+
+1. **El plan, sin tocar nada:**
+   ```
+   node scripts/hifi.mjs --all --dry-run
+   ```
+   Dice qué componente del sistema reemplazará a cada pieza del kit (`mapping`: Botón principal →
+   `Button (Variant=Default)`, Tarjeta → `Card`…), qué variable tomará cada gris (`tokens`: fondo,
+   tarjeta, apagado, texto, texto secundario, borde) y qué pantallas convierte. Enséñaselo al
+   usuario. Si una pieza no tiene pareja o la eligió mal, se corrige con `--map`:
+   `--map '{"Fila": "List Item", "Botón": "Button[Variant=Outline]", "Imagen": null}'`
+   (`null` = dejar la pieza de wireframe).
+2. **Convertir:**
+   ```
+   node scripts/hifi.mjs --all [--map …]     (o --id "<id>" para algunas)
+   ```
+   Crea `<pantalla> · Alta fidelidad` debajo de cada una; las originales no se tocan. En la copia:
+   las piezas del kit pasan a instancias del sistema con los mismos textos, el mismo ancho y los
+   mismos enlaces; los grises se vinculan a variables; cada texto toma el estilo de tamaño más
+   cercano; espaciados y radios, el token más cercano (a 4 px como mucho). Los enlaces del
+   prototipo pasan a ir entre las copias, con su propio punto de inicio. Repetirlo rehace las copias.
+3. **Revisar:** captura las copias (`figma-cli verify "<id>" --save …`). El informe de cada pantalla
+   dice qué piezas cambió (`swapped`), cuáles quedaron en wireframe (`kept`) y los errores. Lo que
+   quede (una imagen real, un icono, jerarquía fina) se termina con `figma-build-ui`, y
+   `figma-consistency-audit` confirma que todo usa el sistema.
 
 ## De una pantalla terminada a wireframe
 ```
