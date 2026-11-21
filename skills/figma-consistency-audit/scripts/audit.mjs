@@ -9,7 +9,7 @@
 //
 // --fix nunca cambia el aspecto: solo vincula colores, espaciados y radios al token que ya tiene
 // ese valor, y aplica el estilo de texto que ya coincide en fuente, tamaño, peso e interlineado.
-// Usa `figma-cli` del PATH; FIGMA_CLI="npx -p figma-ds-cli figma-cli" lo cambia.
+// Usa `figma-cli` del PATH; FIGMA_CLI="npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli" lo cambia.
 import { writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';

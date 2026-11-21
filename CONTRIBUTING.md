@@ -54,6 +54,18 @@ scripts/validate.mjs       validador (también corre en CI)
    instalarán como roles dentro de su archivo de instrucciones.
 4. `npm test` prueba automáticamente cada plataforma de `platforms.json`, en proyecto y global.
 
+## Actualizar figma-cli
+figma-steroids va fijado a un commit concreto de figma-cli (campo `figmaCli` de `package.json`),
+servido como `.tar.gz` desde el fork de respaldo `kennedy122112/figma-cli`. Para subir de versión:
+
+1. Sincroniza el fork con `silships/figma-cli` y elige el commit o la etiqueta nueva.
+2. Instálalo en tu equipo (`npm install -g https://github.com/kennedy122112/figma-cli/archive/<sha>.tar.gz`)
+   y prueba contra Figma lo esencial: conectar, `figma-build-ui`, `figma-from-code`
+   (`render-tree`), la auditoría, `componentize`, `responsive` y los wireframes.
+3. Cambia `figmaCli` (`spec`, `version`, `commit`) y la dependencia en `package.json`, sustituye la
+   URL anterior en la documentación y las skills, y ejecuta `npm install --package-lock-only`.
+4. `npm run validate` falla si alguna instrucción sigue apuntando a otro origen.
+
 ## Probar en local
 Desde la raíz de la repo:
 ```bash

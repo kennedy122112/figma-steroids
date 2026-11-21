@@ -41,8 +41,8 @@ guíalo solo en lo que queda: importar el plugin en Figma. Si algo falla, sigue 
 ## 2. figma-cli
 `figma-cli --version`
 
-Si no existe, propón `npm install -g figma-ds-cli`. Si falla por permisos, no insistas: usa
-`npx -p figma-ds-cli figma-cli` en todos los comandos (es más lento, pero no instala nada global).
+Si no existe, propón `npm install -g https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz`. Si falla por permisos, no insistas: usa
+`npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli` en todos los comandos (es más lento, pero no instala nada global).
 El paquete npm se llama `figma-ds-cli`; `npx figma-cli` a secas instalaría otro paquete.
 
 ## 3. Figma Desktop abierto

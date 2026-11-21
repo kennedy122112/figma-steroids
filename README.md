@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versión-0.20.0-blue?style=for-the-badge" alt="Versión 0.20.0">
+  <img src="https://img.shields.io/badge/versión-0.21.0-blue?style=for-the-badge" alt="Versión 0.21.0">
   <img src="https://img.shields.io/badge/funciona_con-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Funciona con Claude Code, Codex, OpenCode y Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="Licencia MIT"></a>
 </p>
@@ -97,7 +97,7 @@ de reiniciar la computadora), enciende figma-cli con `figma-cli daemon start` o 
 <details>
 <summary>Instalación manual o por plugin de tu IA</summary>
 
-1. `npm install -g figma-ds-cli`
+1. `npm install -g https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz`
 2. Las skills:
    - **Claude Code:** `/plugin marketplace add kennedy122112/figma-steroids` y
      `/plugin install figma-steroids@figma-steroids`. En la pestaña Code de Claude Desktop no
@@ -152,7 +152,7 @@ que Figma y el código no se desincronicen.
 | `/plugin` no existe en Claude Desktop | Usa `setup`, o `claude plugin marketplace add …` y `claude plugin install …` en la terminal |
 | El daemon no responde | `figma-cli daemon restart`, o pídele a tu IA que vuelva a conectar |
 | Los cambios van a otro archivo | Deja abierto solo el archivo en el que quieres trabajar |
-| `npm install -g` falla por permisos | Sáltalo: las skills usan `npx -p figma-ds-cli figma-cli` |
+| `npm install -g` falla por permisos | Sáltalo: las skills usan `npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli` |
 | Las skills no aparecen | Reinicia tu IA. En Claude Code revisa `/plugin`; en otras, `npx -y github:kennedy122112/figma-steroids list` |
 
 ## Contribuir
@@ -166,6 +166,11 @@ cada versión, en [CHANGELOG.md](CHANGELOG.md).
 Gracias a [Sil Bormüller](https://github.com/silships) ([Into Design Systems](https://intodesignsystems.com))
 por [figma-cli](https://github.com/silships/figma-cli), la base de todo esto (licencia MIT). El
 plugin de Figma de `figma-plugin/` parte de su plugin FigCli y le añade la interfaz.
+
+figma-steroids instala **la versión exacta de figma-cli con la que está probado** (2.2.5, un commit
+concreto), desde una [copia de respaldo](https://github.com/kennedy122112/figma-cli) del repo
+original. Así una versión nueva no rompe nada sin avisar y la instalación sigue funcionando aunque
+el original cambie.
 
 ## Proyectos hermanos
 

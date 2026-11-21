@@ -1,6 +1,6 @@
 {
   "name": "figma-steroids",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "private": true,
   "description": "Skills y agentes para diseñar en Figma Desktop con figma-cli (modo plugin, sin MCP): de la idea a wireframes, design system, auditoría, responsive y de Figma a código, para Claude Code, Codex, OpenCode, Cursor, Antigravity y el estándar Agent Skills.",
   "type": "module",
@@ -23,9 +23,15 @@
     "connect": "figma-cli connect --safe"
   },
   "dependencies": {
-    "figma-ds-cli": "^2.2.1"
+    "figma-ds-cli": "https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz"
   },
   "engines": {
     "node": ">=18.17"
+  },
+  "figmaCli": {
+    "spec": "https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz",
+    "version": "2.2.5",
+    "commit": "0ff87728992533b0a6c93a5fb7614c3cbc69c237",
+    "upstream": "https://github.com/silships/figma-cli"
   }
 }

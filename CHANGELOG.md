@@ -7,6 +7,21 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.21.0] - 2026-11-21
+
+### Cambiado
+- **figma-cli fijado a la versión probada.** Todo el proyecto se probó con el commit `0ff8772` de
+  figma-cli (2.2.5), que nunca se publicó en npm: `npm install -g figma-ds-cli` instalaba 2.2.1 y,
+  desde el 19 de noviembre, 2.4.0, ninguna de las dos probada. Ahora `setup`, la dependencia del
+  paquete y todas las instrucciones instalan ese commit exacto, como `.tar.gz` por https (sin git ni
+  SSH) desde el fork de respaldo `kennedy122112/figma-cli`.
+- `setup` avisa si el figma-cli ya instalado es de otra versión, sin cambiarlo.
+
+### Añadido
+- Campo `figmaCli` en `package.json` como única fuente de la versión, y comprobación en
+  `validate`: falla si la dependencia o alguna instrucción apuntan a otro origen.
+- CONTRIBUTING: cómo actualizar figma-cli.
+
 ## [0.20.0] - 2026-11-06
 
 ### Añadido
@@ -304,6 +319,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.21.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.17.0...v0.18.0

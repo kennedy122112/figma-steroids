@@ -11,7 +11,7 @@
 //   node render-tree.mjs tree.json --page "Desde código" [-c Colección] [--parent <id>]
 //
 // tree.json puede ser el árbol ({ jsx, children, shell }) o todo el resultado ({ jsx, tree, svgs }).
-// Usa `figma-cli` del PATH; con FIGMA_CLI="npx -p figma-ds-cli figma-cli" se cambia el comando.
+// Usa `figma-cli` del PATH; con FIGMA_CLI="npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli" se cambia el comando.
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';

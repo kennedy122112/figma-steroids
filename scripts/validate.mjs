@@ -92,6 +92,27 @@ if (plugin && market) {
   }
 }
 
+// figma-cli va fijado al commit probado, servido desde el fork de respaldo: el campo "figmaCli" de
+// package.json manda. La dependencia debe usar ese mismo origen, y toda instrucción de instalación o
+// de npx en la documentación y las skills debe nombrarlo.
+if (pkg) {
+  const pin = pkg.figmaCli && pkg.figmaCli.spec;
+  if (!pin || !/[0-9a-f]{40}/.test(pin)) errors.push('package.json: falta figmaCli.spec fijado a un commit (URL del .tar.gz con el SHA completo)');
+  else {
+    if (pkg.dependencies['figma-ds-cli'] !== pin) errors.push(`package.json: la dependencia figma-ds-cli debe ser "${pin}"`);
+    const docs = ['README.md', 'README.en.md', 'lib/installer.mjs'];
+    for (const dir of readdirSync('skills')) {
+      const scripts = join('skills', dir, 'scripts');
+      for (const f of [join('skills', dir, 'SKILL.md'), ...(existsSync(scripts) ? readdirSync(scripts).map((x) => join(scripts, x)) : [])]) if (existsSync(f)) docs.push(f);
+    }
+    for (const f of docs) {
+      for (const m of readFileSync(f, 'utf8').matchAll(/(npm install -g|npx -p) (\S*figma-(?:ds-)?cli[^\s`"')]*)/g)) {
+        if (m[2] !== pin) errors.push(`${f}: "${m[0]}" debe usar ${pin}`);
+      }
+    }
+  }
+}
+
 // Manifiesto portable Agent Plugins (Codex y formato abierto de Cursor).
 // Reglas de https://agent-plugins.org/schemas/1.0.0/plugin.schema.json
 const portable = readJson('plugin.json');

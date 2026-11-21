@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.20.0-blue?style=for-the-badge" alt="Version 0.20.0">
+  <img src="https://img.shields.io/badge/version-0.21.0-blue?style=for-the-badge" alt="Version 0.21.0">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Works with Claude Code, Codex, OpenCode and Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>
@@ -97,7 +97,7 @@ restarting your computer), start figma-cli with `figma-cli daemon start` or ask 
 <details>
 <summary>Manual install, or through your AI's plugin system</summary>
 
-1. `npm install -g figma-ds-cli`
+1. `npm install -g https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz`
 2. The skills:
    - **Claude Code:** `/plugin marketplace add kennedy122112/figma-steroids` and
      `/plugin install figma-steroids@figma-steroids`. The Code tab of Claude Desktop has no
@@ -152,7 +152,7 @@ and the code in sync.
 | `/plugin` doesn't exist in Claude Desktop | Use `setup`, or `claude plugin marketplace add …` and `claude plugin install …` in a terminal |
 | The daemon doesn't respond | `figma-cli daemon restart`, or ask your AI to reconnect |
 | Changes land in another file | Keep only the file you want to work on open |
-| `npm install -g` fails with permissions | Skip it: the skills fall back to `npx -p figma-ds-cli figma-cli` |
+| `npm install -g` fails with permissions | Skip it: the skills fall back to `npx -p https://github.com/kennedy122112/figma-cli/archive/0ff87728992533b0a6c93a5fb7614c3cbc69c237.tar.gz figma-cli` |
 | The skills don't show up | Restart your AI. In Claude Code check `/plugin`; elsewhere, `npx -y github:kennedy122112/figma-steroids list` |
 
 ## Contributing
@@ -166,6 +166,10 @@ stack. How, in [CONTRIBUTING.md](CONTRIBUTING.md). What changes in each version,
 Thanks to [Sil Bormüller](https://github.com/silships) ([Into Design Systems](https://intodesignsystems.com))
 for [figma-cli](https://github.com/silships/figma-cli), the foundation of all this (MIT license).
 The Figma plugin in `figma-plugin/` starts from its FigCli plugin and adds the interface.
+
+figma-steroids installs **the exact figma-cli version it is tested with** (2.2.5, a specific
+commit), from a [backup copy](https://github.com/kennedy122112/figma-cli) of the original repo. A
+new release can't break things silently, and installation keeps working even if the original changes.
 
 ## Sibling projects
 
