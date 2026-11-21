@@ -48,7 +48,8 @@ de texto; si no, primero `figma-design-system`):
    ```
    Dice qué componente del sistema reemplazará a cada pieza del kit (`mapping`: Botón principal →
    `Button (Variant=Default)`, Tarjeta → `Card`…), qué variable tomará cada gris (`tokens`: fondo,
-   tarjeta, apagado, texto, texto secundario, borde) y qué pantallas convierte. Enséñaselo al
+   tarjeta, apagado, texto, texto secundario, borde; si la paleta va por escala, como
+   `neutral/0…900`, los elige por su valor y lo marca `(por valor)`) y qué pantallas convierte. Enséñaselo al
    usuario. Si una pieza no tiene pareja o la eligió mal, se corrige con `--map`:
    `--map '{"Fila": "List Item", "Botón": "Button[Variant=Outline]", "Imagen": null}'`
    (`null` = dejar la pieza de wireframe).

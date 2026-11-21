@@ -154,3 +154,27 @@ test('sin design system lo explica y no crea nada', async () => {
   await assert.rejects(hifi({ all: true }), /no tiene design system/);
   assert.ok(!page().children.some((c) => c.name.endsWith(SUFFIX)));
 });
+
+test('con una paleta por escala (neutral/0…900) elige los grises por su valor', async () => {
+  fx = file();
+  // Sustituye las variables semánticas por una escala tipo Tailwind slate.
+  fx.vars.length = 0;
+  const scale = { 0: '#ffffff', 50: '#f8fafc', 100: '#f1f5f9', 300: '#cbd5e1', 600: '#475569', 900: '#0f172a' };
+  for (const [k, hex] of Object.entries(scale)) fx.vars.push({ id: `N${k}`, name: `color/neutral/${k}`, resolvedType: 'COLOR', variableCollectionId: 'C1', valuesByMode: { m: rgb(hex) } });
+  fx.vars.push({ id: 'P', name: 'color/primary/500', resolvedType: 'COLOR', variableCollectionId: 'C1', valuesByMode: { m: rgb('#e85d04') } });
+  setRunner(makeRunner(fx.figma));
+  const r = await hifi({ all: true, dryRun: true });
+  assert.deepEqual(r.tokens, {
+    background: 'color/neutral/0 (por valor)', card: 'color/neutral/0 (por valor)', muted: 'color/neutral/100 (por valor)',
+    foreground: 'color/neutral/900 (por valor)', mutedForeground: 'color/neutral/600 (por valor)', border: 'color/neutral/300 (por valor)',
+  });
+});
+
+test('los iconos hechos con símbolos no ocupan el hueco de un texto', async () => {
+  const bar = fx.byId.get('1:1').children[0];
+  bar.children[0].characters = '≡';
+  // La barra se cambia por un componente con un solo hueco de texto: debe recibir "Asistencia", no "≡".
+  const r = await hifi({ ids: ['1:1'], map: { 'Barra superior': 'Card' } });
+  assert.equal(r.screens[0].swapped['Barra superior'], 1);
+  assert.equal(copyOf('1 · Inicio').children[0].children[0].characters, 'Asistencia');
+});

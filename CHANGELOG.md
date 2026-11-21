@@ -14,7 +14,9 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
   flujo y cambia las piezas del kit por los componentes del design system (con sus textos, ancho y
   enlaces), vincula los grises a variables (fondo, tarjeta, apagado, texto, borde), aplica estilos
   de texto y tokens de espaciado y radio, y pasa el prototipo a las copias. `--dry-run` enseña el
-  plan; `--map` elige a mano un componente o deja una pieza en wireframe.
+  plan; `--map` elige a mano un componente o deja una pieza en wireframe. Funciona con variables
+  por función (`background`, `foreground`…) y con paletas por escala (`neutral/0…900`), eligiendo
+  los grises por su valor. Probado en Figma real con un flujo de 7 pantallas.
 - **Pruebas sin Figma**: un Figma simulado (`tests/helpers/figma-mock.mjs`) que imita la parte de
   la Plugin API que usan los scripts y la forma en que `figma-cli eval` devuelve el resultado. Cubre
   la auditoría, `resolve` y la alta fidelidad; corre en `npm test` y en CI.

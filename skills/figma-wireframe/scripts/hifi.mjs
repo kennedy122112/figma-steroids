@@ -117,6 +117,33 @@ for (const [role, src] of Object.entries(ROLES)) {
     || colors.find((v) => re.test(norm(v.name.split('/').slice(-2).join('-'))));
   vars[role] = v ? { id: v.id, name: v.name } : null;
 };
+// Paletas por escala ("color/neutral/0…900") en vez de nombres por función: los papeles que falten
+// se eligen entre los grises por su luminosidad (el más claro, fondo; el más oscuro, texto…).
+if (Object.values(vars).some((v) => !v)) {
+  const resolveVal = async (v, d = 0) => { const val = Object.values(v.valuesByMode)[0]; if (val && val.type === 'VARIABLE_ALIAS' && d < 5) { const t = await figma.variables.getVariableByIdAsync(val.id); return t ? resolveVal(t, d + 1) : null; } return val; };
+  let greys = [];
+  for (const v of allVars.filter((v) => v.resolvedType === 'COLOR')) {
+    const c = await resolveVal(v);
+    if (!c || !('r' in c) || (c.a ?? 1) < 0.99) continue;
+    greys.push({ v, l: 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b, spread: Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b) });
+  }
+  // Por nombre si la paleta dice cuáles son los neutros (los "slate" son grises algo azulados);
+  // si no, los colores casi sin saturación.
+  const named = greys.filter((g) => /neutral|gr[ae]y|slate|zinc|stone|gris/i.test(g.v.name));
+  greys = named.length >= 3 ? named : greys.filter((g) => g.spread <= 0.15);
+  greys.sort((a, b) => b.l - a.l);
+  const closest = (lo, hi, target, not = []) => greys.filter((g) => g.l > lo && g.l <= hi && !not.includes(g)).sort((a, b) => Math.abs(a.l - target) - Math.abs(b.l - target))[0];
+  const light = greys[0] && greys[0].l > 0.95 ? greys[0] : null;
+  const dark = greys.length && greys[greys.length - 1].l < 0.25 ? greys[greys.length - 1] : null;
+  const pickByValue = {
+    background: light, card: light,
+    muted: closest(0.85, 0.99, 0.95, [light]),
+    border: closest(0.65, 0.92, 0.82, [light]),
+    foreground: dark,
+    mutedForeground: closest(0.2, 0.65, 0.4, [dark]),
+  };
+  for (const [role, g] of Object.entries(pickByValue)) if (!vars[role] && g) vars[role] = { id: g.v.id, name: g.v.name, byValue: true };
+};
 const firstVal = (v) => Object.values(v.valuesByMode)[0];
 const floats = allVars.filter((v) => v.resolvedType === 'FLOAT' && typeof firstVal(v) === 'number');
 const spacing = floats.filter((v) => /spac|gap|space|padding/i.test(v.name)).map((v) => ({ id: v.id, value: firstVal(v) }));
@@ -173,8 +200,8 @@ for (const inst of copy.findAll((n) => n.type === 'INSTANCE')) {
   const piece = main.slice(3);
   const target = KIT[piece] && KIT[piece].id && await figma.getNodeByIdAsync(KIT[piece].id);
   if (!target) { bump(report.kept, piece); continue; }
-  // Los textos de la pieza, sin los símbolos del boceto (‹ › ? ×).
-  const texts = inst.findAll((n) => n.type === 'TEXT').map((t) => t.characters).filter((s) => !/^\\s*[‹›?×<>]\\s*$/.test(s));
+  // Los textos de la pieza, sin los iconos dibujados con símbolos (‹ › ? × ≡…): solo los que tienen letras o números.
+  const texts = inst.findAll((n) => n.type === 'TEXT').map((t) => t.characters).filter((s) => /[A-Za-z0-9\\u00C0-\\u024F]/.test(s));
   const parent = inst.parent;
   const ni = target.createInstance();
   parent.insertChild(parent.children.indexOf(inst), ni);
@@ -299,7 +326,7 @@ export async function hifi({ ids = [], all = false, map = {}, dryRun = false, lo
   if (!all && !ids.length) throw new Error('Indica las pantallas con --id "<id>" o usa --all para todas las de la página.');
   const plan = await figmaRun(planCode({ map, ids, all }));
   const mapping = Object.fromEntries(Object.entries(plan.kit).map(([k, v]) => [k, v ? (v.error ? `✗ ${v.error}` : v.label + (v.exact ? '' : ' (sin la variante buscada)')) : null]));
-  const tokens = Object.fromEntries(Object.entries(plan.vars).map(([k, v]) => [k, v && v.name]));
+  const tokens = Object.fromEntries(Object.entries(plan.vars).map(([k, v]) => [k, v && v.name + (v.byValue ? ' (por valor)' : '')]));
   const hasSystem = Object.values(plan.kit).some((v) => v && v.id) || Object.values(plan.vars).some(Boolean) || plan.styles.length;
   if (!hasSystem) throw new Error('Este archivo no tiene design system (componentes, variables o estilos de texto). Cárgalo primero con la skill figma-design-system.');
   const summary = { mapping, tokens, textStyles: plan.styles.length, spacingTokens: plan.spacing.length, radiusTokens: plan.radius.length, screens: plan.screens.map((s) => s.name) };
