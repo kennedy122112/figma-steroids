@@ -7,6 +7,23 @@ Cambios de cada versión de figma-steroids. Formato basado en
 Casi todas las correcciones salen de pruebas reales contra Figma Desktop con Claude Code y
 OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 
+## [0.22.1] - 2026-11-21
+
+### Corregido
+- **Los wireframes podían quedarse sin prototipo.** Al volver a dibujar el flujo, cada pantalla
+  rehecha borraba los enlaces que llegaban a ella, y si una fallaba (un corte del plugin) el script
+  se paraba antes de rehacer los enlaces, sin avisar. Ahora cada pantalla se reintenta, los enlaces
+  se rehacen siempre (buscando las pantallas por nombre) y se comprueba cuántos quedaron en Figma;
+  si faltan, termina con error y lo dice.
+- Dos enlaces desde el mismo botón o fila se pisaban: el segundo borraba el primero.
+- Figma crea solo un punto de inicio «Flow 1» con el primer enlace y rechaza dos en la misma
+  pantalla: `screens.mjs` y `hifi.mjs` fallaban al poner el suyo. Ahora lo sustituyen.
+
+### Añadido
+- `screens.mjs --links-only`: rehace solo enlaces, flechas y notas, sin redibujar.
+- Pruebas de los enlaces del prototipo con el Figma simulado, que ahora imita el «Flow 1»
+  automático y el rechazo de puntos de inicio repetidos.
+
 ## [0.22.0] - 2026-11-21
 
 ### Añadido
@@ -343,6 +360,7 @@ OpenCode: cuando una skill falla o le cuesta algo, se corrige la skill.
 - Primera versión: 5 skills, 3 agentes, plugin de Claude Code, plantillas, guía de
   contribución y validador.
 
+[0.22.1]: https://github.com/kennedy122112/figma-steroids/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/kennedy122112/figma-steroids/compare/v0.19.0...v0.20.0

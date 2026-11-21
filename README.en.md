@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.22.0-blue?style=for-the-badge" alt="Version 0.22.0">
+  <img src="https://img.shields.io/badge/version-0.22.1-blue?style=for-the-badge" alt="Version 0.22.1">
   <img src="https://img.shields.io/badge/works_with-Claude_Code_·_Codex_·_OpenCode_·_Antigravity-D97757?style=for-the-badge" alt="Works with Claude Code, Codex, OpenCode and Antigravity">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kennedy122112/figma-steroids?style=for-the-badge&color=green" alt="MIT license"></a>
 </p>

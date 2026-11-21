@@ -32,7 +32,10 @@ Cuando el usuario cuenta una idea ("un control biométrico fácil para la asiste
    principal, Campo, Tarjeta, Fila, Imagen, Visor de cámara, Barra superior, Pestañas, Chip, Avatar)
    y luego cada pantalla con auto-layout, en fila y en el orden del flujo, con flechas entre las
    vecinas, debajo a dónde lleva cada una, y los **enlaces de prototipo** (Presentar en Figma y se
-   navega). Repetirlo rehace las pantallas con el mismo nombre, sin duplicar.
+   navega). Repetirlo rehace las pantallas con el mismo nombre, sin duplicar. Si una pantalla falla
+   (el plugin corta la conexión), se reintenta; los enlaces se rehacen siempre al final y el informe
+   dice cuántos quedaron de verdad en Figma (`verifiedLinks` de `expectedLinks`). Si falta alguno,
+   `node scripts/screens.mjs pantallas.json --links-only` rehace solo enlaces, flechas y notas.
 5. **Revisar:** captura cada pantalla (`figma-cli verify "<id>" --save …`), corrige lo que no se
    lea bien en el JSON y vuelve a ejecutarlo. Enséñale el resultado y pregunta qué ajustar.
 

@@ -316,7 +316,8 @@ while (page && page.type !== 'PAGE') page = page.parent;
 if (page) {
   const sp = page.flowStartingPoints || [];
   const add = sp.filter((s) => MAP[s.nodeId]).map((s) => ({ nodeId: MAP[s.nodeId], name: s.name + SUFFIX }));
-  if (add.length) page.flowStartingPoints = [...sp.filter((s) => !add.some((a) => a.name === s.name)), ...add];
+  // Sin repetir pantalla ni nombre: Figma pudo crear ya un "Flow N" en la copia al recibir sus enlaces.
+  if (add.length) page.flowStartingPoints = [...sp.filter((s) => !add.some((a) => a.name === s.name || a.nodeId === s.nodeId)), ...add];
 };
 figma.commitUndo();
 JSON.stringify({ relinked })`;

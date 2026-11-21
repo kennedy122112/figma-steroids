@@ -20,7 +20,7 @@ export function createFigma({ name = 'Archivo de prueba', pages = [], collection
 
   const alias = (v) => ({ type: 'VARIABLE_ALIAS', id: v.id });
 
-  const METHODS = new Set(['setBoundVariable', 'setTextStyleIdAsync', 'getRangeAllFontNames', 'getMainComponentAsync', 'createInstance', 'setReactionsAsync', 'clone', 'remove', 'appendChild', 'insertChild', 'findAll', 'findOne', 'findAllWithCriteria', 'loadAsync']);
+  const METHODS = new Set(['resize', 'setBoundVariable', 'setTextStyleIdAsync', 'getRangeAllFontNames', 'getMainComponentAsync', 'createInstance', 'setReactionsAsync', 'clone', 'remove', 'appendChild', 'insertChild', 'findAll', 'findOne', 'findAllWithCriteria', 'loadAsync']);
 
   // Copia "plana" de un nodo, para clonarlo o instanciarlo.
   function toSpec(n) {
@@ -84,7 +84,11 @@ export function createFigma({ name = 'Archivo de prueba', pages = [], collection
         for (const a of r.actions || []) if (a.destinationId && !byId.get(a.destinationId)) throw new Error(`destino ${a.destinationId} no existe`);
       }
       n.reactions = JSON.parse(JSON.stringify(rs));
+      // Como Figma: el primer enlace de una página crea solo un punto de inicio 'Flow 1' en su pantalla.
+      let top = n; while (top.parent && top.parent.type !== 'PAGE') top = top.parent;
+      if (rs.length && top.parent && !top.parent.flowStartingPoints.length) top.parent.flowStartingPoints = [{ nodeId: top.id, name: 'Flow 1' }];
     };
+    n.resize = (w, h) => { n.width = w; n.height = h; };
     n.clone = () => {
       const c = makeNode(toSpec(n), n.parent);
       n.parent.children.splice(n.parent.children.indexOf(n) + 1, 0, c);
@@ -142,7 +146,13 @@ export function createFigma({ name = 'Archivo de prueba', pages = [], collection
 
   const root = { type: 'DOCUMENT', name, children: [] };
   root.children = pages.map((p) => {
-    const page = { id: p.id || nextId(), type: 'PAGE', name: p.name, parent: root, loaded: false, flowStartingPoints: [] };
+    const page = { id: p.id || nextId(), type: 'PAGE', name: p.name, parent: root, loaded: false };
+    // Como Figma: no admite dos puntos de inicio en la misma pantalla.
+    let _starts = [];
+    Object.defineProperty(page, 'flowStartingPoints', { enumerable: true, get: () => _starts.map((f) => ({ ...f })), set: (v) => {
+      if (new Set(v.map((f) => f.nodeId)).size !== v.length) throw new Error('in set_flowStartingPoints: Found duplicate input nodeIds');
+      _starts = v.map((f) => ({ ...f }));
+    } });
     page.children = (p.children || []).map((c) => makeNode(c, page));
     page.loadAsync = async () => { page.loaded = true; };
     page.findAllWithCriteria = ({ types }) => findAll(page, (n) => types.includes(n.type));
@@ -174,6 +184,10 @@ export function createFigma({ name = 'Archivo de prueba', pages = [], collection
     commitUndo: () => { undo.commits++; },
     loadFontAsync: async () => {},
     getLocalTextStylesAsync: async () => [...styles],
+    createFrame: () => makeNode({ type: 'FRAME', name: 'Frame', children: [] }, null),
+    createVector: () => makeNode({ type: 'VECTOR', name: 'Vector' }, null),
+    createEllipse: () => makeNode({ type: 'ELLIPSE', name: 'Ellipse' }, null),
+    createText: () => makeNode({ type: 'TEXT', name: 'Text', characters: '', fontName: { family: 'Inter', style: 'Regular' }, fontSize: 12 }, null),
     createTextStyle: () => {
       const s = { id: `S:${nextId()}`, name: 'Estilo', fontName: { family: 'Inter', style: 'Regular' }, fontSize: 12, lineHeight: { unit: 'AUTO' }, letterSpacing: { unit: 'PERCENT', value: 0 }, textCase: 'ORIGINAL', textDecoration: 'NONE' };
       styles.push(s);
